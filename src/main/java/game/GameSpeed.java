@@ -9,7 +9,7 @@ import view.keyboard.KEYS;
 import java.io.IOException;
 
 public final class GameSpeed {
-
+	/////#!# actualSpeed is made public so that IManager can get the speed value.
 	private boolean tmpPaused;
 	private double speed;
 	private double prevSpeed;
