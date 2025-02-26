@@ -37,11 +37,18 @@ public final class UIIndustries extends IFullView {
 
 
                 // Display top line messages
-                section.addDown(0, new GText(UI.FONT().H2, "Consumers"));
+                section.addDown(0, new GText(UI.FONT().H2, "Industry Profitability"));
 
                 GText tableHeader = new GText(UI.FONT().S, "                                                                              ");
                 section.addDown(10, tableHeader);
 
+
+
+                //////
+                // For each blueprint, get the employment and profitability of each room
+                // Get the employee-weighted average of the profit of each industry for each type of profit
+                //
+                //////
                 // Order by source
                 HashMap<CharSequence, ArrayListGrower<RoomProduction.Source>> data = new HashMap<>();
                 for (RESOURCE res : RESOURCES.ALL()) {
