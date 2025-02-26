@@ -8,7 +8,8 @@ import snake2d.util.sets.ArrayListGrower;
 import java.io.IOException;
 
 public class CustomIcons extends Icons {
-
+        /////////////////////////////////////////////#!# This is a unique file that doesn't overwrite any of Jake's files.
+        /////#!# This extends from Icons to add new custom icons of Small and Large size.
         public final CS s = new CS();
         public final CL l = new CL();
 
