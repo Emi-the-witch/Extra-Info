@@ -5,13 +5,15 @@ import util.colors.GCOLOR;
 import java.io.IOException;
 
 public class UI {
-
+	///////////////////////////////////
+	//#!# Add icons from CustomIcons
+	///////////////////////////////////
 	private static UIDecor decor;
 	private static UIPanels panels;
 	private static UIFonts fonts;
 	private static Icons icons;
 	private static UIImageMaker image;
-	private static CustomIcons c_icons;
+	private static CustomIcons c_icons;//#!# Add custom icons
 
 	public static void init() throws IOException {
 		GCOLOR.read();
@@ -20,7 +22,7 @@ public class UI {
 		decor = new UIDecor();
 		icons = new Icons();
 		image = new UIImageMaker();
-		c_icons = new CustomIcons();
+		c_icons = new CustomIcons();  //#!# Add custom icons
 	}
 	
 	public static UIFonts FONT() {
@@ -43,7 +45,7 @@ public class UI {
 		return image;
 	}
 
-	public static CustomIcons c_icons() {
+	public static CustomIcons c_icons() {//#!# Add custom icons
 		return c_icons;
 	}
 
