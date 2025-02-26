@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import game.faction.FACTIONS;
 import game.faction.FResources.RTYPE;
+import game.time.TIME;
 import init.resources.RESOURCE;
 import init.settings.S;
 import init.sprite.SPRITES;
@@ -11,6 +12,7 @@ import init.sprite.UI.Icon;
 import init.sprite.UI.UI;
 import init.text.D;
 import settlement.main.SETT;
+import settlement.maintenance.ROOM_DEGRADER;
 import settlement.room.main.Room;
 import settlement.room.main.RoomBlueprint;
 import settlement.room.main.RoomBlueprintImp;
@@ -266,6 +268,37 @@ final class ModuleUpgradable implements ModuleMaker {
 							b.NL();
 						}
 					}
+
+					b.NL();
+					b.textLL("Daily maintenance cost estimate:");
+					b.NL(8);
+
+					RoomInstance ins = get.get();
+					ROOM_DEGRADER deg = get.get().degrader(get.get().mX(), get.get().mY());
+					double iso = ins.isolation(get.get().mX(), get.get().mY());
+					double boost = SETT.MAINTENANCE().speed();
+
+					double maint_cost = 0;
+					for (int ri = 0; ri < blueprint.constructor().resources(); ri++) {
+						int am =  g(get).resAmount(ri, g(get).upgrade()+1)-g(get).resAmount(ri, g(get).upgrade());
+						if (am <= 0) {continue;}
+						RESOURCE res = deg.res(ri);
+						b.add(res.icon());
+						b.add(GFORMAT.f0(b.text(), -ROOM_DEGRADER.rateResource(boost, deg.base(), iso, am)* TIME.years().bitConversion(TIME.days())/16));
+						b.textL(res.name);
+						b.tab(6);
+						b.add(GFORMAT.f0(b.text(), -ROOM_DEGRADER.rateResource(boost, deg.base(), iso, am)* TIME.years().bitConversion(TIME.days())*FACTIONS.player().trade.pricesBuy.get(res)/16));
+						maint_cost += (-ROOM_DEGRADER.rateResource(boost, deg.base(), iso, am)*TIME.years().bitConversion(TIME.days())*FACTIONS.player().trade.pricesBuy.get(res)/16);
+						b.textLL(" $");
+						b.NL();
+					}
+
+					b.sep();
+					b.textLL("Total Denari Cost");
+					b.tab(6);
+					b.add(GFORMAT.f0(b.text(), maint_cost));
+					b.textLL(" $");
+
 				}
 
 

@@ -214,7 +214,7 @@ final class ModuleDegrade implements ModuleMaker {
 /////////////////////////////////////////////////////////#!#
 					// Maintenance costs in denars!
 					b.sep();
-					b.textLL("Maintenance cost in denars if imported:");
+					b.textLL("Annual maintenance cost in denars if imported:");
 					b.NL(8);
 					double maint_cost = 0;
 					for (int i = 0; i < deg.resSize(); i++) {
