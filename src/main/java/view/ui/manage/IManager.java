@@ -41,6 +41,8 @@ import view.ui.goods.UIProduction;
 import view.ui.goods.UIRecipes;
 import view.ui.goods.UIValues;
 
+import static view.ui.goods.UIMaintenance.sum_d;
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///#!# Updates the front facing UI to add 5 buttons for Expenses, Production, Recipes, Values, and Maintenance
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -52,6 +54,7 @@ public final class IManager {
     private final UIMaintenance all_maintenance;
     private final UIExpenses all_expenses;
     private final UIProduction all_production;
+    private double[] speed = new double[50];
 
 
     ////////////////////////////
@@ -331,6 +334,8 @@ public final class IManager {
         });
         bAdd(s, i++, VIEW.UI().tech, UI.icons().s.clock, new GStat() {
 
+            private int i =0;
+
             @Override
             public void update(GText text) {
 
@@ -341,7 +346,10 @@ public final class IManager {
 //                    am = c.available();
 //                    if (index ==3){GFORMAT.i(text, am);}
 //                }
-                GFORMAT.i(text,(long) game.GameSpeed.actualSpeed);
+
+                i = (i+1) % speed.length;
+                speed[i]= game.GameSpeed.actualSpeed;
+                GFORMAT.i(text,(long) sum_d(speed) / speed.length  );
             }
         });
 

@@ -36,7 +36,7 @@ public final class Review implements Serializable, SAVABLE{
 	public double attraction_score;
 	public double service_score;
 	public double inn_score;
-
+	public double score_rand;
 	private static final long serialVersionUID = 1L;
 	
 	public Review() {
@@ -119,6 +119,7 @@ public final class Review implements Serializable, SAVABLE{
 			double s = CLAMP.d((a.employment().employed()-TOURISM.MIN_EMPLOYEES)/(double)TOURISM.MAX_EMPLOYEES, 0, 1);
 			//#!# attraction_score
 			attraction_score = s;
+
 			score += s;
 			if (s == 0)
 				d.rating = 0;
@@ -127,22 +128,24 @@ public final class Review implements Serializable, SAVABLE{
 			attraction.clear().add(da.attraction.get(d));
 		}
 
-		score += setService(d, service.clear());
+
 		//#!# service_score
-		service_score = score - attraction_score;
+		service_score = setService(d, service.clear());
+		score += service_score;
 
 		if (inn != null && SETT.ROOMS().INN.get(inn) != null) {
 			ROOM_SERVICER in = (ROOM_SERVICER) SETT.ROOMS().INN.get(inn);
-			score += in.quality();
+			inn_score = in.quality();
 			d.rating = 0.35 + 0.65*in.quality();
 			this.inn.clear().add(da.inn.get(d));
+			score += inn_score;
 		}
-		//#!# inn_score
-		inn_score = score - attraction_score - service_score;
-		score /= 3;
+
+		score /=3;
 		
 		credits = (int) (score*race.tourism().credits*TOURISM.CREDITS*RND.rFloat1(0.2));
-		score += RND.rFloat0(0.2);
+		score_rand = RND.rFloat0(0.2);
+		score += score_rand;
 		score = CLAMP.d(score, 0, 1);
 		
 		d.rating = score;
@@ -196,12 +199,25 @@ public final class Review implements Serializable, SAVABLE{
 		GCOLOR.T().NORMAL2.bind();
 		if (rating != null)
 		y1 += 8 + UI.FONT().M.render(r, rating, x1, y1, width, 1);
-		if (attraction != null)
-		y1 += 8 + UI.FONT().M.render(r, attraction, x1, y1, width, 1);
-		if (service != null)
-		y1 += 8 + UI.FONT().M.render(r, service, x1, y1, width, 1);
-		if (inn != null)
-		y1 += 8 + UI.FONT().M.render(r, inn, x1, y1, width, 1);
+		if (attraction != null) {
+			y1 += 8 + UI.FONT().M.render(r, attraction, x1, y1, width, 1);
+			}
+		if (service != null) {
+			y1 += 8 + UI.FONT().M.render(r, service, x1, y1, width, 1);
+
+		}
+		if (inn != null){
+			y1 += 8 + UI.FONT().M.render(r, inn, x1, y1, width, 1);
+
+		}
+		y1 += 8 + UI.FONT().M.render(r, "--------------------------- Extra Info -------------------------", x1, y1, width, 1);
+		y1 += 8 + UI.FONT().M.render(r, "Rating score from 0 to 1 is based on the average of the following: " +score + "   " + ( Math.round(((attraction_score + service_score + inn_score) /3+score_rand) *100) /100.0), x1, y1, width, 1);
+		y1 += 8 + UI.FONT().M.render(r, "Attraction score from 0 to 1 based on employment between 100-1100: " + (Math.round(attraction_score*100.0)/100.0), x1, y1, width, 1);
+		y1 += 8 + UI.FONT().M.render(r, "Service score from 0 to 1 based on the service and some randomness: " + (Math.round(service_score*100.0)/100.0), x1, y1, width, 1);
+		y1 += 8 + UI.FONT().M.render(r, "Inn quality from 0 to 1: " + (Math.round(inn_score*100.0)/100.0), x1, y1, width, 1);
+		y1 += 8 + UI.FONT().M.render(r, "+-20% overall rating randomness:" + (Math.round(score_rand*100.0)/100.0), x1, y1, width, 1);
+
+
 		GCOLOR.T().H2.bind();
 		y1 += UI.FONT().S.render(r, name, x1+30, y1, width-30, 1);
 		COLOR.unbind();

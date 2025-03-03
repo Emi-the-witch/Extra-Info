@@ -180,10 +180,21 @@ class UIHoverer {
 		}
 
 		// Homeless display (say nothing if they have a home)
-		if ( !STATS.HOME().GETTER.has(h) ){
+			if ( !STATS.HOME().GETTER.has(h) ){
 			text.add(GFORMAT.text(text.text(), "Homeless!"));
 			text.NL();
 		}
+
+		// Gender
+		if ( STATS.APPEARANCE().gender.get(h.indu()) == 1 ){
+			text.add(GFORMAT.text(text.text(), "Female"));
+			text.NL();
+		}
+		if ( STATS.APPEARANCE().gender.get(h.indu()) == 0 ){
+			text.add(GFORMAT.text(text.text(), "Male"));
+			text.NL();
+		}
+
 		// Education
 		text.add(GFORMAT.text(text.text(), (int) (round( STATS.EDUCATION().total(h.indu())*100))+ "% Educated"));
 		text.NL();
