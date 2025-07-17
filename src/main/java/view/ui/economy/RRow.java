@@ -2,6 +2,8 @@ package view.ui.economy;
 
 import game.GAME;
 import game.faction.FACTIONS;
+import game.faction.diplomacy.DIP;
+import game.faction.npc.FactionNPC;
 import init.resources.RESOURCE;
 import init.text.D;
 import settlement.main.SETT;
@@ -18,12 +20,14 @@ import util.data.INT.INTE;
 import util.dic.Dic;
 import util.dic.DicTime;
 import util.gui.misc.GBox;
+import util.gui.misc.GMeter;
 import util.gui.misc.GStat;
 import util.gui.misc.GText;
 import util.gui.table.GStaples;
 import util.info.GFORMAT;
 import view.ui.goods.UIGoodsExport;
 import view.ui.goods.UIGoodsImport;
+import world.region.RD;
 
 final class RRow extends GuiSection {
 
@@ -44,7 +48,9 @@ final class RRow extends GuiSection {
 	private static CharSequence ¤¤Lowest = "Lowest";
 	private static CharSequence ¤¤Highest = "Highest";
 	private static CharSequence ¤¤Unit = "Unit";
-	
+	private static CharSequence ¤¤CapacityN = "¤Trade Capacity";
+	private static CharSequence ¤¤CapacityNDesc = "¤The combined trade capacity of your trade partners, and how much that you have currently traded. Once the capacity is exceeded, the factions will add expensive tariffs to your trade to protect their economies.";
+
 	static {
 		D.ts(RRow.class);
 	}
@@ -64,8 +70,8 @@ final class RRow extends GuiSection {
 		};
 		
 		addRelBody(0, DIR.E, dias[0]);
-		
-		
+
+		addRelBody(0, DIR.E, new Caps());
 		
 		
 		addRelBody(12, DIR.E, dias[1]);
@@ -248,6 +254,64 @@ final class RRow extends GuiSection {
 				c.set(GCOLOR.UI().GOOD.normal);
 			
 		}
+	}
+	private class Caps extends HoverableAbs {
+
+		Caps(){
+			super(32, height);
+		}
+
+		@Override
+		protected void render(SPRITE_RENDERER r, float ds, boolean isHovered) {
+			double has = 0;
+			double tot = 0;
+			for (FactionNPC f : RD.DIST().neighs()) {
+				if (DIP.get(f).trades) {
+					tot += f.stockpile.playerTradeLimit(res);
+					has += Math.abs(f.stockpile.playerTraded(res));
+				}
+			}
+			if (tot == 0) {
+				GMeter.renderH(r, GMeter.C_ORANGE, 0, body());
+
+			}else {
+				GMeter.renderH(r, GMeter.C_ORANGE, has/tot, body);
+
+			}
+		}
+
+		@Override
+		public void hoverInfoGet(GUI_BOX text) {
+			// TODO Auto-generated method stub
+			super.hoverInfoGet(text);
+
+			GBox b = (GBox) text;
+			text.title(¤¤CapacityN);
+			text.text(¤¤CapacityNDesc);
+			text.NL(8);
+
+			double has = 0;
+			double tot = 0;
+			for (FactionNPC f : RD.DIST().neighs()) {
+				if (DIP.get(f).trades) {
+					int t = (int) f.stockpile.playerTradeLimit(res);
+					int h = (int) Math.abs(f.stockpile.playerTraded(res));
+					tot += t;
+					has += h;
+					b.add(f.banner().MEDIUM);
+					b.textL(f.name);
+					b.tab(7);
+					b.add(GFORMAT.iofk(b.text(), h, t));
+					b.NL();
+				}
+			}
+
+			b.textLL(Dic.¤¤Total);
+			b.tab(7);
+			b.add(GFORMAT.iofk(b.text(), (int)has, (int)tot));
+			b.NL();
+		}
+
 	}
 
 }

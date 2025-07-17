@@ -1,0 +1,6 @@
+2025-03-30 19:46
+snake2d.Errors$DataError: The file or directory does not exist. Try to reinstall the game. path: C:\Users\Emi\IdeaProjects\Extra Info - V68\base
+	at init.paths.Util.checkHard(Util.java:104)
+	at init.paths.PATHS.<init>(PATHS.java:76)
+	at init.paths.PATHS.init(PATHS.java:241)
+	at init.Main.main(Main.java:51)

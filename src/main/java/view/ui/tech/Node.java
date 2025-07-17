@@ -1,12 +1,17 @@
 package view.ui.tech;
 
+import game.boosting.BUtil;
 import game.boosting.BoostSpec;
+import game.boosting.Boostable;
 import game.faction.FACTIONS;
 import game.faction.player.PTech;
+import game.values.Lock;
 import init.sprite.UI.UI;
 import init.tech.TECH;
 import init.tech.TECH.TechRequirement;
+import init.tech.TECHS;
 import init.tech.TechCost;
+import init.tech.TechCurrency;
 import init.text.D;
 import init.type.POP_CL;
 import settlement.main.SETT;
@@ -16,7 +21,9 @@ import snake2d.SPRITE_RENDERER;
 import snake2d.util.color.COLOR;
 import snake2d.util.color.ColorImp;
 import snake2d.util.color.OPACITY;
+import snake2d.util.datatypes.BODY;
 import snake2d.util.datatypes.COORDINATE;
+import snake2d.util.datatypes.DIR;
 import snake2d.util.gui.GUI_BOX;
 import snake2d.util.gui.clickable.CLICKABLE.ClickableAbs;
 import snake2d.util.sets.ArrayList;
@@ -32,6 +39,8 @@ import util.gui.misc.GText;
 import util.info.GFORMAT;
 import view.keyboard.KEYS;
 import view.main.VIEW;
+import view.ui.tech.NodeBoosts.tEntry;
+import view.ui.tech.NodeBoosts.upEntry;
 
 final class Node extends ClickableAbs {
 	/////////////////////////////////////////////////////////////////////////////////////////////////
@@ -39,44 +48,61 @@ final class Node extends ClickableAbs {
 	///#!# Changes the color when they hover over it, but IDK why it won't update otherwise.
 	////////////////////////////////////////////////////////////////////////////////////////////////
 	public final static int WIDTH = 92;
-	public final static int HEIGHT = 92+12;
+	public final static int HE2IGHT = 92+12;
 	private static final COLOR Cdormant = COLOR.WHITE100.shade(0.3);
 	private static final COLOR Chovered = COLOR.WHITE100.shade(0.8);
 	private static final COLOR Cfinished = new ColorImp(10, 120, 120);
-	
-	
+
+
 	private static CharSequence ¤¤Relock = "¤Hold {0} and click to disable this technology. The following points will be added to your frozen pool:";
 	private static CharSequence ¤¤unlocked = "Unlocked";
 	private static CharSequence ¤¤available = "Available";
 	private static CharSequence ¤¤locked = "Locked by Requirements";
 	private static CharSequence ¤¤afford = "Unable to Afford";
-	private static CharSequence ¤¤workValue = "The current work value of this tech is {0}. The work value is an estimate of the gain in output you'll receive, divided by the current bonus or the industry, and the cost of the technology.";
-	
-	private static LIST<COLOR> cols = new ArrayList<COLOR>(
-			new ColorImp(50, 255, 50).shade(0.5),
-			new ColorImp(50, 50, 255).shade(0.5),
-			new ColorImp(50, 255, 255).shade(0.5),
-			new ColorImp(255, 50, 50).shade(0.5),
-			new ColorImp(255, 50, 255).shade(0.5)
-			);
-	
+	private static CharSequence ¤¤workValue = "Unlocking this tech will result in {0} more workers in the affected industries ({1} divided by the tech cost). If it costs more workers to cover the cost of the tech, it might not be a good idea to unlock it.";
+
+	final static LIST<COLOR> cols = new ArrayList<COLOR>(
+		new ColorImp(50, 255, 50).shade(0.5),
+		new ColorImp(50, 255, 255).shade(0.5),
+		new ColorImp(255, 255, 50).shade(0.5),
+		new ColorImp(255, 50, 255).shade(0.5)
+	);
+
+	final static LIST<DIR> dirs = new ArrayList<DIR>(
+		DIR.SW,
+		DIR.SE,
+		DIR.NW,
+		DIR.NE,
+		DIR.S,
+		DIR.E,
+		DIR.N,
+		DIR.W
+
+	);
+
 	static {
 		D.ts(Node.class);
 	}
 
 
 
-	private final ArrayListGrower<TupleImp<Edge, Integer>> edges = new ArrayListGrower<>();
+	private final ArrayListGrower<Tuple.TupleImp<Edge, Integer>> edges = new ArrayListGrower<>();
 	private final ArrayListGrower<Node> parents = new ArrayListGrower<>();
 	public int hoverI;
 
 	public final TECH tech;
 
-	Node(TECH tech) {
-		this.tech = tech;
-		body.setDim(WIDTH, HEIGHT);
-		
+	private final NodeBoosts upgradeBoost;
 
+	Node(TECH tech, NodeBoosts upgradeBoost) {
+		this.tech = tech;
+		body.setDim(WIDTH, HEIGHT());
+		this.upgradeBoost = upgradeBoost;
+
+	}
+
+	public static int HEIGHT() {
+		return 92 + 12 + 16*((TECHS.COSTS().size()-1)/2);
 	}
 
 	public void addEdge(Node parent, Edge e, int mm) {
@@ -88,7 +114,7 @@ final class Node extends ClickableAbs {
 			}
 		}
 		edges.add(new TupleImp<Edge, Integer>(e, mm));
-		
+
 	}
 
 	public void hover() {
@@ -99,9 +125,15 @@ final class Node extends ClickableAbs {
 			n.hover();
 		hoverI = VIEW.renI + 1;
 	}
-	
+
 	@Override
 	protected void render(SPRITE_RENDERER r, float ds, boolean isActive, boolean isSelected, boolean isHovered) {
+
+		for (int i = 1; i <= 6; i++) {
+			ColorImp.TMP.interpolate(GCOLOR.UI().bg(), tech.color, 1.0-i/6.0);
+			ColorImp.TMP.renderFrame(r, body, i, 1);
+		}
+
 
 		isHovered |= hoverI == VIEW.renI;
 
@@ -117,7 +149,8 @@ final class Node extends ClickableAbs {
 		COLOR col = tech.Tech_CostBenefit.col(isHovered, tech); // MODIFIED Color change function
 		col.render(r, body,-4);
 		///////////////////////////////////////////////////////////////////////////////// #!#
-		
+
+
 
 		{
 			double levels = tech.levelMax;
@@ -131,29 +164,90 @@ final class Node extends ClickableAbs {
 		}
 
 		GCOLOR.UI().bg(isActive, false, isHovered).render(r, body, -7);
-		
+
 		tech.icon().renderC(r, body.cX(), body.cY()-8);
 		Str.TMP.clear();
-		int cc = 0;
-		int ci = 0;
-		for (TechCost c : tech.costs) {
-			ci = c.cu.index;
-			int l = Math.min(FACTIONS.player().tech.level(tech)+1, tech.levelMax);
-			cc += FACTIONS.player().tech.costLevel(c.amount, tech, l);
+
+		{
+
+			int x = 0;
+			int y = 0;
+
+
+			for (TechCurrency cu : TECHS.COSTS()) {
+
+
+
+				int wi = ((body.width()-16)/2);
+				int cx = body.cX()+(x == 0 ? -1 : 1)*wi/2;
+				int cy = body.y2()-8-16*y-8;
+
+				boolean has = false;
+				for (TechCost c : tech.costs) {
+					if (c.cu == cu) {
+
+						int l = Math.min(FACTIONS.player().tech.level(tech)+1, tech.levelMax);
+						int am = FACTIONS.player().tech.costLevel(c.amount, tech, l);
+						if (am > 0) {
+							Str.TMP.add(am);
+							has = true;
+
+						}
+					}
+
+				}
+
+
+				(has ? OPACITY.O50 : OPACITY.O25).bind();
+				cols.getC(cu.index).render(r, cx-wi/2, cx+wi/2, cy-8, cy+8);
+				OPACITY.unbind();
+
+				if (has) {
+					UI.FONT().S.renderC(r, cx, cy, Str.TMP, 1);
+				}
+
+
+
+				x++;
+				if (x > 1) {
+					x = 0;
+					y++;
+				}
+
+			}
+			OPACITY.unbind();
+
+
 		}
-		Str.TMP.add(cc);
-		cols.getC(ci).bind();
-		UI.FONT().S.renderCX(r, body.cX(), body.y2()-22, Str.TMP, 1);
+
+
+
+//		for (TechCost c : tech.costs) {
+//			int ci = c.cu.index;
+//			int l = Math.min(FACTIONS.player().tech.level(tech)+1, tech.levelMax);
+//			int am = FACTIONS.player().tech.costLevel(c.amount, tech, l);
+//			if (am > 0) {
+//				DIR dd = dirs.getC(ci);
+//				Str.TMP.add(am);
+//				int w = UI.FONT().S.width(Str.TMP);
+//				int dw = (body.width()-16-w)/2;
+//				int dh = (body.height()-16-UI.FONT().S.height())/2;
+//				cols.getC(ci).bind();
+//				UI.FONT().S.renderC(r, body.cX()+dd.x()*dw, body.cY()+dd.y()*dh, Str.TMP, 1);
+//			}
+//		}
+
+//		cols.getC(ci).bind();
+//		UI.FONT().S.renderCX(r, body.cX(), body.y2()-22, Str.TMP, 1);
 		COLOR.unbind();
-		
+
 		if (!isSelected) {
 			if (!FACTIONS.player().tech.canUnlockNext(tech)) {
 				(FACTIONS.player().tech.level(tech) > 0 ? OPACITY.O35 : OPACITY.O66).bind();
-					COLOR.BLACK.render(r, body, 0);
-					OPACITY.unbind();
+				COLOR.BLACK.render(r, body, 0);
+				OPACITY.unbind();
 			}
 		}
-
 
 	}
 
@@ -175,8 +269,8 @@ final class Node extends ClickableAbs {
 		}
 		return false;
 	}
-	
-	
+
+
 
 	@Override
 	public void hoverInfoGet(GUI_BOX text) {
@@ -187,7 +281,7 @@ final class Node extends ClickableAbs {
 
 		if (t.level(tech) == tech.levelMax){
 			b.add(b.text().normalify2().add(¤¤unlocked));
-			
+
 		}else if (!tech.plockable.passes(FACTIONS.player()))
 			b.add(b.text().errorify().add(¤¤locked));
 		else if (!t.canAffordNext(tech))
@@ -198,11 +292,11 @@ final class Node extends ClickableAbs {
 			b.add(b.text().errorify().add(Dic.¤¤Access));
 		}
 		b.NL();
-		
+
 		{
-			
+
 			b.sep();
-			
+
 			if (tech.levelMax == 1) {
 
 			} else {
@@ -211,27 +305,32 @@ final class Node extends ClickableAbs {
 				b.NL(8);
 			}
 
-			
-			b.tab(6);
+
+			b.tab(7);
 			b.textLL(Dic.¤¤Cost);
-			b.tab(9);
+			b.tab(10);
 			b.textLL(Dic.¤¤Allocated);
 			b.NL();
 
 			for (TechCost c : tech.costs) {
 
 				b.add(c.cu.bo.icon);
-				b.textL(c.cu.bo.name);
+				b.textL(c.cu.bo.name, 6);
 
-				b.tab(6);
+				b.tab(7);
+
+
 				int cost = t.costLevelNext(c.amount, tech);
 
-				if (t.currs().get(c.cu.index).available() < cost)
+				if (t.level(tech) >= tech.levelMax) {
+					b.add(b.text().add('-'));
+				}
+				else if (t.currs().get(c.cu.index).available() < cost)
 					b.add(GFORMAT.iBig(b.text(), cost).errorify());
 				else
 					b.add(GFORMAT.iBig(b.text(), cost));
 
-				b.tab(9);
+				b.tab(10);
 				b.add(GFORMAT.iBig(b.text(), t.costTotal(c, tech)));
 
 				b.NL();
@@ -276,28 +375,36 @@ final class Node extends ClickableAbs {
 		}
 		b.NL(8);
 
+
+
 		tech.lockers.hover(text);
+
+
+		boolean totHas = false;
+		double tot = 0;
+		for (Lock<?> l : tech.lockers.all()) {
+			if (upgradeBoost.upgradeBoost.containsKey(l.lockable.key)) {
+				totHas = true;
+				upEntry am = upgradeBoost.upgradeBoost.get(l.lockable.key);
+				tot += boostValue(am.blue, am.bo, am.value, false);
+			}
+		}
 
 		b.NL(8);
 
 		if (tech.boosters.all().size() > 0) {
 			b.textLL(Dic.¤¤Effects);
-			b.tab(6);
+			b.tab(7);
 			b.textLL(Dic.¤¤Current);
-			b.tab(8);
+			b.tab(9);
 			b.textLL(Dic.¤¤Next);
-			b.tab(10);
-			b.add(UI.icons().s.hammer);
 			b.NL();
-
-			double tot = 0;
-	
 
 			for (BoostSpec bb : tech.boosters.all()) {
 				b.add(bb.boostable.cat.icon);
 				b.add(bb.boostable.icon);
-				b.text(bb.boostable.name);
-				b.tab(6);
+				b.text(bb.boostable.name, 22);
+				b.tab(7);
 				double v = bb.booster.to();
 				if (bb.booster.isMul)
 					v -= 1;
@@ -314,30 +421,37 @@ final class Node extends ClickableAbs {
 					if (bb.booster.isMul)
 						v += 1;
 
-					b.tab(8);
+					b.tab(9);
 					b.add(bb.booster.format(b.text(), v));
-					b.tab(10);
-					tot += boostValue(b, bb);
+
+					double tt = boostValue(bb);
+					if (tt >= 0) {
+						tot += tt;
+						totHas = true;
+					}
 				}
 
 				b.NL();
 			}
-			if ((int)(100*tot) != 0) {
-				
-				
-				b.tab(10);
-				b.add(GFORMAT.f0(b.text(), tot, 1));
-				b.NL();
-				b.add(UI.icons().s.hammer);
-				GText tt = b.text();
-				tt.add(¤¤workValue).insert(0, tot, 2);
-				b.add(tt);
-
-
-
-			}
-			b.NL(8);
+			totHas = true;
+			b.NL(4);
 		}
+
+		if (totHas || tot > 0) {
+			b.sep();
+			b.add(UI.icons().s.hammer);
+			b.add(GFORMAT.f0(b.text(), tot, 1));
+			b.NL();
+			GText tt = b.text();
+			tt.add(¤¤workValue).insert(0, tot, 1);
+			int cost = 0;
+			for (TechCost c : tech.costs)
+				cost += t.costLevelNext(c.amount, tech);
+			tt.insert(1, tot/cost, 2);
+			b.add(tt);
+			b.sep();
+		}
+
 
 		b.NL();
 
@@ -355,7 +469,7 @@ final class Node extends ClickableAbs {
 
 				b.add(c.cu.bo.icon);
 				b.textL(c.cu.bo.name);
-				b.tab(6);
+				b.tab(7);
 				b.add(GFORMAT.iIncr(b.text(), t.costLevel(c.amount, tech, t.level(tech))));
 				b.NL();
 
@@ -367,47 +481,58 @@ final class Node extends ClickableAbs {
 		tech.Tech_CostBenefit.update(tech); // #!# Update tech's Cost Benefits
 		tech.Extra.output(tech, b);
 		/////////////////////////////////////#!#
-
 	}
-	
-	private double boostValue(GBox b, BoostSpec bb) {
-		
+
+	private double boostValue(BoostSpec bb) {
+		tEntry e = upgradeBoost.tools.get(bb.boostable.key);
+		if (e != null) {
+			double max = e.value.maxAm;
+			double am =  e.value.boosts.all().get(0).booster.to()*bb.booster.to()/max;
+
+			return boostValue(e.blue, e.bo, am, false);
+		}
+
+
 		RoomBlueprintImp r = SETT.ROOMS().bonus.get(bb.boostable);
 		if (r == null)
-			return 0;
-		
+			return -1;
+
 		if (!(r instanceof INDUSTRY_HASER))
-			return 0;
-		
+			return -1;
+
 		if (((INDUSTRY_HASER)r).industries().get(0).outs().size() == 0)
-			return 0;
+			return -1;
+
+		double res = boostValue(r, bb.boostable, bb.booster.to(), bb.booster.isMul);
+		return res;
+
+
+	}
+
+	private double boostValue(RoomBlueprintImp r, Boostable bo, double increase, boolean isMul) {
+
+
+
 
 
 		double employees = r.employment().employed();
-		double current = bb.get(POP_CL.clP());
-		
-		
-		PTech t = FACTIONS.player().tech();
-		double cost = 0;
-		for (TechCost c : tech.costs) {
-			cost += t.costLevelNext(c.amount, tech);
+		double current = bo.get(POP_CL.clP());
+		double next = current;
+		if (isMul) {
+			next = BUtil.value(bo.all(), POP_CL.clP(), bo.baseValue, increase, bo.minValue);
+		}else {
+			next = BUtil.value(bo.all(), POP_CL.clP(), bo.baseValue + increase, 1, bo.minValue);
 		}
-		
-		double inc = bb.booster.to();
-		if (bb.booster.isMul)
-			inc -= 1;
-		inc *= t.level(tech) + 1;
-		if (bb.booster.isMul) {
-			inc += 1;
-			inc = current*inc - current;
-		}
-		double dd = employees*inc / (cost*current);
-		
-		b.add(GFORMAT.f(b.text(), dd, 1));
-		return dd;
-		
-		
+
+		double res = employees*(next-current)/current;
+
+
+		return res;
+
+
 	}
+
+
 
 	@Override
 	protected void clickA() {

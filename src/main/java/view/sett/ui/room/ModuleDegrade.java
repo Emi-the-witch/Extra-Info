@@ -3,6 +3,7 @@ package view.sett.ui.room;
 import game.faction.FACTIONS;
 import game.time.TIME;
 import init.resources.RESOURCE;
+import init.settings.S;
 import init.sprite.SPRITES;
 import init.sprite.UI.UI;
 import init.text.D;
@@ -29,7 +30,6 @@ final class ModuleDegrade implements ModuleMaker {
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	///#!# Building Maintenance now includes the denari value for the annual maintenance estimate
 	////////////////////////////////////////////////////////////////////////////////////////////////
-
 	private final CharSequence ¤¤DEGRADE_AVE = "¤Average degradation amongst these rooms. Degradation affects a room negatively.";
 
 	private final CharSequence ¤¤RoomType = "¤Room Type";
@@ -158,7 +158,14 @@ final class ModuleDegrade implements ModuleMaker {
 					
 					b.title(Dic.¤¤Degrade);
 					b.text(Dic.¤¤DegradeDesc);
+					b.NL();
+					b.textLL(Dic.¤¤Current);
+					b.tab(6);
+					b.add(GFORMAT.percInv(b.text(), get.get().getDegrade()));
 					
+					if (S.get().developer) {
+						b.add(GFORMAT.f(b.text(), get.get().degrader(get.get().mX(), get.get().mX()).getSecret(), 4));
+					}
 					b.sep();
 					b.NL(8);
 					
@@ -211,7 +218,7 @@ final class ModuleDegrade implements ModuleMaker {
 					b.tab(6);
 					b.add(GFORMAT.f(b.text(), tot, 2));
 
-/////////////////////////////////////////////////////////#!#
+					/////////////////////////////////////////////////////////#!#
 					// Maintenance costs in denars!
 					b.sep();
 					b.textLL("Annual maintenance cost in denars if imported:");
@@ -237,8 +244,6 @@ final class ModuleDegrade implements ModuleMaker {
 					b.sep();
 					b.NL(8);
 /////////////////////////////////////////////////////////#!#
-
-
 				}
 				
 			

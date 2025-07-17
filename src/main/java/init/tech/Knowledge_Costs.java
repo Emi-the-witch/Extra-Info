@@ -76,6 +76,7 @@ public class Knowledge_Costs {
                                                 for (int ri = 0; ri < s.industry().ins().size(); ri++) {
                                                         Industry.IndustryResource i = s.industry().ins().get(ri);
                                                         double n = i.dayPrev.get(s);
+                                                        //double n = i.history().get(1); //laboratories didn't use dayPrev??
                                                         double sellFor = FACTIONS.player().trade.pricesBuy.get(i.resource);
                                                         total -= n * sellFor;
                                                 }
