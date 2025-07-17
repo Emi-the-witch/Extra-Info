@@ -1,0 +1,7 @@
+VERSION: "0.4.11",
+GAME_VERSION_MAJOR: 69,
+GAME_VERSION_MINOR: 0,
+NAME: "Extra Info",
+DESC: "Adds multiple UI changes to give more decision-making information.",
+AUTHOR: "EmiTheWitch and Mialbowy",
+INFO: "",
