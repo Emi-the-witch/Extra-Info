@@ -5,7 +5,7 @@
     <classpathModifications>
       <entry path="C:\Backup\Project Fun\Songs of Syx\V69\base\script\001_Tutorial.jar" />
       <entry path="C:\Backup\Project Fun\Songs of Syx\V69\base\script\000_Tutorial.jar" />
-      <entry path="C:\Backup\IdeaProjects\Extra Info - V69\target\out\Extra Info\V69\script\Extra Info.jar" />
+      <entry path="$PROJECT_DIR$/target/Extra Info.jar" />
     </classpathModifications>
     <option name="MAIN_CLASS_NAME" value="init.MainProcess" />
     <module name="extra.info" />
