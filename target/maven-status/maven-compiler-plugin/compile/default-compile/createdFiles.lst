@@ -20,6 +20,7 @@ view\sett\ui\standing\CatPopulation$7.class
 view\sett\ui\room\ModuleUpgradable$I.class
 view\ui\manage\IManager$5.class
 view\ui\goods\UIProduction.class
+view\ui\goods\UIModSettings.class
 init\sprite\UI\CustomIcons$CS.class
 view\sett\ui\room\ModuleIndustry$9.class
 view\sett\ui\standing\CatPopulation$4.class
@@ -129,6 +130,7 @@ view\ui\goods\UIMaintenance.class
 view\sett\ui\room\ModuleIndustry$3.class
 view\ui\economy\UITreasury$3.class
 view\sett\ui\standing\CatPopulation$8.class
+view\ui\goods\UIModSettings$1.class
 view\ui\goods\UIMaintenance$MaintRow.class
 view\ui\manage\IManager$1.class
 init\sprite\UI\CustomIcons$CL.class

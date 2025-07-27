@@ -51,6 +51,7 @@ public final class IManager {
 	private final UIMaintenance all_maintenance;
 	private final UIExpenses all_expenses;
 	private final UIProduction all_production;
+	private final UIModSettings mod_settings;
 	private double[] speed = new double[50];
 	////////////////////////////
 
@@ -85,6 +86,9 @@ public final class IManager {
 
 		all_production = new UIProduction();
 		all.add(all_production);
+
+		mod_settings = new UIModSettings();
+		all.add(mod_settings);
 		////////////////////////////
 		for (IFullView w : all) {
 			
