@@ -22,7 +22,7 @@ public final class GameSpeed {
 	public final int speed1 = 1;
 	public final int speed2 = 15;
 	public final int speed3 = 25;
-	public final int speed4 = 10000;
+	public final int speed4 = 250;
 	
 	GameSpeed(){
 		

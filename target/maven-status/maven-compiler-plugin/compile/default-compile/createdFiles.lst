@@ -1,3 +1,4 @@
+settlement\room\food\orchard\ROOM_ORCHARD$Time.class
 settlement\room\food\farm\FarmInstance$1.class
 settlement\room\food\orchard\Gui$1.class
 view\sett\ToolDefault.class
@@ -16,6 +17,7 @@ settlement\room\food\farm\Gui$13.class
 view\sett\ui\room\ModuleIndustry$10.class
 settlement\room\food\farm\Gui$7.class
 view\ui\goods\UIMaintenance$ResData.class
+settlement\room\food\orchard\Gui$10.class
 view\ui\economy\UITreasury$6.class
 game\save\GameSaver.class
 view\ui\goods\UIRecipes.class
@@ -25,6 +27,7 @@ view\sett\ui\room\ModuleUpgradable$I.class
 view\ui\manage\IManager$5.class
 view\ui\goods\UIProduction.class
 view\ui\goods\UIModSettings.class
+settlement\room\food\orchard\Gui$13.class
 init\sprite\UI\CustomIcons$CS.class
 view\sett\ui\room\ModuleIndustry$9.class
 view\sett\ui\standing\CatPopulation$4.class
@@ -67,10 +70,12 @@ view\ui\goods\UIExpenses.class
 view\sett\ui\room\ModuleDegrade$I$2.class
 game\tourism\Review.class
 init\sprite\UI\UI.class
+settlement\room\food\orchard\ROOM_ORCHARD.class
 view\sett\ui\subject\UIHoverer.class
 settlement\room\food\farm\Gui$17.class
 view\ui\goods\UIProduction$1.class
 view\ui\goods\UIValues.class
+settlement\room\food\orchard\Instance.class
 settlement\room\food\orchard\Gui$Cache.class
 view\ui\economy\RRow$Caps.class
 settlement\room\food\orchard\Gui$7.class
@@ -85,6 +90,7 @@ view\ui\economy\UITreasury$5.class
 view\sett\ui\room\ModuleIndustry$I$8.class
 view\ui\manage\IManager$11.class
 view\sett\ui\room\ModuleDegrade$I$1.class
+settlement\room\food\orchard\Gui$8.class
 view\sett\ui\room\ModuleDegrade$Hover.class
 view\sett\ui\standing\CatPopulation$10.class
 view\ui\economy\RRow$TradeDiagram$1.class
@@ -99,6 +105,7 @@ view\sett\ui\room\ModuleConstructor.class
 view\sett\ui\room\ModuleIndustry$8.class
 view\ui\manage\IManager$6.class
 settlement\room\food\farm\Util.class
+settlement\room\food\orchard\Gui$12.class
 view\sett\ui\room\ModuleIndustry$2.class
 view\sett\ui\room\ModuleIndustry$I$7.class
 game\GameSpeed.class
@@ -128,14 +135,17 @@ settlement\room\food\orchard\Gui$5.class
 settlement\room\food\farm\Gui$3.class
 view\ui\economy\RRow.class
 settlement\room\food\farm\Gui.class
+settlement\room\food\orchard\ROOM_ORCHARD$1.class
 view\sett\ui\room\ModuleIndustry$I$10.class
 view\sett\ui\room\ModuleUpgradable.class
 settlement\room\food\farm\Gui$8.class
 view\ui\goods\UIIndustries.class
 settlement\room\food\farm\Gui$1.class
 settlement\room\food\orchard\Gui$3.class
+settlement\room\food\orchard\Instance$1.class
 view\sett\ui\room\ModuleIndustry$I$6.class
 view\ui\goods\UIMaintenance.class
+settlement\room\food\orchard\Gui$11.class
 view\sett\ui\room\ModuleIndustry$3.class
 view\ui\economy\UITreasury$3.class
 view\sett\ui\standing\CatPopulation$8.class
@@ -148,12 +158,14 @@ settlement\room\food\farm\Gui$15.class
 view\sett\ui\room\CanalCounter.class
 view\ui\manage\IManager$8.class
 view\sett\ui\room\ModuleDegrade$I.class
+settlement\room\food\orchard\Gui$9.class
 view\sett\ui\room\ModuleIndustry.class
 view\sett\ui\standing\CatPopulation$12.class
 settlement\room\food\farm\Gui$2.class
 view\sett\ui\room\ModuleIndustry$I$5.class
 view\sett\ui\standing\CatPopulation$2.class
 init\tech\CostBenefit.class
+settlement\room\food\orchard\ROOM_ORCHARD$2.class
 view\ui\goods\UIMaintenance$BuildingMaint.class
 view\ui\goods\UIMaintenance$1.class
 settlement\room\infra\embassy\EmbassyInstance$Res.class
