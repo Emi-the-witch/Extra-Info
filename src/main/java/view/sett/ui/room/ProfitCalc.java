@@ -7,11 +7,18 @@ import settlement.main.SETT;
 import settlement.maintenance.ROOM_DEGRADER;
 import settlement.room.industry.module.Industry;
 import settlement.room.industry.module.ROOM_PRODUCER;
+import settlement.room.food.farm.FarmInstance;
 import settlement.room.industry.module.RoomProduction;
 import settlement.room.main.RoomInstance;
 import settlement.room.main.employment.RoomEmploymentIns;
 import settlement.room.main.employment.RoomEmploymentSimple;
 import settlement.room.main.employment.RoomEquip;
+import settlement.room.main.util.RoomInit;
+import snake2d.Renderer;
+import snake2d.util.datatypes.COORDINATE;
+import util.rendering.RenderData.RenderIterator;
+import util.rendering.ShadowBatch;
+import settlement.room.food.farm.Util;
 import util.data.GETTER;
 
 import static java.lang.Math.max;
@@ -152,6 +159,84 @@ public class ProfitCalc {
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////#!#
+        public static void refresh2(GETTER<FarmInstance> getter, Industry.IndustryResource i){
+                //ROOM_PRODUCER p = ((ROOM_PRODUCER) g((RoomInstance)getter));
+                FarmInstance ins = getter.get();
+                double amountProduced = Util.prevHarvest(ins);
+                //prevHarvest is last year's harvest
+                //prospect is the estimate.
+                //////////////////////////////////////////////////////////////////////
+                // "Revenue" or "Money saved" / value added
+                revenue =0;  // Revenue "for trade"
+                saved =0;    // Revenue "for self"
+                weighted_average= 0; // Revenue depending on actual consumption
+
+//                for(int ri = 0; ri<p.industry().outs().size();ri++){
+//                        Industry.IndustryResource i = p.industry().outs().get(ri);
+//                        double n = i.dayPrev.get(p);
+                double n = amountProduced / 16;
+
+                double sellFor = FACTIONS.player().trade.pricesSell.get(i.resource);
+                revenue += n * sellFor;
+
+                double sellFor2 = FACTIONS.player().trade.pricesBuy.get(i.resource);
+                saved += n * sellFor2;
+
+                consumed = 0;
+                produced = 0;
+                // consumed / produced = quantities of the resource for *this* resource
+                // tot_consumed / tot_produced = total of resource quantities and average value of the resource
+                for (RoomProduction.Source rr : SETT.ROOMS().PROD.consumers(i.resource)) {
+                        consumed += rr.am();
+                }
+                for (RoomProduction.Source rr : SETT.ROOMS().PROD.producers(i.resource)) {
+                        produced += rr.am();
+                }
+
+                // Price of goods based on amount for self or sale
+                weighted_average +=
+                        // Percent for self
+                        (  min((consumed/produced),1)) * n * sellFor2 +
+                                // Percent for sale
+                                (1 - min((consumed/produced),1)) * n * sellFor;
+
+//                }
+
+                //////////////////////////////////////////////////////////////////////
+                // Tools cost!
+                tools =0; // Tools costs
+                if(ins.blueprint().employment() !=null){
+
+                        RoomEmploymentSimple ee = ins.blueprint().employment();
+                        RoomEmploymentIns e = ins.employees();
+
+                        for (RoomEquip w : ee.tools()) {
+                                double m = w.degradePerDay * e.tools(w);
+                                double toolSellFor = FACTIONS.player().trade.pricesBuy.get(w.resource);
+                                tools -= m * toolSellFor;
+                        }
+                }
+
+                //////////////////////////////////////////////////////////////////////
+                // Total Profit
+                profit1 = revenue          + inputs + tools + maintenance;
+                profit2 = saved            + inputs + tools + maintenance;
+                profit3 = weighted_average + inputs + tools + maintenance;
+                // weighted average revenue = A * saved + (1-A) * revenue
+                // Where A is the percent used for self and 1-A is percent used for sale
+                //		AVG = A * saved + (1-A) * revenue
+                //		AVG = A * saved + revenue - A * revenue
+                //		AVG - revenue = A * saved - A * revenue
+                //		(AVG - revenue) = A * ( saved - revenue)
+                //		(AVG - revenue) /  ( saved - revenue) = A
+
+                percent_for_self =  (weighted_average - revenue) / (saved - revenue);
+                RoomEmploymentIns e = ins.employees();
+                double employedBLD = max(1, e.employed());
+                ppp1 = profit1 / employedBLD;
+                ppp2 = profit2 / employedBLD;
+                ppp3 = profit3 / employedBLD;
+        }
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////#!#
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////#!#
 }

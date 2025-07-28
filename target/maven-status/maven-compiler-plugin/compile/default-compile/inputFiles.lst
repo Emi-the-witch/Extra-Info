@@ -6,7 +6,9 @@ C:\Backup\IdeaProjects\Extra Info - V69\src\main\java\init\sprite\UI\UI.java
 C:\Backup\IdeaProjects\Extra Info - V69\src\main\java\init\tech\CostBenefit.java
 C:\Backup\IdeaProjects\Extra Info - V69\src\main\java\init\tech\Knowledge_Costs.java
 C:\Backup\IdeaProjects\Extra Info - V69\src\main\java\init\tech\TECH.java
+C:\Backup\IdeaProjects\Extra Info - V69\src\main\java\settlement\room\food\farm\FarmInstance.java
 C:\Backup\IdeaProjects\Extra Info - V69\src\main\java\settlement\room\food\farm\Gui.java
+C:\Backup\IdeaProjects\Extra Info - V69\src\main\java\settlement\room\food\farm\Util.java
 C:\Backup\IdeaProjects\Extra Info - V69\src\main\java\settlement\room\food\orchard\Gui.java
 C:\Backup\IdeaProjects\Extra Info - V69\src\main\java\settlement\room\infra\embassy\EmbassyInstance.java
 C:\Backup\IdeaProjects\Extra Info - V69\src\main\java\settlement\room\knowledge\laboratory\LaboratoryInstance.java
@@ -18,6 +20,7 @@ C:\Backup\IdeaProjects\Extra Info - V69\src\main\java\view\sett\ui\room\ModuleDe
 C:\Backup\IdeaProjects\Extra Info - V69\src\main\java\view\sett\ui\room\ModuleIndustry.java
 C:\Backup\IdeaProjects\Extra Info - V69\src\main\java\view\sett\ui\room\ModuleUpgradable.java
 C:\Backup\IdeaProjects\Extra Info - V69\src\main\java\view\sett\ui\room\ProfitCalc.java
+C:\Backup\IdeaProjects\Extra Info - V69\src\main\java\view\sett\ui\room\UIRoomModule.java
 C:\Backup\IdeaProjects\Extra Info - V69\src\main\java\view\sett\ui\standing\CatPopulation.java
 C:\Backup\IdeaProjects\Extra Info - V69\src\main\java\view\sett\ui\subject\UIHoverer.java
 C:\Backup\IdeaProjects\Extra Info - V69\src\main\java\view\ui\economy\RRow.java

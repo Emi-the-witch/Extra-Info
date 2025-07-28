@@ -11,6 +11,7 @@ import settlement.room.main.RoomInstance;
 import snake2d.util.datatypes.DIR;
 import snake2d.util.gui.GUI_BOX;
 import snake2d.util.gui.GuiSection;
+import snake2d.util.gui.Hoverable.HOVERABLE;
 import snake2d.util.gui.clickable.CLICKABLE;
 import snake2d.util.gui.renderable.RENDEROBJ;
 import snake2d.util.misc.ACTION;
@@ -27,6 +28,9 @@ import util.info.GFORMAT;
 import view.main.VIEW;
 import view.sett.ui.room.UIRoomBulkApplier;
 import view.sett.ui.room.UIRoomModule.UIRoomModuleImp;
+
+import static view.sett.ui.room.ProfitCalc.*;
+import static view.sett.ui.room.ProfitCalc.ppp3;
 
 class Gui extends UIRoomModuleImp<FarmInstance, ROOM_FARM> {
 
@@ -48,7 +52,11 @@ class Gui extends UIRoomModuleImp<FarmInstance, ROOM_FARM> {
 	private static CharSequence ¤¤cycle = "¤Cycle";
 	private static CharSequence ¤¤reseed = "¤reseed";
 	private static CharSequence ¤¤reseedD = "¤Reseed the farm with another crop. New farm must still be constructed.";
-	
+	//////////////////////////#!#/
+	private static CharSequence Profit1 = "Yesterday's Profit";
+	private static CharSequence Profit2 = "Yesterday's Value added";
+	private static CharSequence Profit3 = "Profit per person";
+	/////////////////////////////////
 	static {
 		D.ts(Gui.class);
 	}
@@ -230,6 +238,163 @@ class Gui extends UIRoomModuleImp<FarmInstance, ROOM_FARM> {
 //		s.add()
 
 
+		// #!# Add profit panel1
+		{
+			GuiSection all = new GuiSection() {
+				public void hoverInfoGet(GUI_BOX text) {
+					GBox b = (GBox) text;
+					refresh2(getter, blueprint.industries().get(0).outs().get(0));
+
+					b.textLL("Profit from buying inputs and selling outputs");
+					b.NL();
+					b.add(GFORMAT.text(b.text(), "Revenue"));
+					b.tab(7);
+					b.add(GFORMAT.iIncr(b.text(), (long) revenue));
+					b.NL();
+
+					b.add(GFORMAT.text(b.text(), "Input costs"));
+					b.tab(7);
+					b.add(GFORMAT.iIncr(b.text(), (long) inputs));
+					b.NL();
+
+					b.add(GFORMAT.text(b.text(), "Maintenance"));
+					b.tab(7);
+					b.add(GFORMAT.iIncr(b.text(), (long) maintenance));
+					b.NL();
+
+					b.add(GFORMAT.text(b.text(), "Tools"));
+					b.tab(7);
+					b.add(GFORMAT.iIncr(b.text(), (long) tools));
+					b.NL();
+
+					b.add(GFORMAT.text(b.text(), "Profit"));
+					b.tab(7);
+					b.add(GFORMAT.iIncr(b.text(), (long) profit1));
+					b.NL();
+
+					b.add(GFORMAT.text(b.text(), "Profit per employee"));
+					b.tab(7);
+					b.add(GFORMAT.iIncr(b.text(), (long) ppp1));
+					b.NL();
+				}
+			};
+			{
+				RENDEROBJ s1 = profit1_display(getter);
+				all.addDownC(2, s1);
+			}
+			all.addRelBody(2, DIR.N, new GHeader(Profit1));
+
+			section.addRelBody(4, DIR.S, all);
+		}
+		// #!# Add profit panel 2
+		{
+			GuiSection all = new GuiSection(){
+				/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+				public void hoverInfoGet(GUI_BOX text) {
+					GBox b = (GBox) text;
+					refresh2(getter, blueprint.industries().get(0).outs().get(0));
+
+					b.textLL("Value added by making things for yourself");
+					b.NL();
+
+					b.add(GFORMAT.text(b.text(), "Denari saved by not importing"));
+					b.tab(7);
+					b.add(GFORMAT.iIncr(b.text(), (long) saved));
+					b.NL();
+
+					b.add(GFORMAT.text(b.text(), "Input costs"));
+					b.tab(7);
+					b.add(GFORMAT.iIncr(b.text(), (long) inputs));
+					b.NL();
+
+					b.add(GFORMAT.text(b.text(), "Maintenance"));
+					b.tab(7);
+					b.add(GFORMAT.iIncr(b.text(), (long) maintenance));
+					b.NL();
+
+					b.add(GFORMAT.text(b.text(), "Tools"));
+					b.tab(7);
+					b.add(GFORMAT.iIncr(b.text(), (long) tools));
+					b.NL();
+
+					b.add(GFORMAT.text(b.text(), "Value Added"));
+					b.tab(7);
+					b.add(GFORMAT.iIncr(b.text(), (long) profit2));
+					b.NL();
+
+					b.add(GFORMAT.text(b.text(), "Profit per employee"));
+					b.tab(7);
+					b.add(GFORMAT.iIncr(b.text(), (long) ppp2));
+					b.NL();
+				}
+			};
+			{
+				RENDEROBJ s2 = profit2_display(getter);
+				all.addDownC(2, s2);
+			}
+			all.addRelBody(2, DIR.N, new GHeader(Profit2));
+
+			section.addRelBody(4, DIR.S, all);
+		}
+
+		// #!# Add profit panel 3
+		{
+			GuiSection all = new GuiSection(){
+				/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+				public void hoverInfoGet(GUI_BOX text) {
+					GBox b = (GBox) text;
+					refresh2(getter, blueprint.industries().get(0).outs().get(0));
+
+					b.textLL("Estimate of actual profit based on 'for self' and 'for sale' weighted average." );
+					b.NL();
+					b.textLL("Assumes you trade for everything this industry doesn't make!");
+					b.NL();
+
+					b.add(GFORMAT.text(b.text(), "Percent of value used for self."));
+					b.tab(7);
+					b.add(GFORMAT.text(b.text(), (int) (percent_for_self*100)+ "%"));
+					b.NL();
+
+					b.add(GFORMAT.text(b.text(), "Weighted average revenue"));
+					b.tab(7);
+					b.add(GFORMAT.iIncr(b.text(), (long) weighted_average));
+					b.NL();
+
+					b.add(GFORMAT.text(b.text(), "Input costs"));
+					b.tab(7);
+					b.add(GFORMAT.iIncr(b.text(), (long) inputs));
+					b.NL();
+
+					b.add(GFORMAT.text(b.text(), "Maintenance"));
+					b.tab(7);
+					b.add(GFORMAT.iIncr(b.text(), (long) maintenance));
+					b.NL();
+
+					b.add(GFORMAT.text(b.text(), "Tools"));
+					b.tab(7);
+					b.add(GFORMAT.iIncr(b.text(), (long) tools));
+					b.NL();
+
+					b.add(GFORMAT.text(b.text(), "Estimated profit"));
+					b.tab(7);
+					b.add(GFORMAT.iIncr(b.text(), (long) profit3));
+					b.NL();
+
+					b.add(GFORMAT.text(b.text(), "Profit per employee"));
+					b.tab(7);
+					b.add(GFORMAT.iIncr(b.text(), (long) ppp3));
+					b.NL();
+				}
+			};
+			{
+				RENDEROBJ s3 = profit3_display(getter);
+				all.addDownC(2, s3);
+			}
+			all.addRelBody(2, DIR.N, new GHeader(Profit3));
+
+			section.addRelBody(4, DIR.S, all);
+		}
+		// End of profit panel
 
 
 
@@ -375,6 +540,62 @@ class Gui extends UIRoomModuleImp<FarmInstance, ROOM_FARM> {
 	protected void appendTableFilters(LISTE<GTFilter<RoomInstance>> filters, LISTE<GTSort<RoomInstance>> sorts,
 			LISTE<UIRoomBulkApplier> appliers) {
 	}
+	//	/////////////////////////////////////////////#!# Profit calculation's output revenue in terms of selling
+	private RENDEROBJ profit1_display(GETTER<FarmInstance> get) {
+		GuiSection s = new GuiSection();
 
+
+		HOVERABLE h = new GStat() {
+
+			@Override
+			public void update(GText text) {
+				refresh2(get, blueprint.industries().get(0).outs().get(0));
+				GFORMAT.iIncr(text, (int) profit1);
+			}
+		}.r();
+
+		s.addRightC(6, h);
+		s.body().incrW(48);
+		s.pad(4);
+		return s;
+	}
+	//	/////////////////////////////////////////////#!# Profit calculation's output revenue in terms of using it for yourself
+	private RENDEROBJ profit2_display(GETTER<FarmInstance> get) {
+		GuiSection s = new GuiSection();
+
+
+		HOVERABLE h = new GStat() {
+
+			@Override
+			public void update(GText text) {
+				refresh2(get, blueprint.industries().get(0).outs().get(0));
+				GFORMAT.iIncr(text, (int) profit2);
+			}
+		}.r();
+
+		s.addRightC(6, h);
+		s.body().incrW(48);
+		s.pad(4);
+		return s;
+	}
+	//	/////////////////////////////////////////////#!# Profit per person weighed average on for sale vs for self
+	private RENDEROBJ profit3_display(GETTER<FarmInstance> get) {
+		GuiSection s = new GuiSection();
+
+
+		HOVERABLE h = new GStat() {
+
+			@Override
+			public void update(GText text) {
+				refresh2(get, blueprint.industries().get(0).outs().get(0));
+				GFORMAT.iIncr(text, (int) ppp3);
+			}
+		}.r();
+
+		s.addRightC(6, h);
+		s.body().incrW(48);
+		s.pad(4);
+		return s;
+	}
 
 }

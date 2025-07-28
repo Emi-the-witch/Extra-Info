@@ -1,17 +1,21 @@
 package view.ui.goods;
 
+
 import init.paths.PATHS;
 import init.sprite.UI.UI;
-import snake2d.util.sprite.text.Str;
+import snake2d.util.gui.GuiSection;
+import snake2d.util.gui.renderable.RENDEROBJ;
+import snake2d.util.sets.ArrayListGrower;
 import snake2d.util.sprite.text.StringInputSprite;
 import util.gui.misc.*;
 import view.ui.manage.IFullView;
 import java.util.*;
-import java.util.Map.Entry;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
+import util.gui.table.GScrollRows;
+
 
 public final class UIModSettings extends IFullView {
     private static CharSequence ¤¤Name = "Mod Settings";
@@ -52,40 +56,47 @@ public final class UIModSettings extends IFullView {
         section.body().moveX1(16);
         section.body().setWidth(WIDTH).setHeight(1);
 
-
-        // Display top line messages
-        section.addDown(0, new GText(UI.FONT().H2, "Saves settings automatically, but mods only load values when you load the save game!"));
-
-        GText tableHeader = new GText(UI.FONT().S, "                                                                              ");
-        section.addDown(10, tableHeader);
-
-        // Display each Property File entry value
-        for (Entry entry:PropFile.entrySet()) {
-
-
-            GText keytext = new GText(UI.FONT().M, (String) entry.getKey());
-            section.addDown(10, keytext);
-
-
-            StringInputSprite t = new StringInputSprite(24, UI.FONT().M) {
-
-//                @Override
-//                public Str text() {
-//                    return new Str(24).add((String) entry.getValue());
-//                }
-
-                @Override
-                protected void change() {
-                    String newValue = this.text().toString();
-                    PropFile.setProperty((String) entry.getKey(), newValue);
-                    try{PropFile.store(new FileWriter(String.valueOf(PropPath)), "Extra Info Changed stuff most recently.");}catch(Exception f){return;}
-                    return;
-                }
-
-            };
-            t.set(  (CharSequence)  entry.getValue());
-            GInput in = new GInput(t);
-            section.addDown(10, in);
+        ArrayList<String> keys = new ArrayList<String>();
+        for (Object key : PropFile.keySet()) {
+            keys.add((String) key);
         }
+        Collections.sort(keys);
+
+        ArrayListGrower<RENDEROBJ> rows = new ArrayListGrower<>();
+        for (String entry:keys) {
+            GuiSection row = new GuiSection();
+
+
+
+
+                            GText keytext = new GText(UI.FONT().M, entry);
+                            row.addDown(10, keytext);
+
+
+                            StringInputSprite t = new StringInputSprite(24, UI.FONT().M) {
+
+                                @Override
+                                protected void change() {
+                                    String newValue = this.text().toString();
+                                    PropFile.setProperty(entry, newValue);
+                                    try{PropFile.store(new FileWriter(String.valueOf(PropPath)), "Extra Info Changed stuff most recently.");}catch(Exception f){return;}
+                                    return;
+                                }
+
+                            };
+                            t.set(  PropFile.getProperty(entry));
+                            GInput in = new GInput(t);
+                            row.addDown(10, in);
+            rows.add(row);
+        }
+
+        GScrollRows scrollRows = new GScrollRows(rows, HEIGHT-40);
+        section.addDown(0, new GText(UI.FONT().H2, "Saves instantly. Reload game for mods to update."));
+        section.addDown(0, scrollRows.view());
+
+
+
+
+
     }
 }
