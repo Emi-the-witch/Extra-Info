@@ -40,7 +40,6 @@ init\sprite\UI\CustomIcons$CS$IconS.class
 init\sprite\UI\CustomIcons.class
 view\ui\manage\IManager$2.class
 view\sett\ui\room\ModuleIndustry$I$3.class
-settlement\room\knowledge\laboratory\LaboratoryInstance$Jobs.class
 view\sett\MaintHover.class
 settlement\room\food\farm\Gui$18.class
 view\sett\ToolDefault$1.class
@@ -96,7 +95,6 @@ view\sett\ui\standing\CatPopulation$10.class
 view\ui\economy\RRow$TradeDiagram$1.class
 init\tech\TECH$TechRequirement.class
 view\ui\economy\UITreasury.class
-settlement\room\infra\embassy\EmbassyInstance$Jobs.class
 view\sett\ui\standing\CatPopulation$3.class
 view\sett\ui\room\ModuleDegrade$I$4.class
 view\ui\manage\IManager$9.class
@@ -118,7 +116,6 @@ init\tech\TECH$3.class
 settlement\room\food\farm\Gui$12.class
 view\sett\ui\subject\UIHoverer$2.class
 view\ui\goods\UIExpenses$1.class
-settlement\room\infra\embassy\EmbassyInstance.class
 settlement\room\food\orchard\Gui.class
 init\tech\Knowledge_Costs.class
 view\sett\ui\room\ModuleDegrade.class
@@ -168,12 +165,10 @@ init\tech\CostBenefit.class
 settlement\room\food\orchard\ROOM_ORCHARD$2.class
 view\ui\goods\UIMaintenance$BuildingMaint.class
 view\ui\goods\UIMaintenance$1.class
-settlement\room\infra\embassy\EmbassyInstance$Res.class
 view\sett\ui\room\UIRoomModule.class
 view\sett\ui\standing\CatPopulation.class
 view\ui\goods\UIRecipes$RRow.class
 settlement\room\food\farm\Gui$14.class
-settlement\room\knowledge\laboratory\LaboratoryInstance.class
 view\sett\ui\standing\CatPopulation$11.class
 view\ui\economy\UITreasury$2.class
 view\sett\ui\room\ModuleIndustry$4.class
