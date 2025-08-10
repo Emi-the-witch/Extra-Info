@@ -1,12 +1,12 @@
 package game;
 
+import java.io.IOException;
+
 import settlement.main.SETT;
 import snake2d.util.file.FileGetter;
 import snake2d.util.file.FilePutter;
 import snake2d.util.misc.CLAMP;
 import view.keyboard.KEYS;
-
-import java.io.IOException;
 
 public final class GameSpeed {
 	/////#!# actualSpeed is made public so that IManager can get the speed value.
@@ -20,9 +20,9 @@ public final class GameSpeed {
 	public final int speed0 = 0;
 	public final double speed05 = 0.25;
 	public final int speed1 = 1;
-	public final int speed2 = 15;
+	public final int speed2 = 5;
 	public final int speed3 = 25;
-	public final int speed4 = 250;
+	public final int speed4 = 500;
 	
 	GameSpeed(){
 		

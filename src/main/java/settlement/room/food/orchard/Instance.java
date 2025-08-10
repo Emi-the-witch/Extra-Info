@@ -20,8 +20,8 @@ import util.rendering.RenderData;
 import util.rendering.ShadowBatch;
 
 import static settlement.main.SETT.ROOMS;
-
-final public class Instance extends RoomInstance implements JOBMANAGER_HASER, ROOM_PRODUCER, ANIMAL_ROOM_RUINER {
+///  Make the class public
+public final class Instance extends RoomInstance implements JOBMANAGER_HASER, ROOM_PRODUCER, ANIMAL_ROOM_RUINER {
 
 	private static final long serialVersionUID = 1L;
 	private long[] produceData;

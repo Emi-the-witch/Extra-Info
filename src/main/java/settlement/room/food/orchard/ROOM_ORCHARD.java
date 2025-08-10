@@ -41,6 +41,7 @@ public class ROOM_ORCHARD extends RoomBlueprintIns<Instance> implements INDUSTRY
 	
 	final Constructor constructor;
 	final Industry productionData;
+	// Made Public for GUI
 	public final LIST<Industry> indus;
 	final OTile tile;
 	public final RES_AMOUNT auxRes;

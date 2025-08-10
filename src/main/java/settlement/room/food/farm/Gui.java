@@ -233,7 +233,7 @@ class Gui extends UIRoomModuleImp<FarmInstance, ROOM_FARM> {
 		}.hv(¤¤skill));
 		
 		section.addRelBody(16, DIR.S, s);
-//////////////////////////////////////
+//////////////////////////////////////#!#
 //		s = new GuiSection();
 //		s.add()
 
@@ -540,7 +540,7 @@ class Gui extends UIRoomModuleImp<FarmInstance, ROOM_FARM> {
 	protected void appendTableFilters(LISTE<GTFilter<RoomInstance>> filters, LISTE<GTSort<RoomInstance>> sorts,
 			LISTE<UIRoomBulkApplier> appliers) {
 	}
-	//	/////////////////////////////////////////////#!# Profit calculation's output revenue in terms of selling
+	////////////////////////////////////////////////#!# Profit calculation's output revenue in terms of selling
 	private RENDEROBJ profit1_display(GETTER<FarmInstance> get) {
 		GuiSection s = new GuiSection();
 

@@ -35,6 +35,8 @@ public class Node_Extra{
                 int j = 0;
                 worker_cost   = 0;
                 double material_cost = 0; // non-worker cost, total
+                double production_maint_cost = 0;
+                double production_tools_cost = 0;
                 if (tech.costs == null){return;}
                 if (FACTIONS.player() == null){return;}
                 if (FACTIONS.player().tech == null){return;}
@@ -55,6 +57,11 @@ public class Node_Extra{
 
                         // Total costs per worker for each currency type
                         material_cost += cost_total[c.cu.index];
+
+                        // Cost per worker of the production facility
+                        production_maint_cost = benefit_maint;
+                        production_tools_cost = benefit_tools;
+
                 }
 
 
@@ -70,29 +77,33 @@ public class Node_Extra{
                         b.sep();
                 }
 
-                //////////// Costs display
-                b.NL();
-                if (!error) {
-                        b.add(GFORMAT.f(b.text(), worker_cost, 1));
-                        b.tab(2);
-                        b.add(GFORMAT.text(b.text(), "Cost in workers"));
-                }else{
-                        b.add(GFORMAT.text(b.text(), "Unable to calculate the cost in workers"));
-                }
 
-
-                /////////// Benefits display
-                b.NL();
-                if (tech.Tech_CostBenefit.benefits != 0) {
-                        b.add(GFORMAT.f(b.text(), tech.Tech_CostBenefit.benefits, 1));
-                        b.tab(2);
-                        b.add(GFORMAT.text(b.text(), "Benefit in workers"));
-                }else{
-                        b.add(GFORMAT.text(b.text(), "Unable to calculate the benefits in workers"));
-                }
 
 
                 if (!KEYS.MAIN().UNDO.isPressed()) {
+
+                        //////////// Costs display
+                        b.NL();
+                        if (!error) {
+                                b.add(GFORMAT.f(b.text(), worker_cost, 1));
+                                b.tab(2);
+                                b.add(GFORMAT.text(b.text(), "Cost in workers"));
+                        }else{
+                                b.add(GFORMAT.text(b.text(), "Unable to calculate the cost in workers"));
+                        }
+
+
+                        /////////// Benefits display
+                        b.NL();
+                        if (tech.Tech_CostBenefit.benefits != 0) {
+                                b.add(GFORMAT.f(b.text(), tech.Tech_CostBenefit.benefits, 1));
+                                b.tab(2);
+                                b.add(GFORMAT.text(b.text(), "Benefit in workers"));
+                        }else{
+                                b.add(GFORMAT.text(b.text(), "Unable to calculate the benefits in workers"));
+                        }
+
+
                         b.sep();
                         b.add(GFORMAT.text(new GText(UI.FONT().S, 0), "Press Undo button (shift) for more info or to refresh the calculations"));
                         b.sep();
@@ -104,18 +115,69 @@ public class Node_Extra{
                 if (KEYS.MAIN().UNDO.isPressed()) {
                         /////////
                         b.NL();
+                        b.add(GFORMAT.text(b.text(), " "));
+                        b.NL();
+                        b.add(GFORMAT.text(b.text(), "Summary of benefits of this technology:"));
+
+                        b.NL();   // Production worker - Tech worker
+                        b.add(GFORMAT.f(b.text(), (tech.Tech_CostBenefit.benefits - worker_cost), 1));
+                        b.tab(2);
+                        b.add(GFORMAT.text(b.text(), "Labor benefit"));
+
+                        b.NL();  // Production workers * production costs - tech workers * tech costs
+                        // costs are negative already so we do the inverse.
+                        b.add(GFORMAT.f(b.text(), -( tech.Tech_CostBenefit.benefits * (production_maint_cost+production_tools_cost) - worker_cost * material_cost), 1));
+                        b.tab(2);
+                        b.add(GFORMAT.text(b.text(), "Running costs benefit"));
+
+
+
+
+                        b.NL();
+                        b.add(GFORMAT.text(b.text(), " "));
+                        b.NL();
+                        b.add(GFORMAT.text(b.text(), "Detailed Cost Benefit:"));
+
+                        b.NL();
+                        b.add(GFORMAT.f(b.text(), (worker_cost), 1));
+                        b.tab(2);
+                        b.add(GFORMAT.text(b.text(), "Tech workers cost"));
+
+                        b.NL();
+                        b.add(GFORMAT.f(b.text(), (worker_cost * material_cost), 1));
+                        b.tab(2);
+                        b.add(GFORMAT.text(b.text(), "Tech worker running cost"));
+
+                        b.NL();
+                        b.add(GFORMAT.f(b.text(), (tech.Tech_CostBenefit.benefits), 1));
+                        b.tab(2);
+                        b.add(GFORMAT.text(b.text(), "Production worker benefit"));
+
+                        b.NL();
+                        b.add(GFORMAT.f(b.text(), (tech.Tech_CostBenefit.benefits * (production_maint_cost + production_tools_cost)), 1));
+                        b.tab(2);
+                        b.add(GFORMAT.text(b.text(), "Production maint+tool costs"));
+
+
+
+
+                        b.NL();
+                        b.add(GFORMAT.text(b.text(), " "));
+                        b.NL();
+                        b.add(GFORMAT.text(b.text(), "Per worker costs for this technology"));
+
+                        b.NL();
                         b.add(GFORMAT.f(b.text(), material_cost, 1));
                         b.tab(2);
-                        b.add(GFORMAT.text(b.text(), "Tech upkeep cost per tech worker"));
+                        b.add(GFORMAT.text(b.text(), "Tech worker"));
 
 
                         // sum production workers divided by the sum of workplaces maintenance + tools
-//                        b.NL();
-//                        b.add(GFORMAT.f(b.text(), material_cost_production, 1));
-//                        b.tab(2);
-//                        b.add(GFORMAT.text(b.text(), "Production upkeep cost per production worker"));
+                        b.NL();
+                        b.add(GFORMAT.f(b.text(), production_maint_cost+production_tools_cost, 1));
+                        b.tab(2);
+                        b.add(GFORMAT.text(b.text(), "Production worker"));
                 }
-
         }
         public void output1(TECH tech, GBox b)
         {

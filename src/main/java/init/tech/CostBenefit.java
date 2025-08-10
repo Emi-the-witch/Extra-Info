@@ -1,9 +1,6 @@
 package init.tech;
 
-import game.boosting.BOOSTABLES;
-import game.boosting.BoostSpec;
-import game.boosting.Boostable;
-import game.boosting.Booster;
+import game.boosting.*;
 import game.faction.FACTIONS;
 import game.faction.Faction;
 import game.time.TIME;
@@ -25,6 +22,8 @@ import settlement.stats.STATS;
 import snake2d.util.color.COLOR;
 import snake2d.util.color.ColorImp;
 import view.keyboard.KEYS;
+import view.ui.tech.NodeBoosts;
+
 import java.util.Objects;
 import static game.time.TIME.playedGame;
 import static init.tech.Knowledge_Costs.cost_inputs;
@@ -44,12 +43,13 @@ public class CostBenefit {
         public boolean contains_upgrade = false;
         public double benefit_maint_upgrade = 0;
         public double benefit_maint_before = 0 ;
-        public double benefit_maint = 0;	// Maintenance per worker for the benefitting industries
-        public double benefit_tools = 0; // tool cost per person for benefited industry buildings
+        public static double benefit_maint = 0;	// Maintenance per worker for the benefitting industries
+        public static double benefit_tools = 0; // tool cost per person for benefited industry buildings
         public double benefit_tot = 0; 	// total benefits cost (tools + maint atm) per person
 
         public double costs;      // Overall cost in workers
         public double benefits;   // Overall benefit in workers
+
 
         // Constructor
         public TECH tech;
@@ -143,6 +143,16 @@ public class CostBenefit {
                                         // BOOSTS BENEFITS
                                         double add = 0;
                                         int tot = 0;
+
+                                        // Testing Jake's method instead (boostValue function added)
+//                                        for (Lock<?> l : tech.lockers.all()) {
+//                                                if (upgradeBoost.upgradeBoost.containsKey(l.lockable.key)) {
+//                                                        NodeBoosts.upEntry am = upgradeBoost.upgradeBoost.get(l.lockable.key);
+//                                                        tot += boostValue(am.blue, am.bo, am.value, false);
+//                                                }
+//                                        }
+                                        //
+
 
                                         for (Humanoid person : r.employees().employees()) { // for each person working
                                                 tot++; //adding up the number of employees
@@ -387,6 +397,27 @@ public class CostBenefit {
 
                 return 100 * (1 - v/w);
         }
+        private double boostValue(RoomBlueprintImp r, Boostable bo, double increase, boolean isMul) {
 
+
+
+
+
+                double employees = r.employment().employed();
+                double current = bo.get(POP_CL.clP());
+                double next = current;
+                if (isMul) {
+                        next = BUtil.value(bo.all(), POP_CL.clP(), bo.baseValue, increase, bo.minValue);
+                }else {
+                        next = BUtil.value(bo.all(), POP_CL.clP(), bo.baseValue + increase, 1, bo.minValue);
+                }
+
+                double res = employees*(next-current)/current;
+
+
+                return res;
+
+
+        }
 
 }
