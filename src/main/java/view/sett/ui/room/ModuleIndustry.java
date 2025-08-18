@@ -2,23 +2,35 @@ package view.sett.ui.room;
 
 import java.util.Arrays;
 
+import game.boosting.BOOSTABLES;
 import game.faction.FACTIONS;
 import game.time.TIME;
 import game.time.TIMECYCLE;
+import init.RES;
 import init.resources.RBIT.RBITImp;
 import init.resources.RESOURCE;
 import init.resources.RESOURCES;
 import init.sprite.SPRITES;
 import init.sprite.UI.Icon;
+import init.sprite.UI.UI;
 import init.text.D;
+import settlement.main.SETT;
 import settlement.misc.job.JOBMANAGER_HASER;
 import settlement.misc.util.RESOURCE_TILE;
-import settlement.room.industry.module.*;
+import settlement.overlay.Addable;
+import settlement.room.industry.module.INDUSTRY_HASER;
+import settlement.room.industry.module.Industry;
 import settlement.room.industry.module.Industry.IndustryResource;
+import settlement.room.industry.module.IndustryUtil;
+import settlement.room.industry.module.ROOM_PRODUCER;
 import settlement.room.main.Room;
 import settlement.room.main.RoomBlueprint;
 import settlement.room.main.RoomBlueprintIns;
 import settlement.room.main.RoomInstance;
+import settlement.room.main.employment.RoomEmploymentIns;
+import snake2d.PathTile;
+import snake2d.PathUtilOnline.Flooder;
+import snake2d.Renderer;
 import snake2d.SPRITE_RENDERER;
 import snake2d.util.datatypes.COORDINATE;
 import snake2d.util.datatypes.DIR;
@@ -27,6 +39,7 @@ import snake2d.util.gui.GuiSection;
 import snake2d.util.gui.Hoverable.HOVERABLE;
 import snake2d.util.gui.clickable.CLICKABLE;
 import snake2d.util.gui.renderable.RENDEROBJ;
+import snake2d.util.misc.CLAMP;
 import snake2d.util.sets.LIST;
 import snake2d.util.sets.LISTE;
 import snake2d.util.sets.LinkedList;
@@ -46,17 +59,16 @@ import util.gui.table.GScrollRows;
 import util.gui.table.GTableSorter.GTFilter;
 import util.gui.table.GTableSorter.GTSort;
 import util.info.GFORMAT;
+import util.rendering.RenderData;
+import util.rendering.RenderData.RenderIterator;
 import util.statistics.HISTORY_INT;
 import view.main.VIEW;
 import view.sett.ui.room.Modules.ModuleMaker;
-import view.sett.ui.room.ProfitCalc.*;
 
 import static view.sett.ui.room.ProfitCalc.*;
 
 final class ModuleIndustry implements ModuleMaker {
-	/////////////////////////////////////////////////////////////////////////////////////////////////
-	/// #!# This utilizes ProfitCalc to display the 3 methods of profit.
-	////////////////////////////////////////////////////////////////////////////////////////////////
+
 	private final GChart chart = new GChart();
 	private final boolean[] rCheck = new boolean[RESOURCES.ALL().size()];
 	private final boolean[] rHas = new boolean[RESOURCES.ALL().size()];
@@ -75,14 +87,23 @@ final class ModuleIndustry implements ModuleMaker {
 
 	private static CharSequence ¤¤ConsumedDay = "¤Consumed today";
 	private static CharSequence ¤¤ConsumedNow = "¤Consumed This Year";
+	private static CharSequence ¤¤ConsumedYEsterday = "¤Consumed Yesterday";
 	private static CharSequence ¤¤ConsumedPrevious = "¤Consumed last year";
 
+	private static CharSequence ¤¤FetchWarning = "¤Proximity to raw materials is poor.";
+
 	private static CharSequence ¤¤NoStore = "¤Internal storage is full and production is stalled. Have a warehouse fetch the produce.";
+
 	//////////////////////////#!#/
 	private static CharSequence Profit1 = "Yesterday's Profit";
 	private static CharSequence Profit2 = "Yesterday's Value added";
 	private static CharSequence Profit3 = "Profit per person";
 	/////////////////////////////////
+
+
+
+	private final InputOverlay overlay = new InputOverlay();
+
 	public ModuleIndustry(Init init) {
 		D.t(this);
 
@@ -200,14 +221,16 @@ final class ModuleIndustry implements ModuleMaker {
 							b.add(GFORMAT.i(b.text(), hi.get(1)));
 							b.NL();
 
+							int yearStart = (int) (-TIME.days().bitOfYear()*TIME.years().bitConversion(TIME.years()));
+
 							b.textLL(¤¤ProducedNow);
 							b.tab(7);
-							b.add(GFORMAT.i(b.text(), hi.getPeriodSum(-(int)TIME.years().bitConversion(TIME.days()), 0)));
+							b.add(GFORMAT.i(b.text(), hi.getPeriodSum(yearStart, 0)));
 							b.NL();
 
 							b.textLL(¤¤ProducedPrevious);
 							b.tab(7);
-							b.add(GFORMAT.i(b.text(), hi.getPeriodSum(-(int)TIME.years().bitConversion(TIME.days())*2, -(int)TIME.years().bitConversion(TIME.days()))));
+							b.add(GFORMAT.i(b.text(), hi.getPeriodSum(-yearStart-(int)TIME.years().bitConversion(TIME.days()), -yearStart)));
 							b.NL();
 
 							b.NL(8);
@@ -240,7 +263,7 @@ final class ModuleIndustry implements ModuleMaker {
 
 			if (ress.size() > 0) {
 
-				r.section.add(new GHeader(¤¤Consumption), r.section.body().x1(), y1);
+
 				GuiSection ins = new GuiSection();
 
 				int ri = 0;
@@ -308,14 +331,23 @@ final class ModuleIndustry implements ModuleMaker {
 							b.add(GFORMAT.i(b.text(), hi.get(0)));
 							b.NL();
 
+							b.textLL(¤¤ConsumedYEsterday);
+							b.tab(7);
+							b.add(GFORMAT.i(b.text(), hi.get(1)));
+							b.NL();
+
+							int yearStart = (int) (-TIME.days().bitOfYear()*TIME.years().bitConversion(TIME.years()));
+
 							b.textLL(¤¤ConsumedNow);
 							b.tab(7);
-							b.add(GFORMAT.i(b.text(), hi.getPeriodSum(-(int)TIME.years().bitConversion(TIME.days()), 0)));
+							b.add(GFORMAT.i(b.text(), hi.getPeriodSum(-yearStart, 0)));
 							b.NL();
+
+
 
 							b.textLL(¤¤ConsumedPrevious);
 							b.tab(7);
-							b.add(GFORMAT.i(b.text(), hi.getPeriodSum(-(int)TIME.years().bitConversion(TIME.days())*2, -(int)TIME.years().bitConversion(TIME.days()))));
+							b.add(GFORMAT.i(b.text(), hi.getPeriodSum(-(int)TIME.years().bitConversion(TIME.days())-yearStart, -(int)yearStart)));
 							b.NL();
 
 							b.NL(8);
@@ -330,7 +362,18 @@ final class ModuleIndustry implements ModuleMaker {
 					ri++;
 				}
 
-				r.section.addDown(2, ins);
+
+
+				if (ress.size() == 1) {
+					GuiSection fuckifuck = new GuiSection();
+					fuckifuck.add(new GHeader(¤¤Consumption));
+					fuckifuck.addRightC(8, ins);
+					r.section.add(fuckifuck, r.section.body().x1(), y1);
+				}else {
+					r.section.add(new GHeader(¤¤Consumption), r.section.body().x1(), y1);
+					r.section.addDown(2, ins);
+				}
+
 				y1 = r.section.body().y2() + 4;
 			}
 
@@ -456,7 +499,51 @@ final class ModuleIndustry implements ModuleMaker {
 					errors.add(free.pop().s(4).add(r.name));
 				}
 			}
+
+			if (rr.blueprint().employment().countInput()) {
+				if (room.employees().fetchProximity() < 0.8)
+					warnings.add(¤¤FetchWarning);
+			}
 		}
+
+
+//		@Override
+//		public void problem(GBox box, Room rr, int rx, int ry) {
+//			ROOM_PRODUCER p = ((ROOM_PRODUCER) rr);
+//			if (p.industry().outs().size() == 0)
+//				return;
+//
+//			RoomInstance room = (RoomInstance) rr;
+//
+//			Arrays.fill(rCheck, false);
+//			Arrays.fill(rHas, false);
+//			for (COORDINATE c : room.body()) {
+//				if (room.is(c)) {
+//					RESOURCE_TILE t = room.resourceTile(c.x(), c.y());
+//					if (t != null && t.resource() != null) {
+//						rCheck[t.resource().index()] = true;
+//						if (t.hasRoom())
+//							rHas[t.resource().index()] = true;
+//					}
+//				}
+//			}
+//
+//			boolean title = false;
+//
+//
+//			for (RESOURCE r : RESOURCES.ALL()) {
+//				if (rCheck[r.index()] && !rHas[r.index()]) {
+//					if (!title) {
+//						title = true;
+//						box.NL(8);
+//						box.add(box.text().errorify().add(¤¤NoStore));
+//						box.NL();
+//					}
+//
+//					box.add(r.icon());
+//				}
+//			}
+//		}
 
 		@Override
 		public void appendPanel(GuiSection section, GETTER<RoomInstance> get, int x1, int y1) {
@@ -498,10 +585,42 @@ final class ModuleIndustry implements ModuleMaker {
 					all.add(s);
 				}
 
-				all.addRelBody(2, DIR.N, new GHeader(¤¤Consumption));
+				RENDEROBJ in = new GStat() {
+
+					@Override
+					public void update(GText text) {
+						GFORMAT.perc(text, get.get().employees().fetchProximity());
+					}
+
+					@Override
+					public void hoverInfoGet(GBox b) {
+						overlay.ins = get.get();
+						overlay.add();
+						b.title(RoomEmploymentIns.¤¤ProximityInput);
+						b.text(RoomEmploymentIns.¤¤¤¤ProximityInputD);
+						b.NL();
+						b.textL(DicTime.¤¤Today);
+						b.add(GFORMAT.perc(b.text(), get.get().employees().fetchProximitySoFar()));
+					};
+
+				}.hh(UI.icons().s.clock);
+
+				GuiSection s = new GuiSection();
+				s.add(new GHeader(¤¤Consumption));
+				if (((RoomBlueprint)indu).employment().countInput())
+					s.addRightC(8, in);
+
+				all.addRelBody(2, DIR.N, s);
 
 				section.addRelBody(4, DIR.S, all);
 			}
+
+
+
+
+
+
+
 			/////////////////////////////////////////////////////////////////////////////////////////////////////////////#!#
 			/////////////////////////////////////////////////////////////////////////////////////////////////////////////#!#
 			/////////////////////////////////////////////////////////////////////////////////////////////////////////////#!#
@@ -667,6 +786,21 @@ final class ModuleIndustry implements ModuleMaker {
 			/////////////////////////////////////////////////////////////////////////////////////////////////////////////#!#
 			/////////////////////////////////////////////////////////////////////////////////////////////////////////////#!#
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 			if (ins.size() <= 1)
 				return;
 
@@ -774,11 +908,11 @@ final class ModuleIndustry implements ModuleMaker {
 		}
 
 	}
-	// #!# public!
+	////////////////////////////// MAKE IT PUBLIC PLEASE
 	public static ROOM_PRODUCER g(GETTER<RoomInstance> g) {
 		return (ROOM_PRODUCER) g.get();
 	}
-
+	/// /////////////////////////////
 	private static RENDEROBJ resIn(int ri, GETTER<RoomInstance> get, INDUSTRY_HASER indu, boolean outs) {
 		GuiSection s = new GuiSection() {
 			@Override
@@ -944,8 +1078,76 @@ final class ModuleIndustry implements ModuleMaker {
 		return s;
 	}
 
+	private static class InputOverlay extends Addable {
+
+		private RoomInstance ins;
+
+		private final double max = RoomEmploymentIns.FETCH_FREE_SECONDS/(2.0);
+
+		public InputOverlay() {
+			super(true, false);
+		}
+
+		@Override
+		public void initBelow(RenderData data) {
+			Flooder f = RES.flooder();
+			f.init(this);
+			double hi = 0;
+			double ii = 1.0/BOOSTABLES.PHYSICS().SPEED.baseValue;
+
+			f.pushSmaller(ins.mX(), ins.mY(), 0);
+			while(f.hasMore()) {
+				PathTile t = RES.flooder().pollSmallest();
+				hi = Math.max(hi, t.getValue());
+
+				for (DIR d : DIR.ALL) {
+					if (ins.is(t) && SETT.PATH().coster.player.getCost(t.x(), t.y(), t.x()+d.x(), t.y()+d.y()) > 0) {
+						f.pushSmaller(t,d, t.getValue() + SETT.PATH().availability.get(t, d).movementSpeed*ii*d.tileDistance());
+					}
+
+				}
+
+			}
+
+			f.done();
+			f.init(this);
+			for (COORDINATE c : ins.body()) {
+				if (ins.is(c))
+					f.pushSmaller(c, hi);
+			}
+
+			while(f.hasMore()) {
+				PathTile t = RES.flooder().pollSmallest();
+				if (t.getValue() >= max)
+					break;
+				for (DIR d : DIR.ALL) {
+					if (SETT.PATH().coster.player.getCost(t.x(), t.y(), t.x()+d.x(), t.y()+d.y()) >= 0) {
+						f.pushSmaller(t, d, t.getValue() + SETT.PATH().availability.get(t, d).movementSpeed*ii*d.tileDistance());
+					}
+				}
+			}
+		}
+
+		@Override
+		public void renderBelow(Renderer r, RenderIterator it) {
+			double v = 0;
+			if (RES.flooder().hasBeenPushed(it.tx(), it.ty())) {
+				double vv = RES.flooder().getValue(it.tx(), it.ty())/max;
+				v = 1.0 - vv;
+				v = CLAMP.d(v*2.0, 0, 1);
+			}
+			renderUnder(v, r, it, false);
+		}
+
+		@Override
+		public void finishBelow() {
+			RES.flooder().done();
+		}
+	}
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////#!#
 	//	/////////////////////////////////////////////#!# Profit calculation's output revenue in terms of selling
-		private RENDEROBJ profit1_display(GETTER<RoomInstance> get) {
+	private RENDEROBJ profit1_display(GETTER<RoomInstance> get) {
 		GuiSection s = new GuiSection();
 
 
@@ -963,8 +1165,8 @@ final class ModuleIndustry implements ModuleMaker {
 		s.pad(4);
 		return s;
 	}
-//	/////////////////////////////////////////////#!# Profit calculation's output revenue in terms of using it for yourself
-		private RENDEROBJ profit2_display(GETTER<RoomInstance> get) {
+	//	/////////////////////////////////////////////#!# Profit calculation's output revenue in terms of using it for yourself
+	private RENDEROBJ profit2_display(GETTER<RoomInstance> get) {
 		GuiSection s = new GuiSection();
 
 
@@ -981,7 +1183,7 @@ final class ModuleIndustry implements ModuleMaker {
 		s.body().incrW(48);
 		s.pad(4);
 		return s;
-		}
+	}
 	//	/////////////////////////////////////////////#!# Profit per person weighed average on for sale vs for self
 	private RENDEROBJ profit3_display(GETTER<RoomInstance> get) {
 		GuiSection s = new GuiSection();
@@ -1001,6 +1203,5 @@ final class ModuleIndustry implements ModuleMaker {
 		s.pad(4);
 		return s;
 	}
-
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////#!#
 }
