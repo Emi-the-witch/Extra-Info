@@ -1,5 +1,6 @@
 package util.dic;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -175,7 +176,7 @@ public class ExtraInfoDic {
         if ("德纳里".contentEquals(Dic.¤¤Curr)) {
             return Locale.SIMPLIFIED_CHINESE;
         }
-        return Locale.ENGLISH;
+        return Locale.ROOT; // using Locale.ENGLISH here means extra_info.properties cannot be read (on my machine)
 
     }
 
