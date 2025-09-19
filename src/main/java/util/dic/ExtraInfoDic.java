@@ -26,6 +26,50 @@ public class ExtraInfoDic {
 
 
     /**
+     * original: view.ui.economy.RRow, line 207
+     */
+    public static CharSequence year3;
+    /**
+     * original: view.ui.economy.RRow, line 212
+     */
+    public static CharSequence year1;
+    /**
+     * original: view.ui.economy.RRow, line 217
+     */
+    public static CharSequence yesterday;
+
+
+    /**
+     * original: view.ui.economy.UITreasury, line 194
+     */
+    public static CharSequence treasuryTop;
+    /**
+     * original: view.ui.economy.UITreasury, line 197
+     */
+    public static CharSequence treasuryMsg1;
+    /**
+     * original: view.ui.economy.UITreasury, line 198
+     */
+    public static CharSequence treasuryMsg2;
+    /**
+     * original: view.ui.economy.UITreasury, line 199
+     */
+    public static CharSequence treasuryMsg3;
+    /**
+     * original: view.ui.economy.UITreasury, line 200
+     */
+    public static CharSequence treasuryMsg4;
+    /**
+     * original: view.ui.economy.UITreasury, line 216
+     */
+    public static CharSequence treasuryTip;
+    /**
+     * original: view.ui.economy.UITreasury, line 221
+     */
+    public static CharSequence treasuryInfo;
+
+
+    /**
      * original: view.ui.goods.UIExpenses.¤¤Name
      */
     public static CharSequence expenses;
@@ -138,6 +182,20 @@ public class ExtraInfoDic {
     private static void loadProperties(ResourceBundle bundle) {
 
         totalCosts = bundle.getString("totalCosts");
+
+        // view.ui.economy.RRow
+        year3 = bundle.getString("year3");
+        year1 = bundle.getString("year1");
+        yesterday = bundle.getString("yesterday");
+
+        // view.ui.economy.UITreasury
+        treasuryTop = bundle.getString("treasuryTop");
+        treasuryMsg1 = bundle.getString("treasuryMsg1");
+        treasuryMsg2 = bundle.getString("treasuryMsg2");
+        treasuryMsg3 = bundle.getString("treasuryMsg3");
+        treasuryMsg4 = bundle.getString("treasuryMsg4");
+        treasuryTip = bundle.getString("treasuryTip");
+        treasuryInfo = bundle.getString("treasuryInfo");
 
         // view.ui.goods.UIExpenses
         expenses = bundle.getString("expenses");
