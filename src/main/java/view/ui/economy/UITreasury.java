@@ -218,8 +218,14 @@ public final class UITreasury extends IFullView {
 		b.add(GFORMAT.iIncr(new GText(UI.FONT().S, 0), (long) Math.round((production()+consumption())/pop) ));b.tab(9);
 		b.add(GFORMAT.iIncr(new GText(UI.FONT().S, 0), (long) Math.round(net()/pop) ));
 		b.sep();
+
 		// b.add(GFORMAT.text(new GText(UI.FONT().S, 0), "Press Undo button for more info"));
-		b.add(GFORMAT.text(new GText(UI.FONT().S, 0), ExtraInfoDic.treasuryTip));
+        // undo button -> {0}
+        GText tmp = new GText(UI.FONT().S, 0);
+        GFORMAT.text(tmp, ExtraInfoDic.treasuryTip);
+        tmp.insert(0, KEYS.MAIN().UNDO.repr());
+		b.add(tmp);
+
 		b.NL();
 
 		if (KEYS.MAIN().UNDO.isPressed()) {
