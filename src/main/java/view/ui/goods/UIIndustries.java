@@ -23,6 +23,7 @@ import java.util.Objects;
 
 public final class UIIndustries extends IFullView {
 
+        // private static CharSequence ¤¤Name = "Industries";
         private static CharSequence ¤¤Name = ExtraInfoDic.industries;
         public UIIndustries() {
                 super(¤¤Name, UI.icons().l.coin);
@@ -38,6 +39,7 @@ public final class UIIndustries extends IFullView {
 
 
                 // Display top line messages
+                // section.addDown(0, new GText(UI.FONT().H2, "Industry Profitability"));
                 section.addDown(0, new GText(UI.FONT().H2, ExtraInfoDic.industryProfitability));
 
                 GText tableHeader = new GText(UI.FONT().S, "                                                                              ");

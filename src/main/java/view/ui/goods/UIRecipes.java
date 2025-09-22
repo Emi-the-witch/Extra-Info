@@ -19,6 +19,7 @@ import static settlement.main.SETT.ROOMS;
 
 public final class UIRecipes extends IFullView {
 
+    // private final static CharSequence ¤¤Name = "Recipes";
     private final static CharSequence ¤¤Name = ExtraInfoDic.recipes;
 
     public UIRecipes() {
@@ -55,6 +56,7 @@ public final class UIRecipes extends IFullView {
 
         // Call the rows into the UI, including the top title. This is scrollable if it is very long. The height-15 gives the title 15 space.
         GScrollRows scrollRows = new GScrollRows(rows, HEIGHT-15);
+        // section.addDown(0, new GText(UI.FONT().H2, "Profit per employee with no labor bonuses, buying inputs and selling outputs"));
         section.addDown(0, new GText(UI.FONT().H2, ExtraInfoDic.titleRecipes));
         section.addDown(0, scrollRows.view());
     }
