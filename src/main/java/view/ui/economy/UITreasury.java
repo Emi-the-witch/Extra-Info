@@ -192,11 +192,16 @@ public final class UITreasury extends IFullView {
 		}
 		////////////////////////////#!#
 		b.sep();
+		// b.add(GFORMAT.text(new GText(UI.FONT().S, 0), "Town sum and Individual average:"));
 		b.add(GFORMAT.text(new GText(UI.FONT().S, 0), ExtraInfoDic.treasuryTop));
 		b.NL();
+		// b.add(GFORMAT.text(new GText(UI.FONT().S, 0), "Production"));b.tab(3);
 		b.add(GFORMAT.text(new GText(UI.FONT().S, 0), ExtraInfoDic.treasuryMsg1));b.tab(3);
+		// b.add(GFORMAT.text(new GText(UI.FONT().S, 0), "Consumption"));b.tab(6);
 		b.add(GFORMAT.text(new GText(UI.FONT().S, 0), ExtraInfoDic.treasuryMsg2));b.tab(6);
+		// b.add(GFORMAT.text(new GText(UI.FONT().S, 0), "Sum"));b.tab(9);
 		b.add(GFORMAT.text(new GText(UI.FONT().S, 0), ExtraInfoDic.treasuryMsg3));b.tab(9);
+		// b.add(GFORMAT.text(new GText(UI.FONT().S, 0), "Net Trade"));
 		b.add(GFORMAT.text(new GText(UI.FONT().S, 0), ExtraInfoDic.treasuryMsg4));
 		b.NL();
 		b.add(GFORMAT.iIncr(new GText(UI.FONT().S, 0), (long) (production())));b.tab(3);
@@ -213,11 +218,19 @@ public final class UITreasury extends IFullView {
 		b.add(GFORMAT.iIncr(new GText(UI.FONT().S, 0), (long) Math.round((production()+consumption())/pop) ));b.tab(9);
 		b.add(GFORMAT.iIncr(new GText(UI.FONT().S, 0), (long) Math.round(net()/pop) ));
 		b.sep();
-		b.add(GFORMAT.text(new GText(UI.FONT().S, 0), ExtraInfoDic.treasuryTip));
+
+		// b.add(GFORMAT.text(new GText(UI.FONT().S, 0), "Press Undo button for more info"));
+        // undo button -> {0}
+        GText tmp = new GText(UI.FONT().S, 0);
+        GFORMAT.text(tmp, ExtraInfoDic.treasuryTip);
+        tmp.insert(0, KEYS.MAIN().UNDO.repr());
+		b.add(tmp);
+
 		b.NL();
 
 		if (KEYS.MAIN().UNDO.isPressed()) {
 			b.sep();
+			// b.add(GFORMAT.text(new GText(UI.FONT().S, 0), "The first line of numbers is the town's total, the second line is the average person in town. The production, consumption, and sum values assume the 'world average price' for all items. Net Trade uses the consumption and production values per resource, and it assumes you sell your excess resources and buy any resources you don't regularly make using your currently available trade partner prices."));
 			b.add(GFORMAT.text(new GText(UI.FONT().S, 0), ExtraInfoDic.treasuryInfo));
 
 		}

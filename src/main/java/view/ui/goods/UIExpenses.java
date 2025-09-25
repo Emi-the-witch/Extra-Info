@@ -23,6 +23,7 @@ public final class UIExpenses extends IFullView {
 
         static double total_import = 0;
         static double total_value = 0;
+        // private static CharSequence ¤¤Name = "Expenses";
         private static CharSequence ¤¤Name = ExtraInfoDic.expenses;
         public UIExpenses() {
                 super(¤¤Name, UI.c_icons().l.minus);
@@ -38,6 +39,7 @@ public final class UIExpenses extends IFullView {
 
 
                 // Display top line messages
+                // section.addDown(0, new GText(UI.FONT().H2, "Consumers"));
                 section.addDown(0, new GText(UI.FONT().H2, ExtraInfoDic.consumers));
                 ArrayListGrower<RegRow> rows = new ArrayListGrower<>();
                 GText tableHeader = new GText(UI.FONT().S, "                                                                              ");
@@ -124,9 +126,11 @@ public final class UIExpenses extends IFullView {
                                 add(GFORMAT.text(new GText(UI.FONT().S, 0), spec ).adjustWidth(), incTab(4), MARGIN);
 
                         }else if ( ii == null && Objects.equals(spec, "columns")){ // New Columnn titles
+                                // add(GFORMAT.text(new GText(UI.FONT().S, 0), "Resource per day         Costs if imported per day   Average value per day").adjustWidth(), incTab(4), MARGIN);
                                 add(GFORMAT.text(new GText(UI.FONT().S, 0), ExtraInfoDic.titleExpenses).adjustWidth(), incTab(4), MARGIN);
 
                         }else if( ii == null && Objects.equals(spec, "total")){ // Total costs
+                                // add(GFORMAT.text(new GText(UI.FONT().S, 0), "Total Costs:").adjustWidth(), incTab(5), MARGIN);
                                 add(GFORMAT.text(new GText(UI.FONT().S, 0), ExtraInfoDic.totalCosts).adjustWidth(), incTab(5), MARGIN);
                                 add(GFORMAT.iIncr(new GText(UI.FONT().S, 0), (long) -total_import).adjustWidth(), incTab(2), MARGIN);
                                 add(GFORMAT.text(new GText(UI.FONT().S, 0), ExtraInfoDic.denari).adjustWidth(), incTab(4), MARGIN);

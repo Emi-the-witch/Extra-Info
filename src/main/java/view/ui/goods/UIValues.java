@@ -18,6 +18,7 @@ import static settlement.main.SETT.ROOMS;
 
 public final class UIValues extends IFullView {
 
+    // private static final CharSequence ¤¤Name = "Values";
     private static final CharSequence ¤¤Name = ExtraInfoDic.values;
 
     public UIValues() {
@@ -52,6 +53,7 @@ public final class UIValues extends IFullView {
         }
 
         GScrollRows scrollRows = new GScrollRows(rows, HEIGHT-15);
+        // section.addDown(0, new GText(UI.FONT().H2, "Profit per employee with no labor bonuses, using world average value for resources"));
         section.addDown(0, new GText(UI.FONT().H2, ExtraInfoDic.titleValues));
         section.addDown(0, scrollRows.view());
     }

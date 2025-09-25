@@ -1,6 +1,5 @@
 package util.dic;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -158,6 +157,32 @@ public class ExtraInfoDic {
     public static CharSequence titleValues;
 
 
+    /**
+     * original: view.ui.tech.Node_Extra, line 79
+     */
+    public static CharSequence techBelow1;
+    /**
+     * original: view.ui.tech.Node_Extra, line 91
+     */
+    public static CharSequence techCost;
+    /**
+     * original: view.ui.tech.Node_Extra, line 93
+     */
+    public static CharSequence techCostFail;
+    /**
+     * original: view.ui.tech.Node_Extra, line 104
+     */
+    public static CharSequence techBenefit;
+    /**
+     * original: view.ui.tech.Node_Extra, line 106
+     */
+    public static CharSequence techBenefitFail;
+    /**
+     * original: view.ui.tech.Node_Extra, line 113
+     */
+    public static CharSequence techTip;
+
+
     static {
         // not sure if this runs behind of main(String[] args), but it works (on my machine)
         // if some lang could not use utf-8, edit later
@@ -228,6 +253,14 @@ public class ExtraInfoDic {
         // view.ui.goods.UIValues
         values = bundle.getString("values");
         titleValues = bundle.getString("titleValues");
+
+        // view.ui.tech.Node_Extra
+        techBelow1 = bundle.getString("techBelow1");
+        techCost = bundle.getString("techCost");
+        techCostFail = bundle.getString("techCostFail");
+        techBenefit = bundle.getString("techBenefit");
+        techBenefitFail = bundle.getString("techBenefitFail");
+        techTip = bundle.getString("techTip");
 
     }
 

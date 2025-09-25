@@ -7,6 +7,7 @@ import init.sprite.UI.UI;
 import init.tech.TECH;
 import init.tech.TechCost;
 import util.colors.GCOLOR;
+import util.dic.ExtraInfoDic;
 import util.gui.misc.GBox;
 import util.gui.misc.GText;
 import util.info.GFORMAT;
@@ -70,43 +71,52 @@ public class Node_Extra{
 
                 ////////////// Calculate cost-benefit analysis #
                 if (tech.Tech_CostBenefit.benefits != 0 && !error) {
+                        b.sep(); // move here because no line before
                         b.NL();
                         b.add(GFORMAT.f(b.text(), tech.Tech_CostBenefit.benefits / worker_cost , 3));
                         b.tab(2);
-                        b.add(GFORMAT.text(b.text(), "Below '1' means you are spending more labor in tech buildings than you'd gain from having the tech."));
-                        b.sep();
+                        // b.add(GFORMAT.text(b.text(), "Below '1' means you are spending more labor in tech buildings than you'd gain from having the tech."));
+                        b.add(GFORMAT.text(b.text(), ExtraInfoDic.techBelow1));
                 }
 
 
 
 
                 if (!KEYS.MAIN().UNDO.isPressed()) {
+                        b.sep(); // add a line
 
                         //////////// Costs display
                         b.NL();
                         if (!error) {
-                                b.add(GFORMAT.f(b.text(), worker_cost, 1));
-                                b.tab(2);
-                                b.add(GFORMAT.text(b.text(), "Cost in workers"));
+                                // ExtraInfoDic.techCost == {0} Cost in workers
+                                GText tmp = GFORMAT.text(b.text(), ExtraInfoDic.techCost);
+                                tmp.insert(0, String.format("%-13.1f", worker_cost)); // 2 tab ~= 13 space (don't know why)
+                                b.add(tmp);
                         }else{
-                                b.add(GFORMAT.text(b.text(), "Unable to calculate the cost in workers"));
+                                // b.add(GFORMAT.text(b.text(), "Unable to calculate the cost in workers"));
+                                b.add(GFORMAT.text(b.text(), ExtraInfoDic.techCostFail));
                         }
 
 
                         /////////// Benefits display
                         b.NL();
                         if (tech.Tech_CostBenefit.benefits != 0) {
-                                b.add(GFORMAT.f(b.text(), tech.Tech_CostBenefit.benefits, 1));
-                                b.tab(2);
-                                b.add(GFORMAT.text(b.text(), "Benefit in workers"));
+                                // ExtraInfoDic.techBenefit == {0} Benefit in workers
+                                GText tmp = GFORMAT.text(b.text(), ExtraInfoDic.techBenefit);
+                                tmp.insert(0, String.format("%-13.1f", tech.Tech_CostBenefit.benefits)); // 13 space
+                                b.add(tmp);
                         }else{
-                                b.add(GFORMAT.text(b.text(), "Unable to calculate the benefits in workers"));
+                                // b.add(GFORMAT.text(b.text(), "Unable to calculate the benefits in workers"));
+                                b.add(GFORMAT.text(b.text(), ExtraInfoDic.techBenefitFail));
                         }
 
 
                         b.sep();
-                        b.add(GFORMAT.text(new GText(UI.FONT().S, 0), "Press Undo button (shift) for more info or to refresh the calculations"));
-                        b.sep();
+                        // b.add(GFORMAT.text(new GText(UI.FONT().S, 0), "Press Undo button (shift) for more info or to refresh the calculations"));
+                        GText tmp = GFORMAT.text(new GText(UI.FONT().S, 0), ExtraInfoDic.techTip);
+                        tmp.insert(0, KEYS.MAIN().UNDO.repr());
+                        b.add(tmp);
+                        b.sep(); // todo seems like no need of a line here
                 }
                 //////////////////////////////////////////////////////////////////////////////////////
                 /////////      If pressing shift       ///////////////////////////////////////////////
@@ -114,6 +124,7 @@ public class Node_Extra{
 
                 if (KEYS.MAIN().UNDO.isPressed()) {
                         /////////
+                        b.sep(); // add a line
                         b.NL();
                         b.add(GFORMAT.text(b.text(), " "));
                         b.NL();
