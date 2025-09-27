@@ -7,6 +7,7 @@ import settlement.room.industry.module.Industry;
 import settlement.room.main.RoomBlueprint;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.sets.ArrayListGrower;
+import util.dic.ExtraInfoDic;
 import util.gui.misc.GText;
 import util.gui.table.GScrollRows;
 import util.info.GFORMAT;
@@ -17,7 +18,8 @@ import static settlement.main.SETT.ROOMS;
 
 public final class UIValues extends IFullView {
 
-    private static final CharSequence ¤¤Name = "Values";
+    // private static final CharSequence ¤¤Name = "Values";
+    private static final CharSequence ¤¤Name = ExtraInfoDic.values;
 
     public UIValues() {
         super(¤¤Name, UI.icons().l.coin);
@@ -51,7 +53,8 @@ public final class UIValues extends IFullView {
         }
 
         GScrollRows scrollRows = new GScrollRows(rows, HEIGHT-15);
-        section.addDown(0, new GText(UI.FONT().H2, "Profit per employee with no labor bonuses, using world average value for resources"));
+        // section.addDown(0, new GText(UI.FONT().H2, "Profit per employee with no labor bonuses, using world average value for resources"));
+        section.addDown(0, new GText(UI.FONT().H2, ExtraInfoDic.titleValues));
         section.addDown(0, scrollRows.view());
     }
 

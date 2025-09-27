@@ -13,6 +13,7 @@ import settlement.tilemap.floor.Floors;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.sets.ArrayListGrower;
 import snake2d.util.sets.KeyMap;
+import util.dic.ExtraInfoDic;
 import util.gui.misc.GText;
 import util.gui.table.GScrollRows;
 import util.info.GFORMAT;
@@ -28,7 +29,8 @@ public final class UIMaintenance extends IFullView {
 
         static double CUR_TIME = 0;
         static double CUR_TIME2 = 0;
-        private static CharSequence ¤¤Name = "Maintenance";
+        // private static CharSequence ¤¤Name = "Maintenance";
+        private static CharSequence ¤¤Name = ExtraInfoDic.maintenance;
         public static double import_costs = 0;
         public double value_costs = 0;
         ResData total = new ResData();
@@ -81,8 +83,10 @@ public final class UIMaintenance extends IFullView {
                 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
                 // Display top line messages
-                section.addDown(0, new GText(UI.FONT().H2, "Overall Maintenance costs"));
-                GText tableHeader = new GText(UI.FONT().S, "Resource per day         Costs if imported per day   Average value per day");
+                // section.addDown(0, new GText(UI.FONT().H2, "Overall Maintenance costs"));
+                section.addDown(0, new GText(UI.FONT().H2, ExtraInfoDic.overallMaintenance));
+                // GText tableHeader = new GText(UI.FONT().S, "Resource per day         Costs if imported per day   Average value per day");
+                GText tableHeader = new GText(UI.FONT().S, ExtraInfoDic.titleMaintenance);
                 section.addDown(10, tableHeader);
 
                 // Create each row
@@ -105,8 +109,10 @@ public final class UIMaintenance extends IFullView {
                 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 
                 ArrayListGrower<MaintRow> BLDGrows = new ArrayListGrower<>();
-                section.addDown(0, new GText(UI.FONT().H2, "Building type Maintenance costs"));
-                tableHeader = new GText(UI.FONT().S, "Building type       'Import' and 'Value' Costs     Resources used");
+                // section.addDown(0, new GText(UI.FONT().H2, "Building type Maintenance costs"));
+                section.addDown(0, new GText(UI.FONT().H2, ExtraInfoDic.overallBuildingMaintenance));
+                // tableHeader = new GText(UI.FONT().S, "Building type       'Import' and 'Value' Costs     Resources used");
+                tableHeader = new GText(UI.FONT().S, ExtraInfoDic.titleBuildingMaintenance);
                 section.addDown(10, tableHeader);
 
                 for (String key : building_totals.keys()) {
@@ -133,20 +139,21 @@ public final class UIMaintenance extends IFullView {
                                 add(res.icon(), incTab(3), 0);
                                 // Import costs for that resource:
                                 add(GFORMAT.i(new GText(UI.FONT().S, 0), (long) (amount_of_res * FACTIONS.player().trade.pricesBuy.get(res))).adjustWidth(), incTab(2), MARGIN);
-                                add(GFORMAT.text(new GText(UI.FONT().S, 0), "denari").adjustWidth(), incTab(4), MARGIN);
+                                add(GFORMAT.text(new GText(UI.FONT().S, 0), ExtraInfoDic.denari).adjustWidth(), incTab(4), MARGIN);
                                 // Value of those resources:
                                 add(GFORMAT.i(new GText(UI.FONT().S, 0), (long) (amount_of_res * FACTIONS.PRICE().get(res))).adjustWidth(), incTab(2), MARGIN);
-                                add(GFORMAT.text(new GText(UI.FONT().S, 0), "denari").adjustWidth(), incTab(4), MARGIN);
+                                add(GFORMAT.text(new GText(UI.FONT().S, 0), ExtraInfoDic.denari).adjustWidth(), incTab(4), MARGIN);
                         }
                         //////////////////////////////////////////////////////////////////////
                         // Table 1 Total
                         //////////////////////////////////////////////////////////////////////
                         else{
-                                add(GFORMAT.text(new GText(UI.FONT().S, 0), "Total Costs:").adjustWidth(), incTab(5), MARGIN);
+                                // add(GFORMAT.text(new GText(UI.FONT().S, 0), "Total Costs:").adjustWidth(), incTab(5), MARGIN);
+                                add(GFORMAT.text(new GText(UI.FONT().S, 0), ExtraInfoDic.totalCosts).adjustWidth(), incTab(5), MARGIN);
                                 add(GFORMAT.iIncr(new GText(UI.FONT().S, 0), (long) -import_costs).adjustWidth(), incTab(2), MARGIN);
-                                add(GFORMAT.text(new GText(UI.FONT().S, 0), "denari").adjustWidth(), incTab(4), MARGIN);
+                                add(GFORMAT.text(new GText(UI.FONT().S, 0), ExtraInfoDic.denari).adjustWidth(), incTab(4), MARGIN);
                                 add(GFORMAT.iIncr(new GText(UI.FONT().S, 0), (long) -value_costs).adjustWidth(), incTab(2), MARGIN);
-                                add(GFORMAT.text(new GText(UI.FONT().S, 0), "denari").adjustWidth(), incTab(4), MARGIN);
+                                add(GFORMAT.text(new GText(UI.FONT().S, 0), ExtraInfoDic.denari).adjustWidth(), incTab(4), MARGIN);
                         }
                 }
         }
@@ -196,7 +203,8 @@ public final class UIMaintenance extends IFullView {
                                 body().setWidth(width).setHeight(1);
 
                                 // Name of the building
-                                add(GFORMAT.text(new GText(UI.FONT().S, 0), "Total" ).adjustWidth(), incTab(4), MARGIN);
+                                // add(GFORMAT.text(new GText(UI.FONT().S, 0), "Total" ).adjustWidth(), incTab(4), MARGIN);
+                                add(GFORMAT.text(new GText(UI.FONT().S, 0), ExtraInfoDic.total).adjustWidth(), incTab(4), MARGIN);
 
                                 // Calculate totals from the per-building values
                                 double total_import = 0;

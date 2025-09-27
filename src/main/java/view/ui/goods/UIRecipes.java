@@ -8,6 +8,7 @@ import settlement.room.industry.module.Industry;
 import settlement.room.main.RoomBlueprint;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.sets.ArrayListGrower;
+import util.dic.ExtraInfoDic;
 import util.gui.misc.GText;
 import util.gui.table.GScrollRows;
 import util.info.GFORMAT;
@@ -18,7 +19,8 @@ import static settlement.main.SETT.ROOMS;
 
 public final class UIRecipes extends IFullView {
 
-    private final static CharSequence ¤¤Name = "Recipes";
+    // private final static CharSequence ¤¤Name = "Recipes";
+    private final static CharSequence ¤¤Name = ExtraInfoDic.recipes;
 
     public UIRecipes() {
         super(¤¤Name, UI.icons().l.coin);
@@ -54,7 +56,8 @@ public final class UIRecipes extends IFullView {
 
         // Call the rows into the UI, including the top title. This is scrollable if it is very long. The height-15 gives the title 15 space.
         GScrollRows scrollRows = new GScrollRows(rows, HEIGHT-15);
-        section.addDown(0, new GText(UI.FONT().H2, "Profit per employee with no labor bonuses, buying inputs and selling outputs"));
+        // section.addDown(0, new GText(UI.FONT().H2, "Profit per employee with no labor bonuses, buying inputs and selling outputs"));
+        section.addDown(0, new GText(UI.FONT().H2, ExtraInfoDic.titleRecipes));
         section.addDown(0, scrollRows.view());
     }
 

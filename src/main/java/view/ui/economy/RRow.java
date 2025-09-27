@@ -19,6 +19,7 @@ import util.data.GETTER.GETTERE;
 import util.data.INT.INTE;
 import util.dic.Dic;
 import util.dic.DicTime;
+import util.dic.ExtraInfoDic;
 import util.gui.misc.GBox;
 import util.gui.misc.GMeter;
 import util.gui.misc.GStat;
@@ -203,17 +204,20 @@ final class RRow extends GuiSection {
 				// Add the last year and last three-year history to the text over each resource bought or sold
 				CharSequence output;
 
-				output = "3 Year ";
+				// output = "3 Year ";
+				output = ExtraInfoDic.year3;
 				GFORMAT.text(text, output);
 				GFORMAT.iIncr(text, (GAME.player().trade.inExported.history(res).getPeriodSum(-48,0)-GAME.player().trade.outImported.history(res).getPeriodSum(-48,0)) );
 
 
-				output =  "   1 Year ";
+				// output =  "   1 Year ";
+				output =  ExtraInfoDic.year1;
 				GFORMAT.text(text, output);
 				GFORMAT.iIncr(text, (GAME.player().trade.inExported.history(res).getPeriodSum(-16,0)-GAME.player().trade.outImported.history(res).getPeriodSum(-16,0)) );
 
 
-				GFORMAT.text(text, "   Yesterday ");
+				// GFORMAT.text(text, "   Yesterday ");
+				GFORMAT.text(text, ExtraInfoDic.yesterday);
 				GFORMAT.iIncr(text, GAME.player().trade.inExported.history(res).get(1)-GAME.player().trade.outImported.history(res).get(1));
 				/////////////////////////////////////////////#!#
 			}

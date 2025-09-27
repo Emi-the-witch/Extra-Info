@@ -8,6 +8,7 @@ import settlement.main.SETT;
 import settlement.room.industry.module.RoomProduction;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.sets.ArrayListGrower;
+import util.dic.ExtraInfoDic;
 import util.gui.misc.GText;
 import util.gui.table.GScrollRows;
 import util.info.GFORMAT;
@@ -22,7 +23,8 @@ public final class UIProduction extends IFullView {
 
         static double total_export = 0;
         static double total_value = 0;
-        private static CharSequence ¤¤Name = "Production";
+        // private static CharSequence ¤¤Name = "Production";
+        private static CharSequence ¤¤Name = ExtraInfoDic.production;
         public UIProduction() {
                 super(¤¤Name, UI.c_icons().l.plus);
         }
@@ -37,7 +39,8 @@ public final class UIProduction extends IFullView {
 
 
                 // Display top line messages
-                section.addDown(0, new GText(UI.FONT().H2, "Producers"));
+                // section.addDown(0, new GText(UI.FONT().H2, "Producers"));
+                section.addDown(0, new GText(UI.FONT().H2, ExtraInfoDic.producers));
                 ArrayListGrower<RegRow> rows = new ArrayListGrower<>();
                 GText tableHeader = new GText(UI.FONT().S, "                                                                              ");
                 section.addDown(10, tableHeader);
@@ -102,11 +105,11 @@ public final class UIProduction extends IFullView {
 
                                 // Export values for that resource:
                                 add(GFORMAT.i(new GText(UI.FONT().S, 0), (long) (ii.am() * FACTIONS.player().trade.pricesSell.get(ii.res))).adjustWidth(), incTab(2), MARGIN);
-                                add(GFORMAT.text(new GText(UI.FONT().S, 0), "denari").adjustWidth(), incTab(4), MARGIN);
+                                add(GFORMAT.text(new GText(UI.FONT().S, 0), ExtraInfoDic.denari).adjustWidth(), incTab(4), MARGIN);
 
                                 // Value of those resources:
                                 add(GFORMAT.i(new GText(UI.FONT().S, 0), (long) (ii.am() * FACTIONS.PRICE().get(ii.res))).adjustWidth(), incTab(2), MARGIN);
-                                add(GFORMAT.text(new GText(UI.FONT().S, 0), "denari").adjustWidth(), incTab(4), MARGIN);
+                                add(GFORMAT.text(new GText(UI.FONT().S, 0), ExtraInfoDic.denari).adjustWidth(), incTab(4), MARGIN);
 
                                 total_export += (ii.am() * FACTIONS.player().trade.pricesSell.get(ii.res));
                                 total_value += (ii.am() * FACTIONS.PRICE().get(ii.res));
@@ -117,14 +120,16 @@ public final class UIProduction extends IFullView {
                                 add(GFORMAT.text(new GText(UI.FONT().S, 0), spec ).adjustWidth(), incTab(4), MARGIN);
 
                         }else if ( ii == null && Objects.equals(spec, "columns")){ // New Columnn titles
-                                add(GFORMAT.text(new GText(UI.FONT().S, 0), "Resource per day         Value if exported per day   Average value per day").adjustWidth(), incTab(4), MARGIN);
+                                // add(GFORMAT.text(new GText(UI.FONT().S, 0), "Resource per day         Value if exported per day   Average value per day").adjustWidth(), incTab(4), MARGIN);
+                                add(GFORMAT.text(new GText(UI.FONT().S, 0), ExtraInfoDic.titleProduction).adjustWidth(), incTab(4), MARGIN);
 
                         }else if( ii == null && Objects.equals(spec, "total")){ // Total values
-                                add(GFORMAT.text(new GText(UI.FONT().S, 0), "Total Values:").adjustWidth(), incTab(5), MARGIN);
+                                // add(GFORMAT.text(new GText(UI.FONT().S, 0), "Total Values:").adjustWidth(), incTab(5), MARGIN);
+                                add(GFORMAT.text(new GText(UI.FONT().S, 0), ExtraInfoDic.totalValues).adjustWidth(), incTab(5), MARGIN);
                                 add(GFORMAT.iIncr(new GText(UI.FONT().S, 0), (long) +total_export).adjustWidth(), incTab(2), MARGIN);
-                                add(GFORMAT.text(new GText(UI.FONT().S, 0), "denari").adjustWidth(), incTab(4), MARGIN);
+                                add(GFORMAT.text(new GText(UI.FONT().S, 0), ExtraInfoDic.denari).adjustWidth(), incTab(4), MARGIN);
                                 add(GFORMAT.iIncr(new GText(UI.FONT().S, 0), (long) +total_value).adjustWidth(), incTab(2), MARGIN);
-                                add(GFORMAT.text(new GText(UI.FONT().S, 0), "denari").adjustWidth(), incTab(4), MARGIN);
+                                add(GFORMAT.text(new GText(UI.FONT().S, 0), ExtraInfoDic.denari).adjustWidth(), incTab(4), MARGIN);
 
                         }else if( ii == null && Objects.equals(spec, "space")){ // blank line!
                                 add(GFORMAT.text(new GText(UI.FONT().S, 0), " ").adjustWidth(), incTab(5), MARGIN);
