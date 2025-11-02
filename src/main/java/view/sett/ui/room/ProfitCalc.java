@@ -165,7 +165,8 @@ public class ProfitCalc {
                 revenue =0;  // Revenue "for trade"
                 saved =0;    // Revenue "for self"
                 weighted_average= 0; // Revenue depending on actual consumption
-
+                inputs=0;
+                maintenance=0;
 //                for(int ri = 0; ri<p.industry().outs().size();ri++){
 //                        Industry.IndustryResource i = p.industry().outs().get(ri);
 //                        double n = i.dayPrev.get(p);
@@ -247,7 +248,8 @@ public class ProfitCalc {
                 revenue =0;  // Revenue "for trade"
                 saved =0;    // Revenue "for self"
                 weighted_average= 0; // Revenue depending on actual consumption
-
+                inputs=0;
+                maintenance=0;
 //                for(int ri = 0; ri<p.industry().outs().size();ri++){
 //                        Industry.IndustryResource i = p.industry().outs().get(ri);
 //                        double n = i.dayPrev.get(p);
