@@ -30,6 +30,7 @@ settlement\tilemap\terrain\TWater$Sprites$7.class
 view\sett\ui\subject\UIHoverer$1.class
 settlement\tilemap\terrain\TWater$9.class
 settlement\tilemap\terrain\TWater$Sprites$10.class
+view\ui\goods\UILogistics$RegRow.class
 view\ui\manage\IManager.class
 view\ui\goods\UIMaintenance$ResourceRow.class
 view\sett\ui\room\ModuleIndustry$7.class
@@ -53,6 +54,7 @@ view\ui\goods\UIProduction$1.class
 settlement\tilemap\terrain\TWater.class
 settlement\room\food\orchard\Instance.class
 settlement\tilemap\terrain\TWater$3.class
+settlement\stats\colls\StatsEnv$5.class
 settlement\tilemap\ground\Ground$2.class
 view\sett\ui\room\ModuleIndustry$1.class
 init\tech\TECH.class
@@ -70,6 +72,7 @@ settlement\room\food\orchard\Gui$12.class
 view\sett\ui\room\ModuleIndustry$2.class
 view\sett\ui\room\ModuleIndustry$I$7.class
 view\sett\ui\room\ModuleIndustry$I$4.class
+settlement\stats\colls\StatsEnv$4.class
 view\ui\goods\UIExpenses$RegRow.class
 view\ui\goods\UIProduction$RegRow.class
 view\sett\ui\room\ModuleIndustry$5.class
@@ -84,7 +87,7 @@ settlement\room\food\farm\Gui$6.class
 view\sett\ui\room\ModuleIndustry$I$10.class
 view\sett\ui\room\ModuleUpgradable.class
 settlement\room\food\farm\Gui$8.class
-view\ui\goods\UIIndustries.class
+settlement\stats\colls\StatsEnv$2.class
 settlement\room\food\orchard\Instance$1.class
 view\sett\ui\room\ModuleIndustry$I$6.class
 settlement\room\food\orchard\Gui$11.class
@@ -94,14 +97,17 @@ view\sett\ui\standing\CatPopulation$8.class
 view\ui\goods\UIModSettings$1.class
 init\sprite\UI\CustomIcons$CL.class
 settlement\room\food\farm\Gui$15.class
+view\ui\goods\UILogistics$AddRow_table1.class
 view\sett\ui\room\CanalCounter.class
 view\ui\manage\IManager$8.class
 view\sett\ui\room\ModuleDegrade$I.class
 settlement\room\food\orchard\Gui$9.class
 view\sett\ui\room\ModuleIndustry$I$5.class
 init\tech\CostBenefit.class
+settlement\stats\colls\StatsEnv$1.class
 view\ui\goods\UIMaintenance$1.class
 view\sett\ui\standing\CatPopulation.class
+view\ui\goods\UILogistics$AddRow_table2.class
 view\ui\goods\UIRecipes$RRow.class
 settlement\room\food\farm\Gui$14.class
 view\ui\economy\UITreasury$2.class
@@ -122,6 +128,7 @@ view\sett\ui\room\ModuleIndustry$10.class
 settlement\room\food\farm\Gui$7.class
 settlement\room\food\orchard\Gui$10.class
 view\ui\economy\UITreasury$6.class
+settlement\stats\colls\StatsEnv.class
 settlement\tilemap\ground\Ground$4.class
 view\sett\ui\standing\CatPopulation$7.class
 view\ui\manage\IManager$5.class
@@ -136,10 +143,12 @@ init\tech\TECH$2.class
 view\ui\economy\RRow$TradeDiagram.class
 view\ui\tech\Node.class
 init\sprite\UI\CustomIcons.class
+settlement\stats\colls\StatsEnv$3.class
 view\sett\ui\room\ModuleIndustry$I$3.class
 settlement\room\food\farm\Gui$18.class
 view\sett\ToolDefault$1.class
 view\sett\ui\standing\CatPopulation$1.class
+view\ui\goods\UILogistics.class
 view\ui\manage\IManager$4.class
 settlement\room\food\orchard\Gui$6.class
 view\sett\ui\room\ModuleIndustry$I$11.class
@@ -148,6 +157,7 @@ view\sett\ui\room\ModuleUpgradable$I$5.class
 settlement\tilemap\terrain\TWater$Deep$1.class
 settlement\room\food\farm\Gui$12$1.class
 view\sett\ui\room\ModuleIndustry$I$2.class
+view\ui\goods\UILogistics$1.class
 view\sett\ui\room\ModuleIndustry$I$9.class
 settlement\tilemap\terrain\TWater$Sprites.class
 view\ui\goods\UIProduction$AddRow.class

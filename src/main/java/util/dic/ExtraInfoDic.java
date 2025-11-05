@@ -88,6 +88,11 @@ public class ExtraInfoDic {
      */
     public static CharSequence industries;
     /**
+    /**
+    * original: view.ui.goods.UIIndustries.¤¤Name
+    */
+    public static CharSequence logistics;
+    /**
      * original: view.ui.goods.UIIndustries, line 41
      */
     public static CharSequence industryProfitability;
@@ -231,6 +236,9 @@ public class ExtraInfoDic {
         // view.ui.goods.UIIndustries
         industries = bundle.getString("industries");
         industryProfitability = bundle.getString("industryProfitability");
+
+        // view.ui.goods.UILogistics
+        logistics = bundle.getString("logistics");
 
         // view.ui.goods.UIMaintenance
         maintenance = bundle.getString("maintenance");

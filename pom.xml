@@ -6,7 +6,7 @@
 
     <groupId>org.example</groupId>
     <artifactId>extra.info</artifactId>
-    <version>0.5.7</version>
+    <version>0.6.2</version>
 
     <profiles>
         <profile>

@@ -25,7 +25,7 @@ import static game.time.TIME.playedGame;
 import static java.lang.Math.round;
 import static settlement.main.SETT.*;
 
-public final class UIMaintenance extends IFullView {
+public final class      UIMaintenance extends IFullView {
 
         static double CUR_TIME = 0;
         static double CUR_TIME2 = 0;

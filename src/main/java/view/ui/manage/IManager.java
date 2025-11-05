@@ -45,9 +45,10 @@ import static view.ui.goods.UIMaintenance.sum_d;
 
 
 public final class IManager {
-	// #!# The tabs being added
+	/// #!# The tabs being added
 	private final UIRecipes recipes;
 	private final UIValues values;
+	private final UILogistics logistics;
 	private final UIMaintenance all_maintenance;
 	private final UIExpenses all_expenses;
 	private final UIProduction all_production;
@@ -71,12 +72,15 @@ public final class IManager {
 		all.add(view.level);
 		all.add(view.profile);
 
-		// #!# The tabs being added
+		/// #!# The tabs being added
 		recipes = new UIRecipes();
 		all.add(recipes);
 
 		values = new UIValues();
 		all.add(values);
+
+		logistics = new UILogistics();
+		all.add(logistics);
 
 		all_maintenance = new UIMaintenance();
 		all.add(all_maintenance);
