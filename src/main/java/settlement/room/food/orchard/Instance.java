@@ -7,7 +7,7 @@ import settlement.misc.job.JOBMANAGER_HASER;
 import settlement.misc.job.JOB_MANAGER;
 import settlement.misc.job.SETT_JOB;
 import settlement.room.industry.module.Industry;
-import settlement.room.industry.module.ROOM_PRODUCER;
+import settlement.room.industry.module.ROOM_PRODUCER_INSTANCE;
 import settlement.room.main.RoomInstance;
 import settlement.room.main.TmpArea;
 import settlement.room.main.construction.ConstructionInit;
@@ -21,7 +21,7 @@ import util.rendering.ShadowBatch;
 
 import static settlement.main.SETT.ROOMS;
 ///  Make the class public
-public final class Instance extends RoomInstance implements JOBMANAGER_HASER, ROOM_PRODUCER, ANIMAL_ROOM_RUINER {
+public final class Instance extends RoomInstance implements JOBMANAGER_HASER, ROOM_PRODUCER_INSTANCE, ANIMAL_ROOM_RUINER {
 
 	private static final long serialVersionUID = 1L;
 	private long[] produceData;

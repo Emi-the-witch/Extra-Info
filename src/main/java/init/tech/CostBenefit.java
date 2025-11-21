@@ -4,7 +4,7 @@ import game.boosting.*;
 import game.faction.FACTIONS;
 import game.faction.Faction;
 import game.time.TIME;
-import game.values.Lock;
+import init.value.Lock;
 import init.resources.RESOURCE;
 import init.resources.RESOURCES;
 import init.type.POP_CL;
@@ -12,7 +12,7 @@ import settlement.entity.humanoid.Humanoid;
 import settlement.main.SETT;
 import settlement.maintenance.ROOM_DEGRADER;
 import settlement.room.industry.module.Industry;
-import settlement.room.industry.module.ROOM_PRODUCER;
+import settlement.room.industry.module.ROOM_PRODUCER_INSTANCE;
 import settlement.room.industry.module.RoomProduction;
 import settlement.room.main.*;
 import settlement.room.main.employment.RoomEmploymentIns;
@@ -133,9 +133,9 @@ public class CostBenefit {
 
                                 for (RoomInstance r : ((RoomBlueprintIns<?>) h).all()) { // For each workshop in the industry
 
-                                        if (r.employees() == null || !(r instanceof ROOM_PRODUCER)) { continue; } // That has employees and produces goods
+                                        if (r.employees() == null || !(r instanceof ROOM_PRODUCER_INSTANCE)) { continue; } // That has employees and produces goods
 
-                                        Industry ind = ((ROOM_PRODUCER) r).industry();  // Industry of the workshop
+                                        Industry ind = ((ROOM_PRODUCER_INSTANCE) r).industry();  // Industry of the workshop
                                         Boostable bonus = ind.bonus(); // The boosts of the industry
 
                                         if (bonus == null || b.boostable.key() != bonus.key()) { continue; } // Boost exists in industry and matches the tech
@@ -218,17 +218,17 @@ public class CostBenefit {
                 double benefit_maint_upgrade_total = 0;
                 double benefit_emp_total = 0;
 
-                for (Lock ll : tech.lockers.all()){ // For all unlockables
+                for (Lock<?> ll : tech.lockers.all()){ // For all unlockables
 
                         for (RoomBlueprint h : ROOMS().all()) { // For each type of room blueprint    Note: We need SETT.ROOMS() to find the RoomInstance bonuses
                                 if (  !(h instanceof RoomBlueprintIns)  ) { continue; } // Industries only
 
                                 for (RoomInstance r : ((RoomBlueprintIns<?>) h).all()) { // For each workshop in the industry
-                                        if (r.employees() == null || !(r instanceof ROOM_PRODUCER)) { continue; } // That has employees and produces goods
+                                        if (r.employees() == null || !(r instanceof ROOM_PRODUCER_INSTANCE)) { continue; } // That has employees and produces goods
 
                                         RoomBlueprintImp b = (RoomBlueprintImp) r.blueprint();  // Get blueprint to find unlocks
                                         try {b.upgrades().requires(r.upgrade(r.mX(), r.mY())+1).all().isEmpty();}catch(Exception e){continue;} //Skip this room if there are no upgrades
-                                        Industry ind = ((ROOM_PRODUCER) r).industry();  // Industry of the workshop
+                                        Industry ind = ((ROOM_PRODUCER_INSTANCE) r).industry();  // Industry of the workshop
                                         Boostable bonus = ind.bonus(); // The boosts of the industry
 
 
@@ -313,9 +313,9 @@ public class CostBenefit {
 
                                 for (RoomInstance r : ((RoomBlueprintIns<?>) h).all()) { // For each workshop in the industry
 
-                                        if (r.employees() == null || !(r instanceof ROOM_PRODUCER)) { continue; } // That has employees and produces goods
+                                        if (r.employees() == null || !(r instanceof ROOM_PRODUCER_INSTANCE)) { continue; } // That has employees and produces goods
 
-                                        Industry ind = ((ROOM_PRODUCER) r).industry();  // Industry of the workshop
+                                        Industry ind = ((ROOM_PRODUCER_INSTANCE) r).industry();  // Industry of the workshop
                                         Boostable bonus = ind.bonus(); // The boosts of the industry
 
                                         if (!(Objects.equals(b.boostable.cat.name, "Equipment"))){ continue; }

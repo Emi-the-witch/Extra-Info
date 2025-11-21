@@ -3,9 +3,9 @@ package settlement.room.food.orchard;
 import game.GAME;
 import game.time.TIME;
 import init.sprite.SPRITES;
-import init.text.D;
+import util.text.D;
 import settlement.room.food.farm.FarmInstance;
-import settlement.room.industry.module.Industry.IndustryResource;
+import settlement.room.industry.module.IndustryResource;
 import settlement.room.industry.module.IndustryUtil;
 import settlement.room.main.RoomInstance;
 import snake2d.util.datatypes.COORDINATE;
@@ -17,8 +17,8 @@ import snake2d.util.gui.clickable.CLICKABLE;
 import snake2d.util.gui.renderable.RENDEROBJ;
 import snake2d.util.sets.LISTE;
 import util.data.GETTER;
-import util.dic.Dic;
-import util.dic.DicTime;
+import util.text.Dic;
+import util.text.DicTime;
 import util.gui.misc.*;
 import util.gui.table.GStaples;
 import util.gui.table.GTableSorter.GTFilter;
@@ -454,13 +454,13 @@ class Gui extends UIRoomModuleImp<Instance, ROOM_ORCHARD> {
 				b.NL(16);
 				b.textL(¤¤HarvestYear);
 				b.tab(6);
-				b.add(GFORMAT.i(b.text(), (int)ins.blueprintI().indus.get(0).outs().get(0).year.get(ins)));
+				b.add(GFORMAT.i(b.text(), (int)ins.blueprintI().industries().get(0).outs().get(0).year.get(ins)));
 				b.NL();
 				
 				b.NL(2);
 				b.textL(¤¤HarvestPrev);
 				b.tab(6);
-				b.add(GFORMAT.i(b.text(), (int)ins.blueprintI().indus.get(0).outs().get(0).yearPrev.get(ins)));
+				b.add(GFORMAT.i(b.text(), (int)ins.blueprintI().industries().get(0).outs().get(0).yearPrev.get(ins)));
 				b.NL();
 				
 			}

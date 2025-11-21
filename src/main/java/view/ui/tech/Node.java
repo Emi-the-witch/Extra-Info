@@ -5,15 +5,14 @@ import game.boosting.BoostSpec;
 import game.boosting.Boostable;
 import game.faction.FACTIONS;
 import game.faction.player.PTech;
-import game.values.Lock;
 import init.sprite.UI.UI;
 import init.tech.TECH;
 import init.tech.TECH.TechRequirement;
 import init.tech.TECHS;
 import init.tech.TechCost;
 import init.tech.TechCurrency;
-import init.text.D;
 import init.type.POP_CL;
+import init.value.Lock;
 import settlement.main.SETT;
 import settlement.room.industry.module.INDUSTRY_HASER;
 import settlement.room.main.RoomBlueprintImp;
@@ -21,7 +20,6 @@ import snake2d.SPRITE_RENDERER;
 import snake2d.util.color.COLOR;
 import snake2d.util.color.ColorImp;
 import snake2d.util.color.OPACITY;
-import snake2d.util.datatypes.BODY;
 import snake2d.util.datatypes.COORDINATE;
 import snake2d.util.datatypes.DIR;
 import snake2d.util.gui.GUI_BOX;
@@ -33,10 +31,11 @@ import snake2d.util.sets.Tuple;
 import snake2d.util.sets.Tuple.TupleImp;
 import snake2d.util.sprite.text.Str;
 import util.colors.GCOLOR;
-import util.dic.Dic;
 import util.gui.misc.GBox;
 import util.gui.misc.GText;
 import util.info.GFORMAT;
+import util.text.D;
+import util.text.Dic;
 import view.keyboard.KEYS;
 import view.main.VIEW;
 import view.ui.tech.NodeBoosts.tEntry;
@@ -59,24 +58,24 @@ final class Node extends ClickableAbs {
 	private static CharSequence ¤¤available = "Available";
 	private static CharSequence ¤¤locked = "Locked by Requirements";
 	private static CharSequence ¤¤afford = "Unable to Afford";
-	private static CharSequence ¤¤workValue = "Unlocking this tech will result in {0} more workers in the affected industries ({1} divided by the tech cost). If it costs more workers to cover the cost of the tech, it might not be a good idea to unlock it.";
+	private static CharSequence ¤¤workValue = "Unlocking this tech will result in {0} more workers in the affected industries ({1} more workers per tech point). If it costs more workers to cover the cost of the tech, it might not be a good idea to unlock it.";
 
 	final static LIST<COLOR> cols = new ArrayList<COLOR>(
-		new ColorImp(50, 255, 50).shade(0.5),
-		new ColorImp(50, 255, 255).shade(0.5),
-		new ColorImp(255, 255, 50).shade(0.5),
-		new ColorImp(255, 50, 255).shade(0.5)
+			new ColorImp(50, 255, 50).shade(0.5),
+			new ColorImp(50, 255, 255).shade(0.5),
+			new ColorImp(255, 255, 50).shade(0.5),
+			new ColorImp(255, 50, 255).shade(0.5)
 	);
 
 	final static LIST<DIR> dirs = new ArrayList<DIR>(
-		DIR.SW,
-		DIR.SE,
-		DIR.NW,
-		DIR.NE,
-		DIR.S,
-		DIR.E,
-		DIR.N,
-		DIR.W
+			DIR.SW,
+			DIR.SE,
+			DIR.NW,
+			DIR.NE,
+			DIR.S,
+			DIR.E,
+			DIR.N,
+			DIR.W
 
 	);
 
@@ -98,7 +97,6 @@ final class Node extends ClickableAbs {
 		this.tech = tech;
 		body.setDim(WIDTH, HEIGHT());
 		this.upgradeBoost = upgradeBoost;
-
 	}
 
 	public static int HEIGHT() {
@@ -142,10 +140,10 @@ final class Node extends ClickableAbs {
 		GCOLOR.T().H1.render(r, body);
 
 		GCOLOR.UI().bg(isActive, false, isHovered).render(r, body, -1);
-//		COLOR col = col(isHovered, isSelected);
-//		col.render(r, body, -4);
+//        COLOR col = col(isHovered, isSelected);
+//        col.render(r, body, -4);
 		//////////////////////////////////////////////////////////////////////////////// #!#
-//		tech.Tech_CostBenefit.update(tech); // #!# Update tech's Cost Benefits
+//        tech.Tech_CostBenefit.update(tech); // #!# Update tech's Cost Benefits
 		COLOR col = tech.Tech_CostBenefit.col(isHovered, tech); // MODIFIED Color change function
 		col.render(r, body,-4);
 		///////////////////////////////////////////////////////////////////////////////// #!#
@@ -175,7 +173,7 @@ final class Node extends ClickableAbs {
 
 
 			for (TechCurrency cu : TECHS.COSTS()) {
-
+				Str.TMP.clear();
 
 
 				int wi = ((body.width()-16)/2);
@@ -282,7 +280,7 @@ final class Node extends ClickableAbs {
 		if (t.level(tech) == tech.levelMax){
 			b.add(b.text().normalify2().add(¤¤unlocked));
 
-		}else if (!tech.plockable.passes(FACTIONS.player()))
+		}else if (!tech.requires.passes(FACTIONS.player()))
 			b.add(b.text().errorify().add(¤¤locked));
 		else if (!t.canAffordNext(tech))
 			b.add(b.text().errorify().add(¤¤afford));
@@ -346,10 +344,10 @@ final class Node extends ClickableAbs {
 				if (r.level > 0)
 					am++;
 
-			FACTIONS.player().tech.getLockable(tech).hover(text, FACTIONS.player());
+			tech.requires.hover(text, FACTIONS.player());
 
 			if (am > 0) {
-				if (FACTIONS.player().tech.getLockable(tech).all().size() == 0)
+				if (tech.requires.all().size() == 0)
 					b.textLL(Dic.¤¤Requires);
 				b.NL();
 				for (TechRequirement r : rr) {
@@ -363,7 +361,7 @@ final class Node extends ClickableAbs {
 					if (r.tech.levelMax > 1) {
 						te.s().add(GFORMAT.toNumeral(r.level));
 					}
-					if (t.level(r.tech) >= r.level)
+					if (t.level(r.tech) >= r.level && r.tech.requires.passes(FACTIONS.player()))
 						te.normalify2();
 					else
 						te.errorify();

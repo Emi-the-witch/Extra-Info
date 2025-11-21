@@ -1,5 +1,7 @@
 package util.dic;
 
+import util.text.Dic;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;

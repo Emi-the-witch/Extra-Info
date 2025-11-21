@@ -6,7 +6,8 @@ import game.time.TIME;
 import init.resources.RESOURCE;
 import settlement.maintenance.ROOM_DEGRADER;
 import settlement.room.industry.module.Industry;
-import settlement.room.industry.module.ROOM_PRODUCER;
+import settlement.room.industry.module.IndustryResource;
+import settlement.room.industry.module.ROOM_PRODUCER_INSTANCE;
 import settlement.room.infra.admin.AdminData;
 import settlement.room.main.Room;
 import settlement.room.main.RoomInstance;
@@ -69,12 +70,12 @@ public class Knowledge_Costs {
                                         know_tot[index]   = admin_room.admin().value()   ;  // Will have issues if a mod has multiple buildings for the same tech currency.
 //                                        know_tot[index]  += admin_room.admin().value()  / r.area() ; // It takes all of this industry not just the instance.
                                         // INPUT COSTS
-                                        if (room instanceof ROOM_PRODUCER){
-                                                ROOM_PRODUCER s = ((ROOM_PRODUCER) room);
+                                        if (room instanceof ROOM_PRODUCER_INSTANCE){
+                                                ROOM_PRODUCER_INSTANCE s = ((ROOM_PRODUCER_INSTANCE) room);
                                                 double total = 0;
 
                                                 for (int ri = 0; ri < s.industry().ins().size(); ri++) {
-                                                        Industry.IndustryResource i = s.industry().ins().get(ri);
+                                                        IndustryResource i = s.industry().ins().get(ri);
                                                         double n = i.dayPrev.get(s);
                                                         //double n = i.history().get(1); //laboratories didn't use dayPrev??
                                                         double sellFor = FACTIONS.player().trade.pricesBuy.get(i.resource);

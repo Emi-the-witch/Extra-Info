@@ -1,10 +1,10 @@
 package view.sett;
 
 import game.faction.FACTIONS;
-import init.C;
+import init.constant.C;
 import init.settings.S;
 import init.sprite.SPRITES;
-import init.text.D;
+import util.text.D;
 import settlement.entity.ENTITY;
 import settlement.environment.SettEnvMap.SettEnv;
 import settlement.job.Job;

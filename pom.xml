@@ -6,14 +6,14 @@
 
     <groupId>org.example</groupId>
     <artifactId>extra.info</artifactId>
-    <version>0.6.2</version>
+    <version>0.7.0</version>
 
     <profiles>
         <profile>
             <id>windows</id>
             <properties>
                 <game.mod.directory>${user.home}/AppData/Roaming/songsofsyx/mods</game.mod.directory>
-                <game.install.directory>C:/Backup/Project Fun/Songs of Syx/V69</game.install.directory>
+                <game.install.directory>C:/Backup/Project Fun/Songs of Syx/V70</game.install.directory>
                 <game.mod.uploader.directory>${user.home}/AppData/Roaming/songsofsyx/mods-uploader</game.mod.uploader.directory>
             </properties>
             <activation>
@@ -26,7 +26,7 @@
             <id>linux</id>
             <properties>
                 <game.mod.directory>${user.home}/.local/share/songsofsyx/mods</game.mod.directory>
-                <game.install.directory>C:/Backup/Project Fun/Songs of Syx/V69</game.install.directory>
+                <game.install.directory>C:/Backup/Project Fun/Songs of Syx/V70</game.install.directory>
                 <game.mod.uploader.directory>${user.home}/.local/share/songsofsyx/mods-uploader</game.mod.uploader.directory>
             </properties>
             <activation>
@@ -103,7 +103,7 @@
         <mod.description>Adds multiple UI changes to give more decision-making information.</mod.description>
         <mod.author>EmiTheWitch and Mialbowy</mod.author>
         <mod.info> </mod.info>
-        <game.version.major>69</game.version.major>
+        <game.version.major>70</game.version.major>
         <game.version.minor>0</game.version.minor>
 
         <!-- Build settings -->

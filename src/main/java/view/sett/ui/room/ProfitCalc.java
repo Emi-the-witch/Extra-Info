@@ -6,7 +6,8 @@ import init.resources.RESOURCE;
 import settlement.main.SETT;
 import settlement.maintenance.ROOM_DEGRADER;
 import settlement.room.industry.module.Industry;
-import settlement.room.industry.module.ROOM_PRODUCER;
+import settlement.room.industry.module.IndustryResource;
+import settlement.room.industry.module.ROOM_PRODUCER_INSTANCE;
 import settlement.room.food.farm.FarmInstance;
 import settlement.room.industry.module.RoomProduction;
 import settlement.room.main.RoomInstance;
@@ -52,7 +53,7 @@ public class ProfitCalc {
         public static double ppp3; // Profit per person for weighted average
 
         public static void refresh(GETTER<RoomInstance> get){
-                ROOM_PRODUCER p = ((ROOM_PRODUCER) g(get));
+                ROOM_PRODUCER_INSTANCE p = ((ROOM_PRODUCER_INSTANCE) g(get));
                 RoomInstance ins = get.get();
                 //////////////////////////////////////////////////////////////////////
                 // "Revenue" or "Money saved" / value added
@@ -61,7 +62,7 @@ public class ProfitCalc {
                 weighted_average= 0; // Revenue depending on actual consumption
 
                 for(int ri = 0; ri<p.industry().outs().size();ri++){
-                        Industry.IndustryResource i = p.industry().outs().get(ri);
+                        IndustryResource i = p.industry().outs().get(ri);
                         double n = i.dayPrev.get(p);
 
                         double sellFor = FACTIONS.player().trade.pricesSell.get(i.resource);
@@ -94,7 +95,7 @@ public class ProfitCalc {
                 inputs =0;  // Input materials costs
                 if (p.industry().ins() != null) {
                         for (int ri = 0; ri < p.industry().ins().size(); ri++) {
-                                Industry.IndustryResource i = p.industry().ins().get(ri);
+                                IndustryResource i = p.industry().ins().get(ri);
                                 double n = i.dayPrev.get(p);
                                 double sellFor = FACTIONS.player().trade.pricesBuy.get(i.resource);
                                 inputs -= n * sellFor;
@@ -154,8 +155,8 @@ public class ProfitCalc {
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////#!#
-        public static void refresh2(GETTER<FarmInstance> getter, Industry.IndustryResource i){
-                //ROOM_PRODUCER p = ((ROOM_PRODUCER) g((RoomInstance)getter));
+        public static void refresh2(GETTER<FarmInstance> getter, IndustryResource i){
+                //ROOM_PRODUCER_INSTANCE p = ((ROOM_PRODUCER_INSTANCE) g((RoomInstance)getter));
                 FarmInstance ins = getter.get();
                 double amountProduced = Util.prevHarvest(ins);
                 //prevHarvest is last year's harvest
@@ -168,7 +169,7 @@ public class ProfitCalc {
                 inputs=0;
                 maintenance=0;
 //                for(int ri = 0; ri<p.industry().outs().size();ri++){
-//                        Industry.IndustryResource i = p.industry().outs().get(ri);
+//                        IndustryResource i = p.industry().outs().get(ri);
 //                        double n = i.dayPrev.get(p);
                 double n = amountProduced / 16;
 
@@ -237,10 +238,11 @@ public class ProfitCalc {
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////#!#
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////#!#
-        public static void refresh3(GETTER<Instance> getter, Industry.IndustryResource i){
-                //ROOM_PRODUCER p = ((ROOM_PRODUCER) g((RoomInstance)getter));
+        public static void refresh3(GETTER<Instance> getter, IndustryResource i){
+                //ROOM_PRODUCER_INSTANCE p = ((ROOM_PRODUCER_INSTANCE) g((RoomInstance)getter));
+                //
                 Instance ins = getter.get();
-                double amountProduced = (int)ins.blueprintI().indus.get(0).outs().get(0).yearPrev.get(ins);
+                double amountProduced = (int)ins.blueprintI().industries().get(0).outs().get(0).yearPrev.get(ins);
                 //prevHarvest is last year's harvest
                 //prospect is the estimate.
                 //////////////////////////////////////////////////////////////////////
@@ -251,7 +253,7 @@ public class ProfitCalc {
                 inputs=0;
                 maintenance=0;
 //                for(int ri = 0; ri<p.industry().outs().size();ri++){
-//                        Industry.IndustryResource i = p.industry().outs().get(ri);
+//                        IndustryResource i = p.industry().outs().get(ri);
 //                        double n = i.dayPrev.get(p);
                 double n = amountProduced / 16;
 

@@ -4,6 +4,7 @@ import game.faction.FACTIONS;
 import init.sprite.UI.UI;
 import settlement.room.industry.module.INDUSTRY_HASER;
 import settlement.room.industry.module.Industry;
+import settlement.room.industry.module.IndustryResource;
 import settlement.room.main.RoomBlueprint;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.sets.ArrayListGrower;
@@ -69,11 +70,11 @@ public final class UIValues extends IFullView {
             double goods_sell = 0;
             double goods_buy = 0;
 
-            for (Industry.IndustryResource oo : i.outs()) {
+            for (IndustryResource oo : i.outs()) {
                 goods_sell += oo.rate * FACTIONS.PRICE().get(oo.resource);
             }
 
-            for (Industry.IndustryResource oo : i.ins()) {
+            for (IndustryResource oo : i.ins()) {
                 goods_buy += oo.rate * FACTIONS.PRICE().get(oo.resource);
             }
 
@@ -81,14 +82,14 @@ public final class UIValues extends IFullView {
             add(GFORMAT.f(new GText(UI.FONT().S, 7), goods_sell - goods_buy), incTab(2), MARGIN);
             add(i.blue.icon, incTab(1), 0);
 
-            for (Industry.IndustryResource oo : i.outs()) {
+            for (IndustryResource oo : i.outs()) {
                 add(oo.resource.icon(), incTab(1), 0);
                 add(GFORMAT.f(new GText(UI.FONT().S, 0), oo.rate).adjustWidth(), incTab(1.5), MARGIN);
                 add(GFORMAT.text(new GText(UI.FONT().S, 0), "@").adjustWidth(), incTab(0.5), MARGIN);
                 add(GFORMAT.i(new GText(UI.FONT().S, 0), FACTIONS.PRICE().get(oo.resource)).adjustWidth(), incTab(1), MARGIN);
             }
 
-            for (Industry.IndustryResource oo : i.ins()) {
+            for (IndustryResource oo : i.ins()) {
                 add(oo.resource.icon(), incTab(1), 0);
                 add(GFORMAT.f(new GText(UI.FONT().S, 0), -oo.rate).adjustWidth(), incTab(1.5), MARGIN);
                 add(GFORMAT.text(new GText(UI.FONT().S, 0), "@").adjustWidth(), incTab(0.5), MARGIN);

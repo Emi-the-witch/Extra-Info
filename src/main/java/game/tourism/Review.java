@@ -6,7 +6,6 @@ import init.race.Race;
 import init.sprite.SPRITES;
 import init.sprite.UI.Icon;
 import init.sprite.UI.UI;
-import init.text.Inserter;
 import settlement.main.SETT;
 import settlement.room.main.RoomBlueprintImp;
 import settlement.room.service.module.ROOM_SERVICER;
@@ -24,7 +23,8 @@ import snake2d.util.rnd.RND;
 import snake2d.util.sprite.text.Str;
 import snake2d.util.sprite.text.Str.StringReusableSer;
 import util.colors.GCOLOR;
-import util.dic.DicTime;
+import util.text.DicTime;
+import util.text.Inserter;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -38,7 +38,7 @@ public final class Review implements Serializable, SAVABLE{
 	public double inn_score;
 	public double score_rand;
 	private static final long serialVersionUID = 1L;
-	
+	/// //
 	public Review() {
 		
 	}

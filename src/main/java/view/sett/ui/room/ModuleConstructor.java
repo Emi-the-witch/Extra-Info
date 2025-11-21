@@ -10,7 +10,7 @@ import settlement.room.main.furnisher.Furnisher;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.sets.LISTE;
 import util.data.GETTER;
-import util.dic.Dic;
+import util.text.Dic;
 import util.gui.misc.GBox;
 import util.gui.table.GTableSorter.GTFilter;
 import util.gui.table.GTableSorter.GTSort;

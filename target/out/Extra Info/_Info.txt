@@ -1,5 +1,5 @@
-VERSION: "0.5.7",
-GAME_VERSION_MAJOR: 69,
+VERSION: "0.7.0",
+GAME_VERSION_MAJOR: 70,
 GAME_VERSION_MINOR: 0,
 NAME: "Extra Info",
 DESC: "Adds multiple UI changes to give more decision-making information.",

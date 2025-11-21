@@ -6,23 +6,23 @@ import game.boosting.BOOSTABLES;
 import game.faction.FACTIONS;
 import game.time.TIME;
 import game.time.TIMECYCLE;
-import init.RES;
+import util.GUTIL;
 import init.resources.RBIT.RBITImp;
 import init.resources.RESOURCE;
 import init.resources.RESOURCES;
 import init.sprite.SPRITES;
 import init.sprite.UI.Icon;
 import init.sprite.UI.UI;
-import init.text.D;
+import util.text.D;
 import settlement.main.SETT;
 import settlement.misc.job.JOBMANAGER_HASER;
 import settlement.misc.util.RESOURCE_TILE;
 import settlement.overlay.Addable;
 import settlement.room.industry.module.INDUSTRY_HASER;
 import settlement.room.industry.module.Industry;
-import settlement.room.industry.module.Industry.IndustryResource;
+import settlement.room.industry.module.IndustryResource;
 import settlement.room.industry.module.IndustryUtil;
-import settlement.room.industry.module.ROOM_PRODUCER;
+import settlement.room.industry.module.ROOM_PRODUCER_INSTANCE;
 import settlement.room.main.Room;
 import settlement.room.main.RoomBlueprint;
 import settlement.room.main.RoomBlueprintIns;
@@ -46,8 +46,8 @@ import snake2d.util.sets.LinkedList;
 import snake2d.util.sets.Stack;
 import snake2d.util.sprite.text.Str;
 import util.data.GETTER;
-import util.dic.Dic;
-import util.dic.DicTime;
+import util.text.Dic;
+import util.text.DicTime;
 import util.gui.misc.GBox;
 import util.gui.misc.GButt;
 import util.gui.misc.GChart;
@@ -429,7 +429,7 @@ final class ModuleIndustry implements ModuleMaker {
 
 		@Override
 		public void hover(GBox box, Room room, int rx, int ry) {
-			ROOM_PRODUCER p = ((ROOM_PRODUCER) room);
+			ROOM_PRODUCER_INSTANCE p = ((ROOM_PRODUCER_INSTANCE) room);
 			box.NL();
 			int t = 0;
 			for (IndustryResource i : p.industry().outs()) {
@@ -468,7 +468,7 @@ final class ModuleIndustry implements ModuleMaker {
 
 		@Override
 		public void problem(Stack<Str> free, LISTE<CharSequence> errors, LISTE<CharSequence> warnings, Room rr, int rx, int ry) {
-			ROOM_PRODUCER p = ((ROOM_PRODUCER) rr);
+			ROOM_PRODUCER_INSTANCE p = ((ROOM_PRODUCER_INSTANCE) rr);
 			if (p.industry().outs().size() == 0)
 				return;
 
@@ -509,7 +509,7 @@ final class ModuleIndustry implements ModuleMaker {
 
 //		@Override
 //		public void problem(GBox box, Room rr, int rx, int ry) {
-//			ROOM_PRODUCER p = ((ROOM_PRODUCER) rr);
+//			ROOM_PRODUCER_INSTANCE p = ((ROOM_PRODUCER_INSTANCE) rr);
 //			if (p.industry().outs().size() == 0)
 //				return;
 //
@@ -815,7 +815,7 @@ final class ModuleIndustry implements ModuleMaker {
 						@Override
 						protected void clickA() {
 							if (i.lockable().passes(FACTIONS.player())) {
-								ROOM_PRODUCER p = ((ROOM_PRODUCER) g(get));
+								ROOM_PRODUCER_INSTANCE p = ((ROOM_PRODUCER_INSTANCE) g(get));
 								p.setIndustry(k);
 								VIEW.inters().popup.close();
 								if (g(get) instanceof JOBMANAGER_HASER) {
@@ -903,21 +903,21 @@ final class ModuleIndustry implements ModuleMaker {
 
 		}
 
-		private ROOM_PRODUCER g(GETTER<RoomInstance> g) {
-			return (ROOM_PRODUCER) g.get();
+		private ROOM_PRODUCER_INSTANCE g(GETTER<RoomInstance> g) {
+			return (ROOM_PRODUCER_INSTANCE) g.get();
 		}
 
 	}
 	////////////////////////////// MAKE IT PUBLIC PLEASE
-	public static ROOM_PRODUCER g(GETTER<RoomInstance> g) {
-		return (ROOM_PRODUCER) g.get();
+	public static ROOM_PRODUCER_INSTANCE g(GETTER<RoomInstance> g) {
+		return (ROOM_PRODUCER_INSTANCE) g.get();
 	}
 	/// /////////////////////////////
 	private static RENDEROBJ resIn(int ri, GETTER<RoomInstance> get, INDUSTRY_HASER indu, boolean outs) {
 		GuiSection s = new GuiSection() {
 			@Override
 			public void hoverInfoGet(GUI_BOX text) {
-				ROOM_PRODUCER p = ((ROOM_PRODUCER) g(get));
+				ROOM_PRODUCER_INSTANCE p = ((ROOM_PRODUCER_INSTANCE) g(get));
 				if (ri >= p.industry().ins().size())
 					return;
 
@@ -948,7 +948,7 @@ final class ModuleIndustry implements ModuleMaker {
 
 			@Override
 			public void render(SPRITE_RENDERER r, float ds) {
-				ROOM_PRODUCER p = ((ROOM_PRODUCER) g(get));
+				ROOM_PRODUCER_INSTANCE p = ((ROOM_PRODUCER_INSTANCE) g(get));
 				visableSet(p.industry().ins().size() > ri);
 				if (visableIs())
 					super.render(r, ds);
@@ -958,7 +958,7 @@ final class ModuleIndustry implements ModuleMaker {
 
 			@Override
 			public void render(SPRITE_RENDERER r, float ds) {
-				ROOM_PRODUCER p = ((ROOM_PRODUCER) g(get));
+				ROOM_PRODUCER_INSTANCE p = ((ROOM_PRODUCER_INSTANCE) g(get));
 				IndustryResource i = p.industry().ins().get(ri);
 				i.resource.icon().render(r, body);
 			}
@@ -968,7 +968,7 @@ final class ModuleIndustry implements ModuleMaker {
 
 			@Override
 			public void update(GText text) {
-				IndustryResource i = ((ROOM_PRODUCER) g(get)).industry().ins().get(ri);
+				IndustryResource i = ((ROOM_PRODUCER_INSTANCE) g(get)).industry().ins().get(ri);
 				RoomInstance ins = (RoomInstance) get.get();
 				indu.industryFormatConsumptionRate(text, i, ins);
 			}
@@ -986,7 +986,7 @@ final class ModuleIndustry implements ModuleMaker {
 
 			@Override
 			public void render(SPRITE_RENDERER r, float ds) {
-				ROOM_PRODUCER p = ((ROOM_PRODUCER) g(get));
+				ROOM_PRODUCER_INSTANCE p = ((ROOM_PRODUCER_INSTANCE) g(get));
 				visableSet(p.industry().outs().size() > ri);
 				if (visableIs())
 					super.render(r, ds);
@@ -995,7 +995,7 @@ final class ModuleIndustry implements ModuleMaker {
 			@Override
 			public void hoverInfoGet(GUI_BOX text) {
 
-				ROOM_PRODUCER p = ((ROOM_PRODUCER) g(get));
+				ROOM_PRODUCER_INSTANCE p = ((ROOM_PRODUCER_INSTANCE) g(get));
 				if (ri >= p.industry().outs().size())
 					return;
 
@@ -1043,7 +1043,7 @@ final class ModuleIndustry implements ModuleMaker {
 
 			@Override
 			public void render(SPRITE_RENDERER r, float ds) {
-				ROOM_PRODUCER p = ((ROOM_PRODUCER) g(get));
+				ROOM_PRODUCER_INSTANCE p = ((ROOM_PRODUCER_INSTANCE) g(get));
 				IndustryResource i = p.industry().outs().get(ri);
 				i.resource.icon().render(r, body);
 			}
@@ -1053,7 +1053,7 @@ final class ModuleIndustry implements ModuleMaker {
 
 			@Override
 			public void update(GText text) {
-				IndustryResource i = ((ROOM_PRODUCER) g(get)).industry().outs().get(ri);
+				IndustryResource i = ((ROOM_PRODUCER_INSTANCE) g(get)).industry().outs().get(ri);
 				RoomInstance ins = (RoomInstance) get.get();
 				indu.industryFormatProductionRate(text, i, ins);
 			}
@@ -1065,7 +1065,7 @@ final class ModuleIndustry implements ModuleMaker {
 
 			@Override
 			public void update(GText text) {
-				IndustryResource i = ((ROOM_PRODUCER) g(get)).industry().outs().get(ri);
+				IndustryResource i = ((ROOM_PRODUCER_INSTANCE) g(get)).industry().outs().get(ri);
 				RoomInstance ins = (RoomInstance) get.get();
 				indu.industryFormatProductionRateEmpl(text, i, ins);
 			}
@@ -1090,14 +1090,14 @@ final class ModuleIndustry implements ModuleMaker {
 
 		@Override
 		public void initBelow(RenderData data) {
-			Flooder f = RES.flooder();
+			Flooder f = GUTIL.flooder();
 			f.init(this);
 			double hi = 0;
 			double ii = 1.0/BOOSTABLES.PHYSICS().SPEED.baseValue;
 
 			f.pushSmaller(ins.mX(), ins.mY(), 0);
 			while(f.hasMore()) {
-				PathTile t = RES.flooder().pollSmallest();
+				PathTile t = GUTIL.flooder().pollSmallest();
 				hi = Math.max(hi, t.getValue());
 
 				for (DIR d : DIR.ALL) {
@@ -1117,7 +1117,7 @@ final class ModuleIndustry implements ModuleMaker {
 			}
 
 			while(f.hasMore()) {
-				PathTile t = RES.flooder().pollSmallest();
+				PathTile t = GUTIL.flooder().pollSmallest();
 				if (t.getValue() >= max)
 					break;
 				for (DIR d : DIR.ALL) {
@@ -1131,8 +1131,8 @@ final class ModuleIndustry implements ModuleMaker {
 		@Override
 		public void renderBelow(Renderer r, RenderIterator it) {
 			double v = 0;
-			if (RES.flooder().hasBeenPushed(it.tx(), it.ty())) {
-				double vv = RES.flooder().getValue(it.tx(), it.ty())/max;
+			if (GUTIL.flooder().hasBeenPushed(it.tx(), it.ty())) {
+				double vv = GUTIL.flooder().getValue(it.tx(), it.ty())/max;
 				v = 1.0 - vv;
 				v = CLAMP.d(v*2.0, 0, 1);
 			}
@@ -1141,7 +1141,7 @@ final class ModuleIndustry implements ModuleMaker {
 
 		@Override
 		public void finishBelow() {
-			RES.flooder().done();
+			GUTIL.flooder().done();
 		}
 	}
 

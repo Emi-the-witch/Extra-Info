@@ -1,5 +1,5 @@
 package view.sett.ui.room;
-import init.RES;
+import util.GUTIL;
 import settlement.main.SETT;
 import settlement.room.main.Room;
 import snake2d.PathTile;
@@ -8,7 +8,7 @@ import snake2d.util.datatypes.DIR;
 
 public class CanalCounter {
         static public int countCanals(Room canal, int rx, int ry) {
-                PathUtilOnline.Flooder f = RES.flooder();
+                PathUtilOnline.Flooder f = GUTIL.flooder();
                 f.init(canal);
                 // how many canal tiles are orthogonally connected to passed canal tile
                 int am = 0;

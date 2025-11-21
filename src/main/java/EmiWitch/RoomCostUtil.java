@@ -5,7 +5,8 @@ import game.time.TIME;
 import init.resources.RESOURCE;
 import settlement.maintenance.ROOM_DEGRADER;
 import settlement.room.industry.module.Industry;
-import settlement.room.industry.module.ROOM_PRODUCER;
+import settlement.room.industry.module.IndustryResource;
+import settlement.room.industry.module.ROOM_PRODUCER_INSTANCE;
 import settlement.room.main.Room;
 import settlement.room.main.RoomInstance;
 import settlement.room.main.employment.RoomEquip;
@@ -30,8 +31,8 @@ public class RoomCostUtil {
             employees += r_ins.employees().employed();
         }
 
-        if (r instanceof ROOM_PRODUCER) {
-            ROOM_PRODUCER r_prod = (ROOM_PRODUCER) r;
+        if (r instanceof ROOM_PRODUCER_INSTANCE) {
+            ROOM_PRODUCER_INSTANCE r_prod = (ROOM_PRODUCER_INSTANCE) r;
 
             inputs = getIndustryValue(r_prod, r_prod.industry().ins(), true);
             outputs = getIndustryValue(r_prod, r_prod.industry().outs(), false);
@@ -43,10 +44,10 @@ public class RoomCostUtil {
         }
     }
 
-    public static double getIndustryValue(ROOM_PRODUCER r, LIST<Industry.IndustryResource> rs, boolean buying) {
+    public static double getIndustryValue(ROOM_PRODUCER_INSTANCE r, LIST<IndustryResource> rs, boolean buying) {
         double total = 0.0;
 
-        for (Industry.IndustryResource i : rs) {
+        for (IndustryResource i : rs) {
             double n = i.dayPrev.get(r);
 
             if (buying) {
