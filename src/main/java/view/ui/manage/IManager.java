@@ -11,6 +11,7 @@ import init.sprite.UI.UI;
 import init.type.HTYPES;
 import settlement.main.SETT;
 import settlement.stats.STATS;
+import snake2d.CORE;
 import snake2d.MButt;
 import snake2d.Renderer;
 import snake2d.SPRITE_RENDERER;
@@ -361,15 +362,17 @@ public final class IManager {
 		{
 			int k = 0;
 			GuiSection ss = new GuiSection();
-			bAdd2(ss, k++, recipes, UI.icons().s.money, null);
-			bAdd2(ss, k++, values, UI.icons().s.money, null);
 
-			bAdd2(ss, k++, all_expenses, UI.c_icons().s.c_minus, null);
-			bAdd2(ss, k++, all_production, UI.c_icons().s.c_plus, null);
+			if (CORE.getGraphics().displayWidth> 1520) {
+				bAdd2(ss, k++, recipes, UI.icons().s.money, null);
+				bAdd2(ss, k++, values, UI.icons().s.money, null);
 
-			bAdd2(ss, k++, VIEW.UI().level, UI.icons().s.arrowUp, null);
-			bAdd2(ss, k++, VIEW.UI().profile, UI.icons().s.menu, null);
+				bAdd2(ss, k++, all_expenses, UI.c_icons().s.c_minus, null);
+				bAdd2(ss, k++, all_production, UI.c_icons().s.c_plus, null);
 
+				bAdd2(ss, k++, VIEW.UI().level, UI.icons().s.arrowUp, null);
+				bAdd2(ss, k++, VIEW.UI().profile, UI.icons().s.menu, null);
+			}
 			bAdd(s, i++, ss);
 		}
 		return s;
