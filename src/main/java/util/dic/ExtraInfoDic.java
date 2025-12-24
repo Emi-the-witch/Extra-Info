@@ -119,6 +119,18 @@ public class ExtraInfoDic {
     /**
      * original: view.ui.goods.UIMaintenance, line 110
      */
+    public static CharSequence buildingsTitle;
+    /**
+     * original: view.ui.goods.UIMaintenance, line 110
+     */
+    public static CharSequence importTitle;
+    /**
+     * original: view.ui.goods.UIMaintenance, line 110
+     */
+    public static CharSequence valueTitle;
+    /**
+     * original: view.ui.goods.UIMaintenance, line 110
+     */
     public static CharSequence titleBuildingMaintenance;
     /**
      * original: view.ui.goods.UIMaintenance, line 200
@@ -247,6 +259,9 @@ public class ExtraInfoDic {
         overallMaintenance = bundle.getString("overallMaintenance");
         titleMaintenance = bundle.getString("titleMaintenance");
         overallBuildingMaintenance = bundle.getString("overallBuildingMaintenance");
+        buildingsTitle = bundle.getString("buildings");
+        importTitle = bundle.getString("import");
+        valueTitle = bundle.getString("value");
         titleBuildingMaintenance = bundle.getString("titleBuildingMaintenance");
         total = bundle.getString("total");
 
