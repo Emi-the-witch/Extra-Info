@@ -131,7 +131,7 @@ public final class      UIMaintenance extends IFullView {
                         if (SETT.MAINTENANCE().estimateGlobal(res) == 0) continue;
                         addHeaderButton(headerRow, res, RESOURCE_INDEX_OFFSET + res.index(), RESOURCE_COLUMN_WIDTH);
                 }
-                section.addDown(24, headerRow);
+                section.addDown(16, headerRow);
                 section.addDown(8, new GuiSection());
         }
 
@@ -141,8 +141,9 @@ public final class      UIMaintenance extends IFullView {
                         BLDGrows.add(new BuildingMaint(key));
                 }
                 BLDGrows.add(new BuildingMaint(null));
-                BLDGrows.add(new BuildingMaint(null));
-                GScrollRows scrollRows = new GScrollRows(BLDGrows, (int) round(HEIGHT * .50) );
+                int usedHeight = section.body().height();
+                int availableHeight = (int) HEIGHT - usedHeight - 20;
+                GScrollRows scrollRows = new GScrollRows(BLDGrows, (int) availableHeight);
                 section.addDown(5, scrollRows.view());
         }
 
