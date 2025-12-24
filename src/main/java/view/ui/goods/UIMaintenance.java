@@ -43,6 +43,9 @@ public final class      UIMaintenance extends IFullView {
         private static final int RESOURCE_COLUMN_WIDTH = 52;
         private static final int RESOURCE_INDEX_OFFSET = 100;
 
+        private static boolean expandResourceTable = true;
+        private static boolean expandBuildingTable = true;
+
         @Override
         public void init() {
 
@@ -75,7 +78,6 @@ public final class      UIMaintenance extends IFullView {
 
                 for (String key : building_totals.keys()) { //For each key and resource, update the import/value price per building:
                         update2(key);
-
                 }
 
 
@@ -90,37 +92,61 @@ public final class      UIMaintenance extends IFullView {
 
                 // Display top line messages
                 // section.addDown(0, new GText(UI.FONT().H2, "Overall Maintenance costs"));
-                section.addDown(0, new GText(UI.FONT().H2, ExtraInfoDic.overallMaintenance));
-                // GText tableHeader = new GText(UI.FONT().S, "Resource per day         Costs if imported per day   Average value per day");
-                GText tableHeader = new GText(UI.FONT().S, ExtraInfoDic.titleMaintenance);
-                section.addDown(10, tableHeader);
+                addCollapsibleHeader(ExtraInfoDic.overallMaintenance, expandResourceTable, () -> expandResourceTable = !expandResourceTable);
+                if (expandResourceTable) {
+                        // GText tableHeader = new GText(UI.FONT().S, "Resource per day         Costs if imported per day   Average value per day");
+                        GText tableHeader = new GText(UI.FONT().S, ExtraInfoDic.titleMaintenance);
+                        section.addDown(10, tableHeader);
 
-                // Create each row
+                        // Create each row
 
-                for (RESOURCE res : RESOURCES.ALL()) {
-                        if (SETT.MAINTENANCE().estimateGlobal(res) != 0) {
-                                rows.add(new ResourceRow(res, tableHeader.width(), 0, 0));
+                        for (RESOURCE res : RESOURCES.ALL()) {
+                                if (SETT.MAINTENANCE().estimateGlobal(res) != 0) {
+                                        rows.add(new ResourceRow(res, tableHeader.width(), 0, 0));
+                                }
+
                         }
+                        rows.add(new ResourceRow(null, tableHeader.width(), import_costs, value_costs));
 
+
+                        // Display the rows!
+                        GScrollRows scrollRows;
+                        if (expandBuildingTable) {
+                                scrollRows = new GScrollRows(rows, (int) round(HEIGHT * .33));
+                        }
+                        else {
+                                int usedHeight = section.body().height();
+                                int availableHeight = (int) HEIGHT - usedHeight - 60;
+                                scrollRows = new GScrollRows(rows, (int) availableHeight);
+                        }
+                        section.addDown(5, scrollRows.view());
                 }
-                rows.add(new ResourceRow(null, tableHeader.width() , import_costs, value_costs));
-
-
-                // Display the rows!
-                GScrollRows scrollRows = new GScrollRows(rows, (int) round(HEIGHT * .33));
-                section.addDown(5, scrollRows.view());
                 
                 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 // Table 2
                 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                addCollapsibleHeader(ExtraInfoDic.overallBuildingMaintenance, expandBuildingTable, () -> expandBuildingTable = !expandBuildingTable);
+                if (expandBuildingTable) {
+                        generateMaintenanceTableHeader();
+                        generateMaintenanceTableContent();
+                }
+        }
 
-                generateMaintenanceTableHeader();
-                generateMaintenanceTableContent();
+        private void addCollapsibleHeader(CharSequence title, boolean isOpen, Runnable toggleAction) {
+                String fullLabel = (isOpen ? "[-] " : "[+] ") + title;
+
+                util.gui.misc.GButt.ButtPanel toggleBtn = new util.gui.misc.GButt.ButtPanel(fullLabel) {
+                        @Override
+                        public boolean click() {
+                                toggleAction.run();
+                                init();
+                                return true;
+                        }
+                };;
+                section.addDown(10, toggleBtn.setDim(500, 40));
         }
 
         private void generateMaintenanceTableHeader() {
-                section.addDown(0, new GText(UI.FONT().H2, ExtraInfoDic.overallBuildingMaintenance));
-
                 GuiSection headerRow = new GuiSection();
 
                 addHeaderButton(headerRow, ExtraInfoDic.buildingsTitle, 0, NAME_COLUMN_WIDTH);
@@ -208,7 +234,6 @@ public final class      UIMaintenance extends IFullView {
                         //////////////////////////////////////////////////////////////////////
                          if (res != null){
                                 double amount_of_res = SETT.MAINTENANCE().estimateGlobal(res);
-//                                body().setWidth(width).setHeight(1);
                                 // Display resource.icon()
                                 add(GFORMAT.f(new GText(UI.FONT().S, 0), amount_of_res).adjustWidth(), incTab(2), MARGIN);
                                 // Amount of resource used:
