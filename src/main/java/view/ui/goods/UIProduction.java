@@ -11,11 +11,13 @@ import snake2d.util.sets.ArrayListGrower;
 import util.dic.ExtraInfoDic;
 import util.gui.misc.GText;
 import util.gui.table.GScrollRows;
-import util.info.GFORMAT;
+import view.ui.goods.tableRow.BalanceRow;
+import view.ui.goods.tableRow.BalanceRowHeader;
+import view.ui.goods.tableRow.BalanceRowExpandable;
 import view.ui.manage.IFullView;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
+
 /////////////////////////////////////////////#!# This is a unique file that doesn't overwrite any of Jake's files.
 /////#!# Displays all the PROD.producers and is relied upon by UITreasury for the consumers and producers values
 
@@ -29,6 +31,10 @@ public final class UIProduction extends IFullView {
                 super(¤¤Name, UI.c_icons().l.plus);
         }
 
+        private final java.util.Set<CharSequence> expandedCategories = new java.util.HashSet<>();
+        private int sortColumn = 0; // 0=Name, 1=Amount, 2=Export, 3=Value
+        private boolean sortAscending = true;
+
 
         @Override
         public void init() {
@@ -37,116 +43,98 @@ public final class UIProduction extends IFullView {
                 section.body().moveX1(16);
                 section.body().setWidth(WIDTH).setHeight(1);
 
-
-                // Display top line messages
-                // section.addDown(0, new GText(UI.FONT().H2, "Producers"));
                 section.addDown(0, new GText(UI.FONT().H2, ExtraInfoDic.producers));
-                ArrayListGrower<RegRow> rows = new ArrayListGrower<>();
+                ArrayListGrower<GuiSection> rows = new ArrayListGrower<>();
                 GText tableHeader = new GText(UI.FONT().S, "                                                                              ");
-                section.addDown(10, tableHeader);
+                rows.add(new BalanceRowHeader(WIDTH, this));
 
                 // Order by source
                 HashMap<CharSequence, ArrayListGrower<RoomProduction.Source>> data = new HashMap<>();
                 for (RESOURCE res : RESOURCES.ALL()) {
                         for (RoomProduction.Source ii : SETT.ROOMS().PROD.producers(res)) {
-                                if (!data.containsKey(ii.name())) {
-                                        data.put(ii.name(), new ArrayListGrower<>());
+                                if (ii.am() > 0) { // Only capture active producers
+                                        data.computeIfAbsent(ii.name(), k -> new ArrayListGrower<>()).add(ii);
                                 }
-                                data.get(ii.name()).add(ii);
                         }
                 }
-                // Display by source
-                for (Map.Entry<CharSequence, ArrayListGrower<RoomProduction.Source>> item :       data.entrySet()) {
-                        CharSequence category = item.getKey();
 
-                        //Check if any value >0
-                        boolean check = false;
-                        for (RoomProduction.Source ii : item.getValue()) {
-                                if (ii.am() != 0) {
-                                        check = true;
+                java.util.List<Map.Entry<CharSequence, ArrayListGrower<RoomProduction.Source>>> dataSorted =
+                        new java.util.ArrayList<>(data.entrySet());
+
+                dataSorted.sort((a, b) -> {
+                        double sumA = 0;
+                        double sumB = 0;
+                        int res;
+                        if (sortColumn == 0) {
+                                res = a.getKey().toString().compareTo(b.getKey().toString());
+                        } else {
+
+                                for (RoomProduction.Source s : a.getValue()) {
+                                        sumA += getSortValue(s, sortColumn);
                                 }
+                                for (RoomProduction.Source s : b.getValue()) {
+                                        sumB += getSortValue(s, sortColumn);
+                                }
+
+                                res = Double.compare(sumA, sumB);
                         }
-                        if (!check){continue;}
-                        // Reset the totals for the next category
+                        return sortAscending ? res : -res;
+                });
+
+                for (Map.Entry<CharSequence, ArrayListGrower<RoomProduction.Source>> item : dataSorted) {
+                        CharSequence category = item.getKey();
+                        boolean isExpanded = expandedCategories.contains(category);
+
                         total_export = 0;
                         total_value = 0;
 
-                        // Display rows of resources and amounts
-                        rows.add(new AddRow(null, tableHeader.width(), (String) category )); // Source title line
-                        rows.add(new AddRow(null, tableHeader.width(), "columns" )); // column description line
                         for (RoomProduction.Source ii : item.getValue()) {
                                 if (ii.am() != 0) {
-                                        rows.add(new AddRow(ii, tableHeader.width(), ""));
+                                        long resExport = (long) (ii.am() * FACTIONS.player().trade.pricesSell.get(ii.res));
+                                        long resValue = (long) (ii.am() * FACTIONS.PRICE().get(ii.res));
+                                        total_export += resExport;
+                                        total_value += resValue;
                                 }
                         }
-                        rows.add(new AddRow(null, tableHeader.width(), "total" )); // total line
-                        rows.add(new AddRow(null, tableHeader.width(), "space" )); // space line(s)
-                        rows.add(new AddRow(null, tableHeader.width(), "space" )); // space line(s)
+
+                        rows.add(new BalanceRowExpandable(category, total_export, total_value, isExpanded, tableHeader.width(), () -> {
+                                if (expandedCategories.contains(category)) expandedCategories.remove(category);
+                                else expandedCategories.add(category);
+                                init();
+                        }));
+
+                        if (isExpanded) {
+                                for (RoomProduction.Source ii : item.getValue()) {
+                                        long resExport = (long) (ii.am() * FACTIONS.player().trade.pricesSell.get(ii.res));
+                                        long resValue = (long) (ii.am() * FACTIONS.PRICE().get(ii.res));
+                                        rows.add(new BalanceRow(ii.res, ii.am(), resExport, resValue, tableHeader.width()));
+                                }
+                        }
                 }
 
-
-                // Display the rows!
                 GScrollRows scrollRows = new GScrollRows(rows, HEIGHT-20);
                 section.addDown(5, scrollRows.view());
         }
 
-        private class AddRow extends RegRow {
-                // Create the row using the resource:
-                AddRow(RoomProduction.Source ii, int width, String spec) {
-
-                        if ( ii != null ) {
-                                body().setWidth(width).setHeight(1);
-
-                                // Display resource.icon()
-                                add(GFORMAT.f(new GText(UI.FONT().S, 0), ii.am()).adjustWidth(), incTab(2), MARGIN);
-
-                                // Amount of resource used:
-                                add(ii.res.icon(), incTab(3), 0);
-
-                                // Export values for that resource:
-                                add(GFORMAT.i(new GText(UI.FONT().S, 0), (long) (ii.am() * FACTIONS.player().trade.pricesSell.get(ii.res))).adjustWidth(), incTab(2), MARGIN);
-                                add(GFORMAT.text(new GText(UI.FONT().S, 0), ExtraInfoDic.denari).adjustWidth(), incTab(4), MARGIN);
-
-                                // Value of those resources:
-                                add(GFORMAT.i(new GText(UI.FONT().S, 0), (long) (ii.am() * FACTIONS.PRICE().get(ii.res))).adjustWidth(), incTab(2), MARGIN);
-                                add(GFORMAT.text(new GText(UI.FONT().S, 0), ExtraInfoDic.denari).adjustWidth(), incTab(4), MARGIN);
-
-                                total_export += (ii.am() * FACTIONS.player().trade.pricesSell.get(ii.res));
-                                total_value += (ii.am() * FACTIONS.PRICE().get(ii.res));
-                        }else if ( ii == null &&
-                                !Objects.equals(spec, "columns") &&
-                                !Objects.equals(spec, "total") &&
-                                !Objects.equals(spec, "space") ){ // Then display  what "spec" is
-                                add(GFORMAT.text(new GText(UI.FONT().S, 0), spec ).adjustWidth(), incTab(4), MARGIN);
-
-                        }else if ( ii == null && Objects.equals(spec, "columns")){ // New Columnn titles
-                                // add(GFORMAT.text(new GText(UI.FONT().S, 0), "Resource per day         Value if exported per day   Average value per day").adjustWidth(), incTab(4), MARGIN);
-                                add(GFORMAT.text(new GText(UI.FONT().S, 0), ExtraInfoDic.titleProduction).adjustWidth(), incTab(4), MARGIN);
-
-                        }else if( ii == null && Objects.equals(spec, "total")){ // Total values
-                                // add(GFORMAT.text(new GText(UI.FONT().S, 0), "Total Values:").adjustWidth(), incTab(5), MARGIN);
-                                add(GFORMAT.text(new GText(UI.FONT().S, 0), ExtraInfoDic.totalValues).adjustWidth(), incTab(5), MARGIN);
-                                add(GFORMAT.iIncr(new GText(UI.FONT().S, 0), (long) +total_export).adjustWidth(), incTab(2), MARGIN);
-                                add(GFORMAT.text(new GText(UI.FONT().S, 0), ExtraInfoDic.denari).adjustWidth(), incTab(4), MARGIN);
-                                add(GFORMAT.iIncr(new GText(UI.FONT().S, 0), (long) +total_value).adjustWidth(), incTab(2), MARGIN);
-                                add(GFORMAT.text(new GText(UI.FONT().S, 0), ExtraInfoDic.denari).adjustWidth(), incTab(4), MARGIN);
-
-                        }else if( ii == null && Objects.equals(spec, "space")){ // blank line!
-                                add(GFORMAT.text(new GText(UI.FONT().S, 0), " ").adjustWidth(), incTab(5), MARGIN);
-                        }
+        private double getSortValue(RoomProduction.Source s, int column) {
+                switch (column) {
+                        case 1: return s.am();
+                        case 2: return s.am() * FACTIONS.player().trade.pricesSell.get(s.res);
+                        case 3: return s.am() * FACTIONS.PRICE().get(s.res);
+                        default: return 0;
                 }
         }
 
-        private abstract class RegRow extends GuiSection {
-                protected static final int MARGIN = 4;
-                private double tab;
-
-                protected int incTab(double n) {
-                        double t = tab;
-                        tab += n;
-                        return (int) (t * MARGIN * 10);
+        public void handleSort(int column) {
+                if (this.sortColumn == column) {
+                        this.sortAscending = !this.sortAscending;
+                } else {
+                        this.sortColumn = column;
+                        this.sortAscending = true;
                 }
+                init();
         }
+
         public static double production() {
                 double tot = 0;
                 for (RESOURCE res : RESOURCES.ALL()) {
