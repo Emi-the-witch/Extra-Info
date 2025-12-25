@@ -1,4 +1,4 @@
-package view.ui.goods.tableRow;
+package view.ui.goods.balance;
 
 import init.resources.RESOURCE;
 import init.sprite.UI.UI;
@@ -16,21 +16,17 @@ public class BalanceRow extends GuiSection {
     public BalanceRow(RESOURCE res, double amount, long expVal, long mktVal, int width) {
         body().setWidth(width).setHeight(24);
 
-        // 1. Resource Icon & Name
         add(res.icon(), SLOT_NAME, 0);
         add(new GText(UI.FONT().S, res.name).adjustWidth(), SLOT_NAME + 24, 4);
 
-        // 2. Amount
         GText amTxt = new GText(UI.FONT().S, 10);
         GFORMAT.f(amTxt, amount);
         add(amTxt.adjustWidth(), SLOT_AMOUNT, 4);
 
-        // 3. Export Value (Calculated outside)
         GText expTxt = new GText(UI.FONT().S, 10);
         GFORMAT.iIncr(expTxt, expVal);
         add(expTxt.adjustWidth(), SLOT_EXPORT, 4);
 
-        // 4. Market Value (Calculated outside)
         GText valTxt = new GText(UI.FONT().S, 10);
         GFORMAT.iIncr(valTxt, mktVal);
         add(valTxt.adjustWidth(), SLOT_VALUE, 4);

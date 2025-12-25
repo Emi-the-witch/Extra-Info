@@ -1,4 +1,4 @@
-package view.ui.goods.tableRow;
+package view.ui.goods.balance;
 
 import init.sprite.UI.UI;
 import snake2d.util.gui.GuiSection;
@@ -12,7 +12,7 @@ public class BalanceRowExpandable extends GuiSection {
     private static final int SLOT_EXPORT = 550;
     private static final int SLOT_VALUE = 800;
 
-    public BalanceRowExpandable(CharSequence category, double totalExport, double totalValue, boolean isExpanded, int width, Runnable toggleAction) {
+    public BalanceRowExpandable(CharSequence category, double totalTradeValue, double totalValue, boolean isExpanded, int width, Runnable toggleAction) {
         body().setWidth(width).setHeight(24);
 
         String buttonLabel = (isExpanded ? "[-] " : "[+] ");
@@ -28,16 +28,13 @@ public class BalanceRowExpandable extends GuiSection {
 
         add(toggleBtn, SLOT_TOGGLE, 0);
 
-        // 1. Label: "Total Values" (translated)
         GText label = new GText(UI.FONT().S, category);
         add(label.adjustWidth(), SLOT_LABEL, 12);
 
-        // 2. Total Export (Green/Red formatting)
         GText expT = new GText(UI.FONT().S, 10);
-        GFORMAT.iIncr(expT, (long) totalExport);
+        GFORMAT.iIncr(expT, (long) totalTradeValue);
         add(expT.adjustWidth(), SLOT_EXPORT, 12);
 
-        // 3. Total Market Value
         GText valT = new GText(UI.FONT().S, 10);
         GFORMAT.iIncr(valT, (long) totalValue);
         add(valT.adjustWidth(), SLOT_VALUE, 12);
