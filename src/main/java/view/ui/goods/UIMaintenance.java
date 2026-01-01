@@ -35,6 +35,16 @@ public final class      UIMaintenance extends IFullView {
         public double value_costs = 0;
         ResData total = new ResData();
         static double[] sort_totals = new double[255];// hopefully less than 255 building types!
+        static boolean sortAscending = true;
+        static int sortColumn = 0;
+
+        private static final int NAME_COLUMN_WIDTH = 180;
+        private static final int SUM_COLUMN_WIDTH = 120;
+        private static final int RESOURCE_COLUMN_WIDTH = 52;
+        private static final int RESOURCE_INDEX_OFFSET = 100;
+
+        private static boolean expandResourceTable = true;
+        private static boolean expandBuildingTable = true;
 
         @Override
         public void init() {
@@ -49,7 +59,6 @@ public final class      UIMaintenance extends IFullView {
                 section.body().moveY1(IFullView.TOP_HEIGHT);
                 section.body().moveX1(16);
                 section.body().setWidth(WIDTH).setHeight(1);
-
 
                 // Display the rows using the list of resources
                 ArrayListGrower<MaintRow> rows = new ArrayListGrower<>();
@@ -69,7 +78,6 @@ public final class      UIMaintenance extends IFullView {
 
                 for (String key : building_totals.keys()) { //For each key and resource, update the import/value price per building:
                         update2(key);
-
                 }
 
 
@@ -84,46 +92,140 @@ public final class      UIMaintenance extends IFullView {
 
                 // Display top line messages
                 // section.addDown(0, new GText(UI.FONT().H2, "Overall Maintenance costs"));
-                section.addDown(0, new GText(UI.FONT().H2, ExtraInfoDic.overallMaintenance));
-                // GText tableHeader = new GText(UI.FONT().S, "Resource per day         Costs if imported per day   Average value per day");
-                GText tableHeader = new GText(UI.FONT().S, ExtraInfoDic.titleMaintenance);
-                section.addDown(10, tableHeader);
+                addCollapsibleHeader(ExtraInfoDic.overallMaintenance, expandResourceTable, () -> expandResourceTable = !expandResourceTable);
+                if (expandResourceTable) {
+                        // GText tableHeader = new GText(UI.FONT().S, "Resource per day         Costs if imported per day   Average value per day");
+                        GText tableHeader = new GText(UI.FONT().S, ExtraInfoDic.titleMaintenance);
+                        section.addDown(10, tableHeader);
 
-                // Create each row
+                        // Create each row
 
-                for (RESOURCE res : RESOURCES.ALL()) {
-                        if (SETT.MAINTENANCE().estimateGlobal(res) != 0) {
-                                rows.add(new ResourceRow(res, tableHeader.width(), 0, 0));
+                        for (RESOURCE res : RESOURCES.ALL()) {
+                                if (SETT.MAINTENANCE().estimateGlobal(res) != 0) {
+                                        rows.add(new ResourceRow(res, tableHeader.width(), 0, 0));
+                                }
+
                         }
+                        rows.add(new ResourceRow(null, tableHeader.width(), import_costs, value_costs));
 
+
+                        // Display the rows!
+                        GScrollRows scrollRows;
+                        if (expandBuildingTable) {
+                                scrollRows = new GScrollRows(rows, (int) round(HEIGHT * .33));
+                        }
+                        else {
+                                int usedHeight = section.body().height();
+                                int availableHeight = (int) HEIGHT - usedHeight - 60;
+                                scrollRows = new GScrollRows(rows, (int) availableHeight);
+                        }
+                        section.addDown(5, scrollRows.view());
                 }
-                rows.add(new ResourceRow(null, tableHeader.width() , import_costs, value_costs));
-
-
-                // Display the rows!
-                GScrollRows scrollRows = new GScrollRows(rows, (int) round(HEIGHT * .33));
-                section.addDown(5, scrollRows.view());
                 
                 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 // Table 2
                 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                
-                ArrayListGrower<MaintRow> BLDGrows = new ArrayListGrower<>();
-                // section.addDown(0, new GText(UI.FONT().H2, "Building type Maintenance costs"));
-                section.addDown(0, new GText(UI.FONT().H2, ExtraInfoDic.overallBuildingMaintenance));
-                // tableHeader = new GText(UI.FONT().S, "Building type       'Import' and 'Value' Costs     Resources used");
-                tableHeader = new GText(UI.FONT().S, ExtraInfoDic.titleBuildingMaintenance);
-                section.addDown(10, tableHeader);
-
-                for (String key : building_totals.keys()) {
-                        // Skip buildings that have no resources
-                        if (building_totals.get(key).empty){continue;}
-                        BLDGrows.add(new BuildingMaint(key, tableHeader.width(),import_costs,value_costs));
+                addCollapsibleHeader(ExtraInfoDic.overallBuildingMaintenance, expandBuildingTable, () -> expandBuildingTable = !expandBuildingTable);
+                if (expandBuildingTable) {
+                        generateMaintenanceTableHeader();
+                        generateMaintenanceTableContent();
                 }
-                BLDGrows.add(new BuildingMaint(null, tableHeader.width(),import_costs,value_costs));
-                scrollRows = new GScrollRows(BLDGrows, (int) round(HEIGHT * .50) );
+        }
+
+        private void addCollapsibleHeader(CharSequence title, boolean isOpen, Runnable toggleAction) {
+                String fullLabel = (isOpen ? "[-] " : "[+] ") + title;
+
+                util.gui.misc.GButt.ButtPanel toggleBtn = new util.gui.misc.GButt.ButtPanel(fullLabel) {
+                        @Override
+                        public boolean click() {
+                                toggleAction.run();
+                                init();
+                                return true;
+                        }
+                };;
+                section.addDown(10, toggleBtn.setDim(500, 40));
+        }
+
+        private void generateMaintenanceTableHeader() {
+                GuiSection headerRow = new GuiSection();
+
+                addHeaderButton(headerRow, ExtraInfoDic.buildingsTitle, 0, NAME_COLUMN_WIDTH);
+                addHeaderButton(headerRow, ExtraInfoDic.importTitle, 1, SUM_COLUMN_WIDTH);
+                addHeaderButton(headerRow, ExtraInfoDic.valueTitle, 2, SUM_COLUMN_WIDTH);
+
+                for (RESOURCE res : RESOURCES.ALL()) {
+                        if (SETT.MAINTENANCE().estimateGlobal(res) == 0) continue;
+                        addHeaderButton(headerRow, res, RESOURCE_INDEX_OFFSET + res.index(), RESOURCE_COLUMN_WIDTH);
+                }
+                section.addDown(16, headerRow);
+                section.addDown(8, new GuiSection());
+        }
+
+        private void generateMaintenanceTableContent() {
+                ArrayListGrower<MaintRow> BLDGrows = new ArrayListGrower<>();
+                for (String key : getSortedKeys()) {
+                        BLDGrows.add(new BuildingMaint(key));
+                }
+                BLDGrows.add(new BuildingMaint(null));
+                int usedHeight = section.body().height();
+                int availableHeight = (int) HEIGHT - usedHeight - 20;
+                GScrollRows scrollRows = new GScrollRows(BLDGrows, (int) availableHeight);
                 section.addDown(5, scrollRows.view());
         }
+
+        private void addHeaderButton(GuiSection container, Object content, int sortMode, int width) {
+                // Determine if we are passing an Icon or Text
+                util.gui.misc.GButt.ButtPanel button;
+                if (content instanceof RESOURCE) {
+                        button = new util.gui.misc.GButt.ButtPanel(((RESOURCE)content).icon());
+                } else {
+                        button = new util.gui.misc.GButt.ButtPanel((CharSequence)content);
+                }
+
+                container.addRight(0, button.setDim(width, 40).clickActionSet(() -> {
+                        if (sortColumn == sortMode) sortAscending = !sortAscending;
+                        else {
+                                sortColumn = sortMode;
+                                sortAscending = (sortMode < RESOURCE_INDEX_OFFSET);
+                        }
+                        init();
+                }));
+        }
+
+        private java.util.List<String> getSortedKeys() {
+                java.util.List<String> keys = new java.util.ArrayList<>();
+                for (String k : building_totals.keys()) {
+                        if (!building_totals.get(k).empty) keys.add(k);
+                }
+
+                keys.sort((k1, k2) -> {
+                        ResData d1 = building_totals.get(k1);
+                        ResData d2 = building_totals.get(k2);
+                        int res = 0;
+                        switch (sortColumn) {
+                                case 0:
+                                        String n1 = d1.keyName != null ? d1.keyName : k1;
+                                        String n2 = d2.keyName != null ? d2.keyName : k2;
+                                        res = n1.compareToIgnoreCase(n2);
+                                        break;
+                                case 1:
+                                        res = Double.compare(d1.import_price, d2.import_price);
+                                        break;
+                                case 2:
+                                        res = Double.compare(d1.value_price, d2.value_price);
+                                        break;
+                                default:
+                                        if (sortColumn >= RESOURCE_INDEX_OFFSET) {
+                                                int resIndex = sortColumn - RESOURCE_INDEX_OFFSET;
+                                                res = Double.compare(d1.amounts[resIndex], d2.amounts[resIndex]);
+                                        }
+                                        break;
+                        }
+                        return sortAscending ? res : -res;
+                });
+                return keys;
+        }
+
         private static class ResourceRow extends MaintRow {
                 // Create the row using the resource:
                 ResourceRow(RESOURCE res, int width, double import_costs, double value_costs) {
@@ -132,7 +234,6 @@ public final class      UIMaintenance extends IFullView {
                         //////////////////////////////////////////////////////////////////////
                          if (res != null){
                                 double amount_of_res = SETT.MAINTENANCE().estimateGlobal(res);
-                                body().setWidth(width).setHeight(1);
                                 // Display resource.icon()
                                 add(GFORMAT.f(new GText(UI.FONT().S, 0), amount_of_res).adjustWidth(), incTab(2), MARGIN);
                                 // Amount of resource used:
@@ -158,89 +259,62 @@ public final class      UIMaintenance extends IFullView {
                 }
         }
         private static class BuildingMaint extends MaintRow {
-                // Create the row using the resource:
-                BuildingMaint(String key, int width, double import_costs, double value_costs) {
-                        //////////////////////////////////////////////////////////////////////
-                        // Table 2 Data
-                        //////////////////////////////////////////////////////////////////////
+                // Tabla 2
+                BuildingMaint(String key) {
+                        body().setHeight(24);
+                        // Render resource row
                         if (key != null) {
-                                //or whatever will give the correct order later...
-                                body().setWidth(width).setHeight(1);
-
-                                // Name of the building
-                                if (building_totals.get(key).keyName == null) {
-                                        // Use key if that's all we got
-                                        add(GFORMAT.text(new GText(UI.FONT().S, 0), key).adjustWidth(), incTab(4), MARGIN);
-                                } else {   // Or use the name we got from the buildings in the updates
-                                        add(GFORMAT.text(new GText(UI.FONT().S, 0), building_totals.get(key).keyName).adjustWidth(), incTab(4), MARGIN);
-                                }
-
-                                // Import cost of building
-                                add(GFORMAT.iIncr(new GText(UI.FONT().S, 0), (long) building_totals.get(key).import_price).adjustWidth(), incTab(3), MARGIN);
-
-                                // Value cost of building
-                                add(GFORMAT.iIncr(new GText(UI.FONT().S, 0), (long) building_totals.get(key).value_price).adjustWidth(), incTab(3), MARGIN);
-
-
-                                for (RESOURCE res : RESOURCES.ALL()) {
-                                        // Skip the resource if it is empty for ALL buildings
-                                        if (SETT.MAINTENANCE().estimateGlobal(res) == 0) {
-                                                continue;
-                                        }
-
-                                        // Amount of this resource used for this building:
-                                        add(GFORMAT.f(new GText(UI.FONT().S, 0), (double) Math.round( building_totals.get(key).amounts[res.index()] * 10) /10, 1 ).adjustWidth(), incTab(1), MARGIN);
-
-                                        // Display resource.icon()
-                                        add(res.icon(), incTab(2), 0);
-                                }
+                                ResData data = building_totals.get(key);
+                                String name = data.keyName != null ? data.keyName : key;
+                                renderRow(name, data.import_price, data.value_price, data.amounts);
                         }
-                        else{
-                        //////////////////////////////////////////////////////////////////////
-                        // Table 2 Total
-                        //////////////////////////////////////////////////////////////////////
-                                //or whatever will give the correct order later...
-                                body().setWidth(width).setHeight(1);
-
-                                // Name of the building
-                                // add(GFORMAT.text(new GText(UI.FONT().S, 0), "Total" ).adjustWidth(), incTab(4), MARGIN);
-                                add(GFORMAT.text(new GText(UI.FONT().S, 0), ExtraInfoDic.total).adjustWidth(), incTab(4), MARGIN);
-
-                                // Calculate totals from the per-building values
+                        // Render totals row
+                        else {
                                 double total_import = 0;
                                 double total_value = 0;
                                 double[] total_amount = new double[RESOURCES.ALL().size()];
-                                for (String keys : building_totals.keys()) {
-                                        total_import += building_totals.get(keys).import_price;
-                                        total_value += building_totals.get(keys).value_price;
+
+                                for (String k : building_totals.keys()) {
+                                        ResData d = building_totals.get(k);
+                                        total_import += d.import_price;
+                                        total_value += d.value_price;
                                         for (RESOURCE res : RESOURCES.ALL()) {
-                                                total_amount[res.index()] += building_totals.get(keys).amounts[res.index()];
+                                                total_amount[res.index()] += d.amounts[res.index()];
                                         }
                                 }
 
-                                // Display Import cost of building
-                                add(GFORMAT.iIncr(new GText(UI.FONT().S, 0), (long) total_import).adjustWidth(), incTab(3), MARGIN);
-
-                                // Display Value cost of building
-                                add(GFORMAT.iIncr(new GText(UI.FONT().S, 0), (long) total_value).adjustWidth(), incTab(3), MARGIN);
-
-
-                                for (RESOURCE res : RESOURCES.ALL()) {
-                                        // Skip the resource if it is empty for ALL buildings
-                                        if (SETT.MAINTENANCE().estimateGlobal(res) == 0) {
-                                                continue;
-                                        }
-
-                                        // Amount of this resource used for this building:
-                                        add(GFORMAT.f(new GText(UI.FONT().S, 0), (double) Math.round( total_amount[res.index()] * 10) /10, 1 ).adjustWidth(), incTab(1), MARGIN);
-
-                                        // Display resource.icon()
-                                        add(res.icon(), incTab(2), 0);
-                                }
-
-
-
+                                renderRow(ExtraInfoDic.total, total_import, total_value, total_amount);
                         }
+                }
+
+                private void renderRow(CharSequence name, double importPrice, double valuePrice, double[] resourceAmounts) {
+                        renderTableCell(NAME_COLUMN_WIDTH, GFORMAT.text(new GText(UI.FONT().S, 0), name).adjustWidth(), false);
+                        renderTableCell(SUM_COLUMN_WIDTH, GFORMAT.iIncr(new GText(UI.FONT().S, 0), (long) importPrice).adjustWidth(), true);
+                        renderTableCell(SUM_COLUMN_WIDTH, GFORMAT.iIncr(new GText(UI.FONT().S, 0), (long) valuePrice).adjustWidth(), true);
+                        for (RESOURCE res : RESOURCES.ALL()) {
+                                if (SETT.MAINTENANCE().estimateGlobal(res) == 0) continue;
+                                double amount = Math.round(resourceAmounts[res.index()] * 10) / 10.0;
+                                renderTableCell(RESOURCE_COLUMN_WIDTH, GFORMAT.f(new GText(UI.FONT().S, 0), amount, 1).adjustWidth(), true);
+                        }
+                }
+
+                private void renderTableCell(int width, snake2d.util.sprite.SPRITE sprite, boolean alignCenter) {
+                        GuiSection cell = new GuiSection();
+                        cell.body().setWidth(width).setHeight(24);
+                        // If cell content is too wide it will jump in the next line
+                        if (sprite instanceof GText && sprite.width() > width) {
+                                ((GText) sprite).setMaxWidth(width);
+                        }
+
+                        // Center values, presumably do it with numeric values so they are aligned with resource icons
+                        if (alignCenter) {
+                                int xPos = (int) ((width - sprite.width()) / 2);
+                                cell.add(sprite, xPos, 0);
+                        } else {
+                                cell.add(sprite, 0, 0);
+                        }
+
+                        this.addRight(0, cell);
                 }
         }
 // ROOMS().map.get(85,71).roomI  ==> 155
