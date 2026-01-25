@@ -4,7 +4,7 @@
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <option name="MAIN_CLASS_NAME" value="init.MainLaunchLauncher" />
     <module name="extra.info" />
-    <option name="WORKING_DIRECTORY" value="C:/Backup/Project Fun/Songs of Syx/V70" />
+    <option name="WORKING_DIRECTORY" value="C:/Backup/Project Fun/Songs of Syx/V70"/>
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="your.mod.*" />

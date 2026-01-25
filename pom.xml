@@ -6,7 +6,7 @@
 
     <groupId>org.example</groupId>
     <artifactId>extra.info</artifactId>
-    <version>0.7.0</version>
+    <version>0.7.3</version>
 
     <profiles>
         <profile>
@@ -104,7 +104,7 @@
         <mod.author>EmiTheWitch and Mialbowy</mod.author>
         <mod.info> </mod.info>
         <game.version.major>70</game.version.major>
-        <game.version.minor>0</game.version.minor>
+        <game.version.minor>32</game.version.minor>
 
         <!-- Build settings -->
         <game.version.directory>V${game.version.major}</game.version.directory>

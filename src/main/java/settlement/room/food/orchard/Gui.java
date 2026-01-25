@@ -201,7 +201,7 @@ class Gui extends UIRoomModuleImp<Instance, ROOM_ORCHARD> {
 				b.NL();
 				b.text(¤¤skillCurrentD);
 				b.NL();
-				IndustryUtil.hoverBoosts(b, 1.0, getter.get().industry(), getter.get().industry().bonus(), getter.get());
+				IndustryUtil.hoverBoosts(b, 1.0, getter.get().industry(), getter.get().industry().bonus(), getter.get(),1);
 				
 				
 			};

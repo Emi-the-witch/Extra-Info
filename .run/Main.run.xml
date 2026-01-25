@@ -4,7 +4,7 @@
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <option name="MAIN_CLASS_NAME" value="init.Main" />
     <module name="extra.info" />
-    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../../../Emi/Games/steamapps/common/Songs of Syx/" />
+    <option name="WORKING_DIRECTORY" value="C:\Program Files (x86)\Steam\steamapps\common\Songs of Syx" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="your.mod.*" />

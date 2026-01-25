@@ -335,7 +335,9 @@ public final class IManager {
 //                }
 
 				i = (i+1) % speed.length;
-				speed[i]= game.GameSpeed.actualSpeed;
+//				speed[i]= game.GameSpeed.actualSpeed;
+				speed[i]= GAME.SPEED.speed();
+
 				GFORMAT.i(text,(long) sum_d(speed) / speed.length  );
 			}
 		});

@@ -26,8 +26,13 @@ C:\Backup\IdeaProjects\Extra Info V70\src\main\java\view\sett\ui\room\ProfitCalc
 C:\Backup\IdeaProjects\Extra Info V70\src\main\java\view\sett\ui\room\UIRoomModule.java
 C:\Backup\IdeaProjects\Extra Info V70\src\main\java\view\sett\ui\standing\CatPopulation.java
 C:\Backup\IdeaProjects\Extra Info V70\src\main\java\view\sett\ui\subject\UIHoverer.java
+C:\Backup\IdeaProjects\Extra Info V70\src\main\java\view\ui\common\GenericTableRow.java
 C:\Backup\IdeaProjects\Extra Info V70\src\main\java\view\ui\economy\RRow.java
 C:\Backup\IdeaProjects\Extra Info V70\src\main\java\view\ui\economy\UITreasury.java
+C:\Backup\IdeaProjects\Extra Info V70\src\main\java\view\ui\goods\balance\BalanceRow.java
+C:\Backup\IdeaProjects\Extra Info V70\src\main\java\view\ui\goods\balance\BalanceRowExpandable.java
+C:\Backup\IdeaProjects\Extra Info V70\src\main\java\view\ui\goods\balance\BalanceRowHeader.java
+C:\Backup\IdeaProjects\Extra Info V70\src\main\java\view\ui\goods\balance\BalanceView.java
 C:\Backup\IdeaProjects\Extra Info V70\src\main\java\view\ui\goods\UIExpenses.java
 C:\Backup\IdeaProjects\Extra Info V70\src\main\java\view\ui\goods\UILogistics.java
 C:\Backup\IdeaProjects\Extra Info V70\src\main\java\view\ui\goods\UIMaintenance.java

@@ -14,11 +14,13 @@ settlement\tilemap\terrain\TWater$8.class
 view\ui\goods\UIRecipes.class
 view\sett\ui\room\ModuleIndustry$6.class
 view\sett\ui\room\ModuleUpgradable$I.class
+view\ui\goods\balance\BalanceRow.class
 view\ui\goods\UIModSettings.class
 settlement\room\food\orchard\Gui$13.class
 init\sprite\UI\CustomIcons$CS.class
 view\sett\ui\standing\CatPopulation$4.class
 view\ui\goods\UIValues$RRow.class
+view\ui\goods\balance\BalanceRowHeader.class
 init\sprite\UI\CustomIcons$CS$IconS.class
 view\ui\manage\IManager$2.class
 settlement\tilemap\terrain\TWater$Sprites$6.class
@@ -48,7 +50,6 @@ settlement\tilemap\terrain\TWater$Sprites$1.class
 init\sprite\UI\UI.class
 view\sett\ui\subject\UIHoverer.class
 settlement\room\food\farm\Gui$17.class
-view\ui\goods\UIProduction$1.class
 settlement\tilemap\terrain\TWater.class
 settlement\room\food\orchard\Instance.class
 settlement\tilemap\terrain\TWater$3.class
@@ -70,15 +71,12 @@ view\sett\ui\room\ModuleIndustry$2.class
 view\sett\ui\room\ModuleIndustry$I$7.class
 view\sett\ui\room\ModuleIndustry$I$4.class
 settlement\stats\colls\StatsEnv$4.class
-view\ui\goods\UIExpenses$RegRow.class
-view\ui\goods\UIProduction$RegRow.class
 view\sett\ui\room\ModuleIndustry$5.class
 settlement\tilemap\terrain\TWater$1.class
 settlement\room\food\farm\Gui$12.class
 view\sett\ui\subject\UIHoverer$2.class
 settlement\tilemap\terrain\TWater$10.class
 settlement\room\food\orchard\Gui.class
-view\ui\goods\UIExpenses$AddRow.class
 settlement\room\food\farm\Gui$9.class
 settlement\room\food\farm\Gui$6.class
 view\sett\ui\room\ModuleIndustry$I$10.class
@@ -154,7 +152,7 @@ view\sett\ui\room\ModuleIndustry$I$2.class
 view\ui\goods\UILogistics$1.class
 view\sett\ui\room\ModuleIndustry$I$9.class
 settlement\tilemap\terrain\TWater$Sprites.class
-view\ui\goods\UIProduction$AddRow.class
+view\ui\goods\balance\BalanceRowExpandable.class
 view\sett\ui\room\ModuleDegrade$I$2.class
 settlement\tilemap\terrain\TWater$Bridge$1.class
 settlement\tilemap\terrain\TWater$Deep.class
@@ -187,7 +185,6 @@ game\GameSpeed.class
 settlement\tilemap\terrain\TWater$Bridge.class
 view\ui\manage\IManager$3.class
 init\tech\TECH$3.class
-view\ui\goods\UIExpenses$1.class
 init\tech\Knowledge_Costs.class
 view\sett\ui\room\ModuleDegrade.class
 view\sett\ui\room\ModuleUpgradable$I$1.class
@@ -204,6 +201,7 @@ settlement\room\food\farm\Gui$1.class
 settlement\room\food\orchard\Gui$3.class
 view\ui\goods\UIMaintenance.class
 view\sett\ui\room\UIRoomModule$UIRoomModuleImp.class
+view\ui\goods\balance\BalanceView.class
 view\ui\goods\UIMaintenance$MaintRow.class
 view\ui\manage\IManager$1.class
 settlement\tilemap\terrain\TWater$6.class
@@ -218,4 +216,5 @@ view\ui\goods\UIMaintenance$BuildingMaint.class
 settlement\tilemap\terrain\TWater$Sprites$4.class
 view\sett\ui\room\UIRoomModule.class
 view\sett\ui\standing\CatPopulation$11.class
+view\ui\goods\balance\BalanceRowExpandable$1.class
 view\sett\ui\room\ModuleUpgradable$I$2.class
