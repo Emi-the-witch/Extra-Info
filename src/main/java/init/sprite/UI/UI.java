@@ -25,7 +25,7 @@ public class UI extends InitResource{
 		decor = new UIDecor();
 		icons = new Icons();
 		image = new UIImageMaker();
-		c_icons = new CustomIcons();
+		c_icons = new CustomIcons();///#!# Add custom icons
 	}
 
 	public static UIFonts FONT() {
@@ -49,5 +49,5 @@ public class UI extends InitResource{
 	}
 	public static CustomIcons c_icons() {///#!# Add custom icons
 		return c_icons;
-	}
+	}///#!# Add custom icons
 }

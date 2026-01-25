@@ -83,6 +83,7 @@ view\sett\ui\room\ModuleIndustry$I$10.class
 view\sett\ui\room\ModuleUpgradable.class
 settlement\room\food\farm\Gui$8.class
 settlement\stats\colls\StatsEnv$2.class
+settlement\tilemap\terrain\TWater$11.class
 settlement\room\food\orchard\Instance$1.class
 view\sett\ui\room\ModuleIndustry$I$6.class
 settlement\room\food\orchard\Gui$11.class

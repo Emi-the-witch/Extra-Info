@@ -31,8 +31,9 @@ import java.util.Arrays;
 import game.time.TIMECYCLE;
 public class StatsEnv extends StatCollection{
 	/// #!# static at the top, to make the UILogistics analysis work. resources | days
-	public static int[][] sum_res = new int[100][16];     /// Needs to be at least as big as the # of resources. Just saying the # of resources was problematic
-	public static int[][] sum_emp = new int[100][16];	/// Instead of counting up the resources, it counts up the # of people carrying
+	static final int resource_limit = 1000; /// If modders go crazier, ... increase it more.
+	public static int[][] sum_res = new int[resource_limit][16];     /// Needs to be at least as big as the # of resources. Just saying the # of resources was problematic
+	public static int[][] sum_emp = new int[resource_limit][16];	/// Instead of counting up the resources, it counts up the # of people carrying
 	public static int interval;
 	public static boolean first_run=true;
 	int prev_day= 0;
