@@ -103,6 +103,7 @@ public class TWater {
 		placer(groundWaterSalt, "Water Salt");
 		placer(deepSeaFishSpot, "Water deep sea spot");
 
+
 /// ///////// #!# Only section changed, adding fish icons to the debug!
 		for (int bit = 0; bit < 16; bit ++){
 			String name = "Fish " + String.format("%02d", bit);;
@@ -110,37 +111,37 @@ public class TWater {
 		}
 	}
 
-		private void placer(Bitsmap2D map, String name, int bit) {
-			PLACABLE undo = new PlacableMulti(name + " undo") {
-				@Override
-				public void place(int tx, int ty, AREA area, PLACER_TYPE type) {
-					map.set(tx, ty, bit);
-				}
-				@Override
-				public CharSequence isPlacable(int tx, int ty, AREA area, PLACER_TYPE type) {
-					return map.is(tx, ty) ? null : E;
-				}
-			};
-			PLACABLE p = new PlacableMulti(name) {
-				@Override
-				public void place(int tx, int ty, AREA area, PLACER_TYPE type) {
-					map.set(tx, ty, bit);
+	private void placer(Bitsmap2D map, String name, int bit) {
+		PLACABLE undo = new PlacableMulti(name + " undo") {
+			@Override
+			public void place(int tx, int ty, AREA area, PLACER_TYPE type) {
+				map.set(tx, ty, bit);
+			}
+			@Override
+			public CharSequence isPlacable(int tx, int ty, AREA area, PLACER_TYPE type) {
+				return map.is(tx, ty) ? null : E;
+			}
+		};
+		PLACABLE p = new PlacableMulti(name) {
+			@Override
+			public void place(int tx, int ty, AREA area, PLACER_TYPE type) {
+				map.set(tx, ty, bit);
 
-				}
+			}
 
-				@Override
-				public CharSequence isPlacable(int tx, int ty, AREA area, PLACER_TYPE type) {
+			@Override
+			public CharSequence isPlacable(int tx, int ty, AREA area, PLACER_TYPE type) {
 
-					return null;
-				}
-				@Override
-				public PLACABLE getUndo() {
-					return undo;
-				}
-			};
-			IDebugPanelSett.add(p);
-		}
-		/////////////////////////////////////////// #!#
+				return null;
+			}
+			@Override
+			public PLACABLE getUndo() {
+				return undo;
+			}
+		};
+		IDebugPanelSett.add(p);
+	}
+	/////////////////////////////////////////// #!#
 
 	private void placer(Bitmap2D map, String name) {
 
@@ -379,6 +380,19 @@ public class TWater {
 	private final Minimap mini = new Minimap();
 
 	public MAP_BOOLEAN is = new MAP_BOOLEAN() {
+
+		@Override
+		public boolean is(int tx, int ty) {
+			return SHALLOW.is(tx,ty) || DEEP.is(tx, ty) || BRIDGE.is(tx, ty);
+		}
+
+		@Override
+		public boolean is(int tile) {
+			return SHALLOW.is(tile) || DEEP.is(tile)  || BRIDGE.is(tile);
+		}
+	};
+
+	public MAP_BOOLEAN isW = new MAP_BOOLEAN() {
 
 		@Override
 		public boolean is(int tx, int ty) {
@@ -1269,7 +1283,7 @@ public class TWater {
 			CORE.renderer().renderDisplace(dis2.x1(i.tx()), dis2.y1(i.ty()), tex2.x1(i.tx()), tex2.y1(i.ty()),
 					C.T_PIXELS, C.T_PIXELS, 8,
 					i.x(), i.x()+C.TILE_SIZE, i.y(), i.y()+C.TILE_SIZE);
-//			
+//
 			OPACITY.unbind();
 		}
 
