@@ -6,14 +6,14 @@
 
     <groupId>org.example</groupId>
     <artifactId>extra.info</artifactId>
-    <version>0.7.3</version>
+    <version>0.8.0</version>
 
     <profiles>
         <profile>
             <id>windows</id>
             <properties>
                 <game.mod.directory>${user.home}/AppData/Roaming/songsofsyx/mods</game.mod.directory>
-                <game.install.directory>C:/Backup/Project Fun/Songs of Syx/V70</game.install.directory>
+                <game.install.directory>/home/emi/Project Fun/Songs of Syx/V71</game.install.directory>
                 <game.mod.uploader.directory>${user.home}/AppData/Roaming/songsofsyx/mods-uploader</game.mod.uploader.directory>
             </properties>
             <activation>
@@ -26,7 +26,7 @@
             <id>linux</id>
             <properties>
                 <game.mod.directory>${user.home}/.local/share/songsofsyx/mods</game.mod.directory>
-                <game.install.directory>C:/Backup/Project Fun/Songs of Syx/V70</game.install.directory>
+                <game.install.directory>/home/emi/Project Fun/Songs of Syx/V71</game.install.directory>
                 <game.mod.uploader.directory>${user.home}/.local/share/songsofsyx/mods-uploader</game.mod.uploader.directory>
             </properties>
             <activation>
@@ -93,8 +93,8 @@
 
     <properties>
         <!-- Songs of Syx uses Java 1.8 -->
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- These settings will go into the mods _Info.txt file -->
@@ -103,8 +103,8 @@
         <mod.description>Adds multiple UI changes to give more decision-making information.</mod.description>
         <mod.author>EmiTheWitch and Mialbowy</mod.author>
         <mod.info> </mod.info>
-        <game.version.major>70</game.version.major>
-        <game.version.minor>32</game.version.minor>
+        <game.version.major>71</game.version.major>
+        <game.version.minor>31</game.version.minor>
 
         <!-- Build settings -->
         <game.version.directory>V${game.version.major}</game.version.directory>

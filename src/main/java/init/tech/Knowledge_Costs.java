@@ -78,7 +78,7 @@ public class Knowledge_Costs {
                                                         IndustryResource i = s.industry().ins().get(ri);
                                                         double n = i.dayPrev.get(s);
                                                         //double n = i.history().get(1); //laboratories didn't use dayPrev??
-                                                        double sellFor = FACTIONS.player().trade.pricesBuy.get(i.resource);
+                                                        double sellFor = FACTIONS.player().trade.pricesBuy.get(i.resource.tr());
                                                         total -= n * sellFor;
                                                 }
                                                 cost_inputs[index] += total / r.area();
@@ -89,7 +89,7 @@ public class Knowledge_Costs {
                                         RoomEmploymentSimple ee = r.blueprint().employment();
                                         for (RoomEquip w : ee.tools()) {
                                                 double n = w.degradePerDay * e.tools(w);
-                                                double sellFor = FACTIONS.player().trade.pricesBuy.get(w.resource);
+                                                double sellFor = FACTIONS.player().trade.pricesBuy.get(w.resource.tr());
                                                 cost_tools[index] -= n * sellFor / r.area();
                                         }
 
@@ -105,7 +105,7 @@ public class Knowledge_Costs {
                                                 RESOURCE res = deg.res(i);
 
                                                 double n = ROOM_DEGRADER.rateResource(boost, deg.base(), iso, deg.resAmount(i)) * TIME.years().bitConversion(TIME.days()) / 16.0;
-                                                double sellFor = FACTIONS.player().trade.pricesBuy.get(res);
+                                                double sellFor = FACTIONS.player().trade.pricesBuy.get(res.tr());
                                                 cost_maint[index] -= n * sellFor / r.area();
                                         }
                                 }

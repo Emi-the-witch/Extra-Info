@@ -396,12 +396,12 @@ public class TWater {
 
 		@Override
 		public boolean is(int tx, int ty) {
-			return SHALLOW.is(tx,ty) || DEEP.is(tx, ty) || BRIDGE.is(tx, ty);
+			return SHALLOW.is(tx,ty) || DEEP.is(tx, ty);
 		}
 
 		@Override
 		public boolean is(int tile) {
-			return SHALLOW.is(tile) || DEEP.is(tile)  || BRIDGE.is(tile);
+			return SHALLOW.is(tile) || DEEP.is(tile);
 		}
 	};
 
@@ -456,7 +456,7 @@ public class TWater {
 
 		private Shallow (Terrain t) throws IOException {
 			super("WATER_SHALLOW", t, ¤¤name, sprites.icon, t.colors.minimap.water);
-			ontop = SPRITES.GAME().sheets(SheetType.s1x1, new Json(PATHS.CONFIG().get("SETT_MAP_DECORATION")).json("WATER_SWEET_1X1"));
+			ontop = SPRITES.GAME().sheets(SheetType.s1x1, new Json(PATHS.CONFIG().init.gets("SETT_MAP_DECORATION")).json("WATER_SWEET_1X1"));
 		}
 
 		private TerrainClearing clearing = new Clear() {

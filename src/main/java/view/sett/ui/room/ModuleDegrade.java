@@ -231,8 +231,19 @@ final class ModuleDegrade implements ModuleMaker {
 						b.add(res.icon());
 						b.textL(res.name);
 						b.tab(6);
-						b.add(GFORMAT.f0(b.text(), -ROOM_DEGRADER.rateResource(boost, deg.base(), iso, deg.resAmount(i))*TIME.years().bitConversion(TIME.days())*FACTIONS.player().trade.pricesBuy.get(res)));
-						maint_cost += (-ROOM_DEGRADER.rateResource(boost, deg.base(), iso, deg.resAmount(i))*TIME.years().bitConversion(TIME.days())*FACTIONS.player().trade.pricesBuy.get(res));
+						b.add(GFORMAT.f0(b.text(),
+								-ROOM_DEGRADER.rateResource(
+										boost,
+										deg.base(),
+										iso,
+										deg.resAmount(i))*TIME.years().bitConversion(TIME.days())*FACTIONS.player().trade.pricesBuy.get(res.tr())
+						));
+						maint_cost += (-ROOM_DEGRADER.rateResource(
+								boost,
+								deg.base(),
+								iso,
+								deg.resAmount(i))*TIME.years().bitConversion(TIME.days())*FACTIONS.player().trade.pricesBuy.get(res.tr())
+						);
 						b.textLL(" $");
 						b.NL();
 					}

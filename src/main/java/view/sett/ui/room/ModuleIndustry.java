@@ -2,6 +2,61 @@ package view.sett.ui.room;
 
 import java.util.Arrays;
 
+import game.faction.FACTIONS;
+import game.time.TIME;
+import game.time.TIMECYCLE;
+import init.resources.RBIT.RBITImp;
+import init.resources.RESOURCE;
+import init.resources.RESOURCES;
+import init.sprite.SPRITES;
+import init.sprite.UI.Icon;
+import init.sprite.UI.UI;
+import settlement.main.SETT;
+import settlement.misc.job.JOBMANAGER_HASER;
+import settlement.misc.util.RESOURCE_TILE;
+import settlement.room.industry.module.INDUSTRY_HASER;
+import settlement.room.industry.module.Industry;
+import settlement.room.industry.module.IndustryResource;
+import settlement.room.industry.module.IndustryUtil;
+import settlement.room.industry.module.ROOM_PRODUCER_INSTANCE;
+import settlement.room.main.Room;
+import settlement.room.main.RoomBlueprint;
+import settlement.room.main.RoomBlueprintIns;
+import settlement.room.main.RoomInstance;
+import settlement.room.main.employment.RoomEmploymentIns;
+import snake2d.SPRITE_RENDERER;
+import snake2d.util.datatypes.COORDINATE;
+import snake2d.util.datatypes.DIR;
+import snake2d.util.gui.GUI_BOX;
+import snake2d.util.gui.GuiSection;
+import snake2d.util.gui.Hoverable.HOVERABLE;
+import snake2d.util.gui.clickable.CLICKABLE;
+import snake2d.util.gui.renderable.RENDEROBJ;
+import snake2d.util.sets.LIST;
+import snake2d.util.sets.LISTE;
+import snake2d.util.sets.LinkedList;
+import snake2d.util.sets.Stack;
+import snake2d.util.sprite.text.Str;
+import util.data.GETTER;
+import util.gui.misc.GBox;
+import util.gui.misc.GButt;
+import util.gui.misc.GChart;
+import util.gui.misc.GGrid;
+import util.gui.misc.GHeader;
+import util.gui.misc.GStat;
+import util.gui.misc.GText;
+import util.gui.table.GScrollRows;
+import util.gui.table.GTableSorter.GTFilter;
+import util.gui.table.GTableSorter.GTSort;
+import util.info.GFORMAT;
+import util.statistics.HISTORY_INT;
+import util.text.D;
+import util.text.Dic;
+import util.text.DicTime;
+import view.main.VIEW;
+import view.sett.ui.room.Modules.ModuleMaker;
+import java.util.Arrays;
+
 import game.boosting.BOOSTABLES;
 import game.faction.FACTIONS;
 import game.time.TIME;
@@ -67,7 +122,7 @@ import view.sett.ui.room.Modules.ModuleMaker;
 
 import static view.sett.ui.room.ProfitCalc.*;
 
-final class ModuleIndustry implements ModuleMaker {
+public final class ModuleIndustry implements ModuleMaker {
 
 	private final GChart chart = new GChart();
 	private final boolean[] rCheck = new boolean[RESOURCES.ALL().size()];
@@ -99,11 +154,6 @@ final class ModuleIndustry implements ModuleMaker {
 	private static CharSequence Profit2 = "Yesterday's Value added";
 	private static CharSequence Profit3 = "Profit per person";
 	/////////////////////////////////
-
-
-
-	private final InputOverlay overlay = new InputOverlay();
-
 	public ModuleIndustry(Init init) {
 		D.t(this);
 
@@ -423,7 +473,7 @@ final class ModuleIndustry implements ModuleMaker {
 
 		@Override
 		public void appendTableFilters(LISTE<GTFilter<RoomInstance>> filters,
-									   LISTE<GTSort<RoomInstance>> sorts, LISTE<UIRoomBulkApplier> appliers) {
+		                               LISTE<GTSort<RoomInstance>> sorts, LISTE<UIRoomBulkApplier> appliers) {
 
 		}
 
@@ -509,7 +559,7 @@ final class ModuleIndustry implements ModuleMaker {
 
 //		@Override
 //		public void problem(GBox box, Room rr, int rx, int ry) {
-//			ROOM_PRODUCER_INSTANCE p = ((ROOM_PRODUCER_INSTANCE) rr);
+//			ROOM_PRODUCER p = ((ROOM_PRODUCER) rr);
 //			if (p.industry().outs().size() == 0)
 //				return;
 //
@@ -585,26 +635,7 @@ final class ModuleIndustry implements ModuleMaker {
 					all.add(s);
 				}
 
-				RENDEROBJ in = new GStat() {
-
-					@Override
-					public void update(GText text) {
-						GFORMAT.perc(text, get.get().employees().fetchProximity());
-					}
-
-					@Override
-					public void hoverInfoGet(GBox b) {
-						overlay.ins = get.get();
-						overlay.add();
-						b.title(RoomEmploymentIns.¤¤ProximityInput);
-						b.text(RoomEmploymentIns.¤¤¤¤ProximityInputD);
-						b.NL();
-						b.textL(DicTime.¤¤Today);
-						b.add(GFORMAT.perc(b.text(), get.get().employees().fetchProximitySoFar()));
-					};
-
-				}.hh(UI.icons().s.clock);
-
+				RENDEROBJ in  = makeFetch(get);
 				GuiSection s = new GuiSection();
 				s.add(new GHeader(¤¤Consumption));
 				if (((RoomBlueprint)indu).employment().countInput())
@@ -614,8 +645,6 @@ final class ModuleIndustry implements ModuleMaker {
 
 				section.addRelBody(4, DIR.S, all);
 			}
-
-
 
 
 
@@ -789,18 +818,6 @@ final class ModuleIndustry implements ModuleMaker {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 			if (ins.size() <= 1)
 				return;
 
@@ -913,6 +930,7 @@ final class ModuleIndustry implements ModuleMaker {
 		return (ROOM_PRODUCER_INSTANCE) g.get();
 	}
 	/// /////////////////////////////
+
 	private static RENDEROBJ resIn(int ri, GETTER<RoomInstance> get, INDUSTRY_HASER indu, boolean outs) {
 		GuiSection s = new GuiSection() {
 			@Override
@@ -931,9 +949,20 @@ final class ModuleIndustry implements ModuleMaker {
 				if (outs) {
 					b.text(¤¤ConsumptionD);
 					b.NL(8);
-					IndustryUtil.hoverConsumptionRate(text, i.rate, p.industry(), (RoomInstance) get.get(), i.resource);
+					IndustryUtil.hoverConsumptionRate(text, i.rate, (RoomInstance) get.get(), p.industry());
 				}
 				b.NL(8);
+
+				b.textLL(¤¤ConsumedDay);
+				b.tab(7);
+				b.add(GFORMAT.i(b.text(), (int)i.day.getD(p)));
+				b.NL();
+
+				b.textLL(¤¤ConsumedYEsterday);
+				b.tab(7);
+				b.add(GFORMAT.i(b.text(), i.dayPrev.get(p)));
+				b.NL();
+
 				b.textLL(¤¤ConsumedNow);
 				b.tab(7);
 				b.add(GFORMAT.i(b.text(), i.year.get(p)));
@@ -1013,6 +1042,17 @@ final class ModuleIndustry implements ModuleMaker {
 
 				b.NL(8);
 
+				b.textLL(¤¤ProducedDay);
+				b.tab(7);
+				b.add(GFORMAT.i(b.text(), (int)i.day.getD(p)));
+				b.NL();
+
+				b.textLL(¤¤ProducedYesterDay);
+				b.tab(7);
+				b.add(GFORMAT.i(b.text(), i.dayPrev.get(p)));
+				b.NL();
+
+
 				b.textLL(¤¤ProducedNow);
 				b.tab(7);
 				b.add(GFORMAT.i(b.text(), i.year.get(p)));
@@ -1078,70 +1118,38 @@ final class ModuleIndustry implements ModuleMaker {
 		return s;
 	}
 
-	private static class InputOverlay extends Addable {
 
-		private RoomInstance ins;
 
-		private final double max = RoomEmploymentIns.FETCH_FREE_SECONDS/(2.0);
+	public static RENDEROBJ makeFetch(GETTER<? extends RoomInstance> get) {
+		RENDEROBJ in = new GStat() {
 
-		public InputOverlay() {
-			super(true, false);
-		}
-
-		@Override
-		public void initBelow(RenderData data) {
-			Flooder f = GUTIL.flooder();
-			f.init(this);
-			double hi = 0;
-			double ii = 1.0/BOOSTABLES.PHYSICS().SPEED.baseValue;
-
-			f.pushSmaller(ins.mX(), ins.mY(), 0);
-			while(f.hasMore()) {
-				PathTile t = GUTIL.flooder().pollSmallest();
-				hi = Math.max(hi, t.getValue());
-
-				for (DIR d : DIR.ALL) {
-					if (ins.is(t) && SETT.PATH().coster.player.getCost(t.x(), t.y(), t.x()+d.x(), t.y()+d.y()) > 0) {
-						f.pushSmaller(t,d, t.getValue() + SETT.PATH().availability.get(t, d).movementSpeed*ii*d.tileDistance());
-					}
-
-				}
-
+			@Override
+			public void update(GText text) {
+				GFORMAT.perc(text, get.get().employees().fetchProximity());
 			}
 
-			f.done();
-			f.init(this);
-			for (COORDINATE c : ins.body()) {
-				if (ins.is(c))
-					f.pushSmaller(c, hi);
-			}
+			@Override
+			public void hoverInfoGet(GBox b) {
+				SETT.OVERLAY().addFetch(get.get());
+				b.title(RoomEmploymentIns.¤¤ProximityInput);
+				b.text(RoomEmploymentIns.¤¤¤¤ProximityInputD);
+				b.NL();
+				b.textL(DicTime.¤¤Today);
+				b.add(GFORMAT.perc(b.text(), get.get().employees().fetchProximitySoFar()));
+			};
 
-			while(f.hasMore()) {
-				PathTile t = GUTIL.flooder().pollSmallest();
-				if (t.getValue() >= max)
-					break;
-				for (DIR d : DIR.ALL) {
-					if (SETT.PATH().coster.player.getCost(t.x(), t.y(), t.x()+d.x(), t.y()+d.y()) >= 0) {
-						f.pushSmaller(t, d, t.getValue() + SETT.PATH().availability.get(t, d).movementSpeed*ii*d.tileDistance());
-					}
-				}
-			}
-		}
+		}.hh(UI.icons().s.clock);
+		return in;
+	}
+	public void problem(Stack<Str> free, LISTE<CharSequence> errors, LISTE<CharSequence> warnings, Room r, int rx, int ry) {
+		fetchProblem(free, errors, warnings, (RoomInstance) r);
+	}
 
-		@Override
-		public void renderBelow(Renderer r, RenderIterator it) {
-			double v = 0;
-			if (GUTIL.flooder().hasBeenPushed(it.tx(), it.ty())) {
-				double vv = GUTIL.flooder().getValue(it.tx(), it.ty())/max;
-				v = 1.0 - vv;
-				v = CLAMP.d(v*2.0, 0, 1);
-			}
-			renderUnder(v, r, it, false);
-		}
+	public static void fetchProblem(Stack<Str> free, LISTE<CharSequence> errors, LISTE<CharSequence> warnings, RoomInstance room) {
 
-		@Override
-		public void finishBelow() {
-			GUTIL.flooder().done();
+		if (room.blueprint().employment().countInput()) {
+			if (room.employees().fetchProximity() < 0.8)
+				warnings.add(¤¤FetchWarning);
 		}
 	}
 

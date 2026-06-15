@@ -2,10 +2,8 @@ package view.ui.economy;
 
 import game.GAME;
 import game.faction.FACTIONS;
-import game.faction.diplomacy.DIP;
-import game.faction.npc.FactionNPC;
-import init.resources.RESOURCE;
-import settlement.main.SETT;
+import init.trade.TRADABLE;
+import settlement.stats.STATS;
 import snake2d.SPRITE_RENDERER;
 import snake2d.util.color.COLOR;
 import snake2d.util.color.ColorImp;
@@ -13,13 +11,11 @@ import snake2d.util.datatypes.COORDINATE;
 import snake2d.util.datatypes.DIR;
 import snake2d.util.gui.GUI_BOX;
 import snake2d.util.gui.GuiSection;
-import snake2d.util.misc.CLAMP;
 import util.colors.GCOLOR;
 import util.data.GETTER.GETTERE;
 import util.data.INT.INTE;
 import util.dic.ExtraInfoDic;
 import util.gui.misc.GBox;
-import util.gui.misc.GMeter;
 import util.gui.misc.GStat;
 import util.gui.misc.GText;
 import util.gui.table.GStaples;
@@ -29,7 +25,7 @@ import util.text.Dic;
 import util.text.DicTime;
 import view.ui.goods.UIGoodsExport;
 import view.ui.goods.UIGoodsImport;
-import world.region.RD;
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
 ///#!# Adds the 3-year and 1-year sums onto each resource in the treasury UI.
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -39,29 +35,27 @@ final class RRow extends GuiSection {
 	public static final COLOR colorInport = new ColorImp(80, 80, 100);
 
 	private final int w;
-	private static int amount = 48; ///#!# Null prevention
+	private static int amount = STATS.DAYS_SAVED;
 	private static final int height = 60;
 
 	private final GStaples[] dias;
 	private INTE hi;
-	private final RESOURCE res;
-	private final GETTERE<RESOURCE> rcurrent;
+	private final TRADABLE res;
+	private final GETTERE<TRADABLE> rcurrent;
 
 	private static CharSequence ¤¤Imports = "Imports";
 	private static CharSequence ¤¤Exports = "Exports";
 	private static CharSequence ¤¤Lowest = "Lowest";
 	private static CharSequence ¤¤Highest = "Highest";
 	private static CharSequence ¤¤Unit = "Unit";
-	private static CharSequence ¤¤CapacityN = "¤Trade Capacity";
-	private static CharSequence ¤¤CapacityNDesc = "¤The combined trade capacity of your trade partners, and how much that you have currently traded. Once the capacity is exceeded, the factions will add expensive tariffs to your trade to protect their economies.";
+	//private static CharSequence ¤¤CapacityN = "¤Trade Capacity";
+	//private static CharSequence ¤¤CapacityNDesc = "¤The combined daily trade capacity of your trade partners, and how much that you have currently traded. Once the capacity is exceeded, the factions will add expensive tariffs to your trade to protect their economies.";
 
 	static {
 		D.ts(RRow.class);
 	}
 
-	RRow(RESOURCE r, INTE hi, GETTERE<RESOURCE> rcurrent, int w, UIGoodsImport im, UIGoodsExport ex) {
-		amount = GAME.player().credits().creditsH().historyRecords(); ///#!# Null prevention
-
+	RRow(TRADABLE r, INTE hi, GETTERE<TRADABLE> rcurrent, int w, UIGoodsImport im, UIGoodsExport ex) {
 		this.res = r;
 		this.hi = hi;
 		this.w = w;
@@ -74,7 +68,7 @@ final class RRow extends GuiSection {
 
 		addRelBody(0, DIR.E, dias[0]);
 
-		addRelBody(0, DIR.E, new Caps());
+//		addRelBody(0, DIR.E, new Caps());
 
 
 		addRelBody(12, DIR.E, dias[1]);
@@ -132,7 +126,7 @@ final class RRow extends GuiSection {
 		{
 			b.textLL(Dic.¤¤Stored);
 			b.tab(6);
-			b.add(GFORMAT.i(b.text(), SETT.ROOMS().STOCKPILE.tally().amountsDay().history(res).get(si)));
+			b.add(GFORMAT.i(b.text(), FACTIONS.player().seller(res).storedHistorically(si)));
 			b.NL();
 			b.textLL(Dic.¤¤avePrice);
 			b.tab(6);
@@ -197,7 +191,7 @@ final class RRow extends GuiSection {
 
 	private class TradeDiagram extends GStaples {
 
-		private final RESOURCE res;
+		private final TRADABLE res;
 		private GStat tprofits = new GStat() {
 
 			@Override
@@ -222,10 +216,11 @@ final class RRow extends GuiSection {
 				GFORMAT.text(text, ExtraInfoDic.yesterday);
 				GFORMAT.iIncr(text, GAME.player().trade.inExported.history(res).get(1)-GAME.player().trade.outImported.history(res).get(1));
 				/////////////////////////////////////////////#!#
+				GFORMAT.iIncr(text, GAME.player().trade.inExported.history(res).get(1)-GAME.player().trade.outImported.history(res).get(1));
 			}
 		}.bg();
 
-		TradeDiagram(RESOURCE res){
+		TradeDiagram(TRADABLE res){
 			super(amount, false);
 			this.res = res;
 			body().setWidth(w*amount).setHeight(height);
@@ -261,64 +256,64 @@ final class RRow extends GuiSection {
 		}
 	}
 
-	private class Caps extends HoverableAbs {
-
-		Caps(){
-			super(32, height);
-		}
-
-		@Override
-		protected void render(SPRITE_RENDERER r, float ds, boolean isHovered) {
-			double has = 0;
-			double tot = 0;
-			for (FactionNPC f : RD.DIST().neighs()) {
-				if (DIP.get(f).trades) {
-					tot += f.stockpile.playerTradeLimit(res);
-					has += Math.abs(f.stockpile.playerTraded(res));
-				}
-			}
-			if (tot == 0) {
-				GMeter.renderH(r, GMeter.C_ORANGE, 0, body());
-
-			}else {
-				double t = CLAMP.d(has/tot, 0, 1);
-				GMeter.renderH(r, t >= 1 ? GMeter.C_RED : GMeter.C_ORANGE, t, body);
-
-			}
-		}
-
-		@Override
-		public void hoverInfoGet(GUI_BOX text) {
-			// TODO Auto-generated method stub
-			super.hoverInfoGet(text);
-
-			GBox b = (GBox) text;
-			text.title(¤¤CapacityN);
-			text.text(¤¤CapacityNDesc);
-			text.NL(8);
-
-			double has = 0;
-			double tot = 0;
-			for (FactionNPC f : RD.DIST().neighs()) {
-				if (DIP.get(f).trades) {
-					int t = (int) f.stockpile.playerTradeLimit(res);
-					int h = (int) Math.abs(f.stockpile.playerTraded(res));
-					tot += t;
-					has += h;
-					b.add(f.banner().MEDIUM);
-					b.textL(f.name);
-					b.tab(7);
-					b.add(GFORMAT.iofk(b.text(), h, t));
-					b.NL();
-				}
-			}
-
-			b.textLL(Dic.¤¤Total);
-			b.tab(7);
-			b.add(GFORMAT.iofk(b.text(), (int)has, (int)tot));
-			b.NL();
-		}
-
-	}
+//	private class Caps extends HoverableAbs {
+//
+//		Caps(){
+//			super(32, height);
+//		}
+//
+//		@Override
+//		protected void render(SPRITE_RENDERER r, float ds, boolean isHovered) {
+//			double has = 0;
+//			double tot = 0;
+//			for (FactionNPC f : RD.DIST().neighs()) {
+//				if (DIP.get(f).trades) {
+//					tot += f.res(res).playerTradeLimit();
+//					has += Math.abs(f.res(res).playerTraded());
+//				}
+//			}
+//			if (tot == 0) {
+//				GMeter.renderH(r, GMeter.C_ORANGE, 0, body());
+//
+//			}else {
+//				double t = CLAMP.d(has/tot, 0, 1);
+//				GMeter.renderH(r, t >= 1 ? GMeter.C_RED : GMeter.C_ORANGE, t, body);
+//
+//			}
+//		}
+//
+//		@Override
+//		public void hoverInfoGet(GUI_BOX text) {
+//			// TODO Auto-generated method stub
+//			super.hoverInfoGet(text);
+//
+//			GBox b = (GBox) text;
+//			text.title(¤¤CapacityN);
+//			text.text(¤¤CapacityNDesc);
+//			text.NL(8);
+//
+//			double has = 0;
+//			double tot = 0;
+//			for (FactionNPC f : RD.DIST().neighs()) {
+//				if (DIP.get(f).trades) {
+//					int t = (int) f.res(res).playerTradeLimit();
+//					int h = (int) Math.abs(f.res(res).playerTraded());
+//					tot += t;
+//					has += h;
+//					b.add(f.banner().MEDIUM);
+//					b.textL(f.name);
+//					b.tab(7);
+//					b.add(GFORMAT.iofk(b.text(), h, t));
+//					b.NL();
+//				}
+//			}
+//
+//			b.textLL(Dic.¤¤Total);
+//			b.tab(7);
+//			b.add(GFORMAT.iofk(b.text(), (int)has, (int)tot));
+//			b.NL();
+//		}
+//
+//	}
 
 }

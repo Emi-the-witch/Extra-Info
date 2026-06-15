@@ -4,10 +4,10 @@ import game.boosting.*;
 import game.faction.FACTIONS;
 import game.faction.Faction;
 import game.time.TIME;
+import init.type.HCLASS_RACE;
 import init.value.Lock;
 import init.resources.RESOURCE;
 import init.resources.RESOURCES;
-import init.type.POP_CL;
 import settlement.entity.humanoid.Humanoid;
 import settlement.main.SETT;
 import settlement.maintenance.ROOM_DEGRADER;
@@ -22,7 +22,6 @@ import settlement.stats.STATS;
 import snake2d.util.color.COLOR;
 import snake2d.util.color.ColorImp;
 import view.keyboard.KEYS;
-import view.ui.tech.NodeBoosts;
 
 import java.util.Objects;
 import static game.time.TIME.playedGame;
@@ -175,7 +174,7 @@ public class CostBenefit {
 
                                         for (RoomEquip w : ee.tools()) {
                                                 double n = w.degradePerDay * e.tools(w);
-                                                double sellFor = FACTIONS.player().trade.pricesBuy.get(w.resource);
+                                                double sellFor = FACTIONS.player().trade.pricesBuy.get(w.resource.tr());
                                                 benefit_tools -= n * sellFor;
                                         }
                                         benefit_emp_total += r.employees().employed(); // Employee count used for tools and maintenance
@@ -194,7 +193,7 @@ public class CostBenefit {
                                                 RESOURCE res = deg.res(i);
 
                                                 double n = ROOM_DEGRADER.rateResource(boost, deg.base(), iso, r.resAmount(i,r.upgrade()))* TIME.years().bitConversion(TIME.days()) / 16.0;
-                                                double sellFor = FACTIONS.player().trade.pricesBuy.get(res);
+                                                double sellFor = FACTIONS.player().trade.pricesBuy.get(res.tr());
                                                 total_room_maintenance_import -= n * sellFor;
 
 
@@ -261,7 +260,7 @@ public class CostBenefit {
                                                                 double n = ROOM_DEGRADER.rateResource(boost, deg.base(), iso, r.resAmount(i,r.upgrade()))* TIME.years().bitConversion(TIME.days()) / 16.0;
                                                                 // Maintenance amount per day for upgraded level (if not maxed)
                                                                 double m = ROOM_DEGRADER.rateResource(boost, deg.base(), iso, r.resAmount(i,up+r.upgrade()))* TIME.years().bitConversion(TIME.days()) / 16.0;
-                                                                double sellFor = FACTIONS.player().trade.pricesBuy.get(deg.res(i)); 	// get the import cost of the resource
+                                                                double sellFor = FACTIONS.player().trade.pricesBuy.get(deg.res(i).tr()); 	// get the import cost of the resource
                                                                 total_room_maintenance_import -= n * sellFor;				// multiply cost * amount of resource (not upgraded)
                                                                 total_room_maintenance_import_upgraded -= m * sellFor;			// multiply cost * amount of resource (upgraded)
 
@@ -353,7 +352,7 @@ public class CostBenefit {
 
                                         for (RoomEquip w : ee.tools()) {
                                                 double n = w.degradePerDay * e.tools(w);
-                                                double sellFor = FACTIONS.player().trade.pricesBuy.get(w.resource);
+                                                double sellFor = FACTIONS.player().trade.pricesBuy.get(w.resource.tr());
                                                 benefit_tools -= n * sellFor;
 
                                         }
@@ -375,7 +374,7 @@ public class CostBenefit {
                                         // FACTIONS.player().trade.pricesBuy.get(res)
                                         // resource "value" (average value to factions across the world)
                                         // FACTIONS.PRICE().get(res)
-                                        tot -= rr.am() * FACTIONS.PRICE().get(res) ;
+                                        tot -= rr.am() * FACTIONS.PRICE().get(res.tr()) ;
                                 }
                         }
                 }
@@ -388,7 +387,7 @@ public class CostBenefit {
                 double cur = 0;
                 for ( Boostable A : BOOSTABLES.CIVICS().all() ) {
                         if (Objects.equals(bb.boostable.key(), A.key)) {
-                                cur = A.get(POP_CL.clP(null, null));
+                                cur = A.get(HCLASS_RACE.clP(null, null));
                         }
                 }
                 double v = bb.booster.to(); 	// benefit per level of tech
@@ -404,12 +403,12 @@ public class CostBenefit {
 
 
                 double employees = r.employment().employed();
-                double current = bo.get(POP_CL.clP());
+                double current = bo.get(HCLASS_RACE.clP());
                 double next = current;
                 if (isMul) {
-                        next = BUtil.value(bo.all(), POP_CL.clP(), bo.baseValue, increase, bo.minValue);
+                        next = BUtil.value(bo.all(), HCLASS_RACE.clP(), bo.baseValue, increase, bo.minValue);
                 }else {
-                        next = BUtil.value(bo.all(), POP_CL.clP(), bo.baseValue + increase, 1, bo.minValue);
+                        next = BUtil.value(bo.all(), HCLASS_RACE.clP(), bo.baseValue + increase, 1, bo.minValue);
                 }
 
                 double res = employees*(next-current)/current;

@@ -38,7 +38,7 @@ public final class UIProduction extends BalanceView {
                 for (RESOURCE res : RESOURCES.ALL()) {
                         for (RoomProduction.Source rr : SETT.ROOMS().PROD.producers(res)) {
                                 if (rr.am() == 0) {continue;}
-                                tot += rr.am() * FACTIONS.PRICE().get(res) ;
+                                tot += rr.am() * FACTIONS.PRICE().get(res.tr()) ;
                         }
                 }
                 return tot;
@@ -48,7 +48,7 @@ public final class UIProduction extends BalanceView {
                 for (RESOURCE res : RESOURCES.ALL()) {
                         for (RoomProduction.Source rr : SETT.ROOMS().PROD.consumers(res)) {
                                 if (rr.am() == 0) {continue;}
-                                tot -= rr.am() * FACTIONS.PRICE().get(res) ;
+                                tot -= rr.am() * FACTIONS.PRICE().get(res.tr()) ;
                         }
                 }
                 return tot;
@@ -67,8 +67,8 @@ public final class UIProduction extends BalanceView {
                                 subtot -= rr.am() ;
                         }
                         // use sell price if net positive, buy price if net negative.
-                        if (subtot>0){tot+=subtot * FACTIONS.player().trade.pricesSell.get(res); }
-                        if (subtot<0){tot+=subtot * FACTIONS.player().trade.pricesBuy.get(res); }
+                        if (subtot>0){tot+=subtot * FACTIONS.player().trade.pricesSell.get(res.tr()); }
+                        if (subtot<0){tot+=subtot * FACTIONS.player().trade.pricesBuy.get(res.tr()); }
 
                 }
                 return tot;

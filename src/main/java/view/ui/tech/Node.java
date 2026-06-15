@@ -11,7 +11,7 @@ import init.tech.TECH.TechRequirement;
 import init.tech.TECHS;
 import init.tech.TechCost;
 import init.tech.TechCurrency;
-import init.type.POP_CL;
+import init.type.HCLASS_RACE;
 import init.value.Lock;
 import settlement.main.SETT;
 import settlement.room.industry.module.INDUSTRY_HASER;
@@ -42,23 +42,23 @@ import view.ui.tech.NodeBoosts.tEntry;
 import view.ui.tech.NodeBoosts.upEntry;
 
 final class Node extends ClickableAbs {
-	/////////////////////////////////////////////////////////////////////////////////////////////////
-	///#!# Tells tech to update the cost analysis and then displays the output form Node_Extra.
-	///#!# Changes the color when they hover over it, but IDK why it won't update otherwise.
-	////////////////////////////////////////////////////////////////////////////////////////////////
-	public final static int WIDTH = 92;
+
+	public final static int WIDTH = 80;
 	public final static int HE2IGHT = 92+12;
 	private static final COLOR Cdormant = COLOR.WHITE100.shade(0.3);
 	private static final COLOR Chovered = COLOR.WHITE100.shade(0.8);
 	private static final COLOR Cfinished = new ColorImp(10, 120, 120);
 
+	private static ColorImp rim = new ColorImp();
+
 
 	private static CharSequence ¤¤Relock = "¤Hold {0} and click to disable this technology. The following points will be added to your frozen pool:";
 	private static CharSequence ¤¤unlocked = "Unlocked";
-	private static CharSequence ¤¤available = "Available";
+	private static CharSequence ¤¤available = "Available to be unlocked";
 	private static CharSequence ¤¤locked = "Locked by Requirements";
 	private static CharSequence ¤¤afford = "Unable to Afford";
-	private static CharSequence ¤¤workValue = "Unlocking this tech will result in {0} more workers in the affected industries ({1} more workers per tech point). If it costs more workers to cover the cost of the tech, it might not be a good idea to unlock it.";
+	private static CharSequence ¤¤workValueGood = "This technology will be a profitable investment, increasing production as if you employed {0} workers, ({1} workers per point spent). However... there might be other technologies that are better investments.";
+	private static CharSequence ¤¤workValueBad = "Your affected industries are too small for this technology to be a good investment. Currently you get {0} more workers, equivalent to {1} workers per tech point spent. You should increase the size of your industries to make this tech worthwhile";
 
 	final static LIST<COLOR> cols = new ArrayList<COLOR>(
 			new ColorImp(50, 255, 50).shade(0.5),
@@ -127,43 +127,53 @@ final class Node extends ClickableAbs {
 	@Override
 	protected void render(SPRITE_RENDERER r, float ds, boolean isActive, boolean isSelected, boolean isHovered) {
 
-		for (int i = 1; i <= 6; i++) {
-			ColorImp.TMP.interpolate(GCOLOR.UI().bg(), tech.color, 1.0-i/6.0);
-			ColorImp.TMP.renderFrame(r, body, i, 1);
-		}
-
-
-		isHovered |= hoverI == VIEW.renI;
-
 		isSelected |= FACTIONS.player().tech.level(tech) == tech.levelMax;
-
-		GCOLOR.T().H1.render(r, body);
-
-		GCOLOR.UI().bg(isActive, false, isHovered).render(r, body, -1);
-//        COLOR col = col(isHovered, isSelected);
-//        col.render(r, body, -4);
-		//////////////////////////////////////////////////////////////////////////////// #!#
-//        tech.Tech_CostBenefit.update(tech); // #!# Update tech's Cost Benefits
-		COLOR col = tech.Tech_CostBenefit.col(isHovered, tech); // MODIFIED Color change function
-		col.render(r, body,-4);
-		///////////////////////////////////////////////////////////////////////////////// #!#
-
-
 
 		{
 			double levels = tech.levelMax;
 			int level = FACTIONS.player().tech.level(tech);
-			double d = level / levels;
-			int y2 = body().y2() - 4;
-			int y1 = (int) (y2 - d * (body().height() - 8));
-			if (d != 1)
-				(d == 1.0 ? Cfinished : Cfinished).render(r, body().x1() + 4, body().x2() - 4, y1, y2);
 
+			if (level == levels)
+				rim.set(Cfinished);
+			else
+				rim.set(COLOR.WHITE65);
+
+			for (int i = 1; i <= 6; i++) {
+				ColorImp.TMP.interpolate(GCOLOR.UI().bg(), rim, 1.0-i/6.0);
+				ColorImp.TMP.renderFrame(r, body, i, 1);
+			}
+
+
+			double d = level / levels;
+			int y1 = (int) (body.y2()-body.height()*d);
+
+			if (d > 0) {
+				for (int i = 6; i >= 1; i--) {
+					ColorImp.TMP.interpolate(GCOLOR.UI().bg(), Cfinished, 1.0-i/6.0);
+					ColorImp.TMP.render(r,  body.x1()-i,  body.x2()+i, y1, body.y2()+i);
+				}
+			}
 		}
 
-		GCOLOR.UI().bg(isActive, false, isHovered).render(r, body, -7);
 
-		tech.icon().renderC(r, body.cX(), body.cY()-8);
+
+
+		isHovered |= hoverI == VIEW.renI;
+
+		GCOLOR.UI().bg(isActive, false, isHovered).render(r, body);
+		if (isHovered) {
+//        COLOR col = col(isHovered, isSelected);
+//        col.render(r, body, -4);
+			//////////////////////////////////////////////////////////////////////////////// #!#
+//        tech.Tech_CostBenefit.update(tech); // #!# Update tech's Cost Benefits
+			COLOR col = tech.Tech_CostBenefit.col(isHovered, tech); // MODIFIED Color change function
+			col.render(r, body,-4);
+			///////////////////////////////////////////////////////////////////////////////// #!#
+			GCOLOR.UI().bg(isActive, false, isHovered).render(r, body, -7);
+		}
+
+
+		tech.icon().renderC(r, body.cX(), body.cY()-18);
 		Str.TMP.clear();
 
 		{
@@ -195,14 +205,14 @@ final class Node extends ClickableAbs {
 
 				}
 
-
-				(has ? OPACITY.O50 : OPACITY.O25).bind();
-				cols.getC(cu.index).render(r, cx-wi/2, cx+wi/2, cy-8, cy+8);
-				OPACITY.unbind();
-
 				if (has) {
+					(has ? OPACITY.O50 : OPACITY.O25).bind();
+					cols.getC(cu.index).render(r, cx-wi/2, cx+wi/2, cy-8, cy+8);
+					OPACITY.unbind();
+
 					UI.FONT().S.renderC(r, cx, cy, Str.TMP, 1);
 				}
+
 
 
 
@@ -274,7 +284,8 @@ final class Node extends ClickableAbs {
 	public void hoverInfoGet(GUI_BOX text) {
 		GBox b = (GBox) text;
 		text.title(tech.name());
-
+		text.text(tech.desc());
+		b.NL();
 		PTech t = FACTIONS.player().tech();
 
 		if (t.level(tech) == tech.levelMax){
@@ -437,11 +448,10 @@ final class Node extends ClickableAbs {
 
 		if (totHas || tot > 0) {
 			b.sep();
-			b.add(UI.icons().s.hammer);
-			b.add(GFORMAT.f0(b.text(), tot, 1));
-			b.NL();
 			GText tt = b.text();
-			tt.add(¤¤workValue).insert(0, tot, 1);
+			tt.add(tot < 1 ? ¤¤workValueBad : ¤¤workValueGood).insert(0, tot, 1);
+			if (tot < 1)
+				tt.errorify();
 			int cost = 0;
 			for (TechCost c : tech.costs)
 				cost += t.costLevelNext(c.amount, tech);
@@ -453,7 +463,7 @@ final class Node extends ClickableAbs {
 
 		b.NL();
 
-		text.text(tech.desc());
+
 		b.NL();
 
 		if (t.level(tech) > 0) {
@@ -514,12 +524,12 @@ final class Node extends ClickableAbs {
 
 
 		double employees = r.employment().employed();
-		double current = bo.get(POP_CL.clP());
+		double current = bo.get(HCLASS_RACE.clP());
 		double next = current;
 		if (isMul) {
-			next = BUtil.value(bo.all(), POP_CL.clP(), bo.baseValue, increase, bo.minValue);
+			next = BUtil.value(bo.all(), HCLASS_RACE.clP(), bo.baseValue, increase, bo.minValue);
 		}else {
-			next = BUtil.value(bo.all(), POP_CL.clP(), bo.baseValue + increase, 1, bo.minValue);
+			next = BUtil.value(bo.all(), HCLASS_RACE.clP(), bo.baseValue + increase, 1, bo.minValue);
 		}
 
 		double res = employees*(next-current)/current;
@@ -535,9 +545,9 @@ final class Node extends ClickableAbs {
 	@Override
 	protected void clickA() {
 		if (KEYS.MAIN().UNDO.isPressed())
-			VIEW.UI().tech.tree.prompt.forget(tech);
+			VIEW.UI().tech.prompt.forget(tech);
 		else
-			VIEW.UI().tech.tree.prompt.unlock(tech);
+			VIEW.UI().tech.prompt.unlock(tech);
 		super.clickA();
 	}
 

@@ -71,11 +71,11 @@ public final class UIValues extends IFullView {
             double goods_buy = 0;
 
             for (IndustryResource oo : i.outs()) {
-                goods_sell += oo.rate * FACTIONS.PRICE().get(oo.resource);
+                goods_sell += oo.rate * FACTIONS.PRICE().get(oo.resource.tr());
             }
 
             for (IndustryResource oo : i.ins()) {
-                goods_buy += oo.rate * FACTIONS.PRICE().get(oo.resource);
+                goods_buy += oo.rate * FACTIONS.PRICE().get(oo.resource.tr());
             }
 
             body().setWidth(WIDTH).setHeight(1);
@@ -86,14 +86,14 @@ public final class UIValues extends IFullView {
                 add(oo.resource.icon(), incTab(1), 0);
                 add(GFORMAT.f(new GText(UI.FONT().S, 0), oo.rate).adjustWidth(), incTab(1.5), MARGIN);
                 add(GFORMAT.text(new GText(UI.FONT().S, 0), "@").adjustWidth(), incTab(0.5), MARGIN);
-                add(GFORMAT.i(new GText(UI.FONT().S, 0), FACTIONS.PRICE().get(oo.resource)).adjustWidth(), incTab(1), MARGIN);
+                add(GFORMAT.i(new GText(UI.FONT().S, 0), FACTIONS.PRICE().get(oo.resource.tr())).adjustWidth(), incTab(1), MARGIN);
             }
 
             for (IndustryResource oo : i.ins()) {
                 add(oo.resource.icon(), incTab(1), 0);
                 add(GFORMAT.f(new GText(UI.FONT().S, 0), -oo.rate).adjustWidth(), incTab(1.5), MARGIN);
                 add(GFORMAT.text(new GText(UI.FONT().S, 0), "@").adjustWidth(), incTab(0.5), MARGIN);
-                add(GFORMAT.i(new GText(UI.FONT().S, 0), FACTIONS.PRICE().get(oo.resource)).adjustWidth(), incTab(1), MARGIN);
+                add(GFORMAT.i(new GText(UI.FONT().S, 0), FACTIONS.PRICE().get(oo.resource.tr())).adjustWidth(), incTab(1), MARGIN);
             }
         }
 

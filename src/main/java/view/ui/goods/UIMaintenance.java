@@ -68,8 +68,8 @@ public final class      UIMaintenance extends IFullView {
                  // Sum up the total resource use and update building_totals values
                 for (RESOURCE res : RESOURCES.ALL()) {
                         if (SETT.MAINTENANCE().estimateGlobal(res) != 0) {
-                                import_costs += SETT.MAINTENANCE().estimateGlobal(res) * FACTIONS.player().trade.pricesBuy.get(res);
-                                value_costs += SETT.MAINTENANCE().estimateGlobal(res) * FACTIONS.PRICE().get(res);
+                                import_costs += SETT.MAINTENANCE().estimateGlobal(res) * FACTIONS.player().trade.pricesBuy.get(res.tr());
+                                value_costs += SETT.MAINTENANCE().estimateGlobal(res) * FACTIONS.PRICE().get(res.tr());
                         }
                         continue;
                 }
@@ -239,10 +239,10 @@ public final class      UIMaintenance extends IFullView {
                                 // Amount of resource used:
                                 add(res.icon(), incTab(3), 0);
                                 // Import costs for that resource:
-                                add(GFORMAT.i(new GText(UI.FONT().S, 0), (long) (amount_of_res * FACTIONS.player().trade.pricesBuy.get(res))).adjustWidth(), incTab(2), MARGIN);
+                                add(GFORMAT.i(new GText(UI.FONT().S, 0), (long) (amount_of_res * FACTIONS.player().trade.pricesBuy.get(res.tr()))).adjustWidth(), incTab(2), MARGIN);
                                 add(GFORMAT.text(new GText(UI.FONT().S, 0), ExtraInfoDic.denari).adjustWidth(), incTab(4), MARGIN);
                                 // Value of those resources:
-                                add(GFORMAT.i(new GText(UI.FONT().S, 0), (long) (amount_of_res * FACTIONS.PRICE().get(res))).adjustWidth(), incTab(2), MARGIN);
+                                add(GFORMAT.i(new GText(UI.FONT().S, 0), (long) (amount_of_res * FACTIONS.PRICE().get(res.tr()))).adjustWidth(), incTab(2), MARGIN);
                                 add(GFORMAT.text(new GText(UI.FONT().S, 0), ExtraInfoDic.denari).adjustWidth(), incTab(4), MARGIN);
                         }
                         //////////////////////////////////////////////////////////////////////
@@ -381,8 +381,8 @@ static KeyMap<ResData> building_totals = new KeyMap<ResData>();
                 building_totals.get(key).import_price = 0;
                 building_totals.get(key).value_price = 0;
                 for (RESOURCE r : RESOURCES.ALL()){
-                        building_totals.get(key).import_price -= building_totals.get(key).amounts[r.index()] * FACTIONS.player().trade.pricesBuy.get(r) ;
-                        building_totals.get(key).value_price  -= building_totals.get(key).amounts[r.index()] * FACTIONS.PRICE().get(r);
+                        building_totals.get(key).import_price -= building_totals.get(key).amounts[r.index()] * FACTIONS.player().trade.pricesBuy.get(r.tr()) ;
+                        building_totals.get(key).value_price  -= building_totals.get(key).amounts[r.index()] * FACTIONS.PRICE().get(r.tr());
                 }
                 // Give the each KeyMap the nicer name of the building, if you can...
                 for (RoomBlueprint element :  SETT.ROOMS().all() ){

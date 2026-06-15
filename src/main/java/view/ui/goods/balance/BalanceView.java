@@ -49,8 +49,8 @@ public class BalanceView extends IFullView {
 
             for (RoomProduction.Source ii : item.getValue()) {
                 if (ii.am() != 0) {
-                    long resExport = (long) (ii.am() * FACTIONS.player().trade.pricesSell.get(ii.res));
-                    long resValue = (long) (ii.am() * FACTIONS.PRICE().get(ii.res));
+                    long resExport = (long) (ii.am() * FACTIONS.player().trade.pricesSell.get(ii.res.tr()));
+                    long resValue = (long) (ii.am() * FACTIONS.PRICE().get(ii.res.tr()));
                     trade_value += resExport;
                     total_value += resValue;
                 }
@@ -69,8 +69,8 @@ public class BalanceView extends IFullView {
 
             if (isExpanded) {
                 for (RoomProduction.Source ii : item.getValue()) {
-                    long resTradeValue = (long) (ii.am() * FACTIONS.player().trade.pricesSell.get(ii.res));
-                    long resValue = (long) (ii.am() * FACTIONS.PRICE().get(ii.res));
+                    long resTradeValue = (long) (ii.am() * FACTIONS.player().trade.pricesSell.get(ii.res.tr()));
+                    long resValue = (long) (ii.am() * FACTIONS.PRICE().get(ii.res.tr()));
                     if (isNegative) {
                         resTradeValue = -resTradeValue;
                         resValue = -resValue;
@@ -120,8 +120,8 @@ public class BalanceView extends IFullView {
     protected double getSortValue(RoomProduction.Source s, int column) {
         switch (column) {
             case 1: return s.am();
-            case 2: return s.am() * FACTIONS.player().trade.pricesSell.get(s.res);
-            case 3: return s.am() * FACTIONS.PRICE().get(s.res);
+            case 2: return s.am() * FACTIONS.player().trade.pricesSell.get(s.res.tr());
+            case 3: return s.am() * FACTIONS.PRICE().get(s.res.tr());
             default: return 0;
         }
     }

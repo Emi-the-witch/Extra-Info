@@ -75,11 +75,11 @@ public final class UIRecipes extends IFullView {
             double goods_buy = 0;
 
             for (IndustryResource oo : i.outs()) {
-                goods_sell += oo.rate * FACTIONS.player().trade.pricesSell.get(oo.resource);
+                goods_sell += oo.rate * FACTIONS.player().trade.pricesSell.get(oo.resource.tr());
             }
 
             for (IndustryResource oo : i.ins()) {
-                goods_buy += oo.rate * FACTIONS.player().trade.pricesBuy.get(oo.resource);
+                goods_buy += oo.rate * FACTIONS.player().trade.pricesBuy.get(oo.resource.tr());
             }
             // Display them for a given industry's recipe
             body().setWidth(WIDTH).setHeight(1);
@@ -90,14 +90,14 @@ public final class UIRecipes extends IFullView {
                 add(oo.resource.icon(), incTab(1), 0);
                 add(GFORMAT.f(new GText(UI.FONT().S, 0), oo.rate).adjustWidth(), incTab(1.5), MARGIN);
                 add(GFORMAT.text(new GText(UI.FONT().S, 0), "@").adjustWidth(), incTab(0.5), MARGIN);
-                add(GFORMAT.i(new GText(UI.FONT().S, 0), FACTIONS.player().trade.pricesSell.get(oo.resource)).adjustWidth(), incTab(1), MARGIN);
+                add(GFORMAT.i(new GText(UI.FONT().S, 0), FACTIONS.player().trade.pricesSell.get(oo.resource.tr())).adjustWidth(), incTab(1), MARGIN);
             }
 
             for (IndustryResource oo : i.ins()) {
                 add(oo.resource.icon(), incTab(1), 0);
                 add(GFORMAT.f(new GText(UI.FONT().S, 0), -oo.rate).adjustWidth(), incTab(1.5), MARGIN);
                 add(GFORMAT.text(new GText(UI.FONT().S, 0), "@").adjustWidth(), incTab(0.5), MARGIN);
-                add(GFORMAT.i(new GText(UI.FONT().S, 0), FACTIONS.player().trade.pricesBuy.get(oo.resource)).adjustWidth(), incTab(1), MARGIN);
+                add(GFORMAT.i(new GText(UI.FONT().S, 0), FACTIONS.player().trade.pricesBuy.get(oo.resource.tr())).adjustWidth(), incTab(1), MARGIN);
             }
         }
 

@@ -65,10 +65,10 @@ public class ProfitCalc {
                         IndustryResource i = p.industry().outs().get(ri);
                         double n = i.dayPrev.get(p);
 
-                        double sellFor = FACTIONS.player().trade.pricesSell.get(i.resource);
+                        double sellFor = FACTIONS.player().trade.pricesSell.get(i.resource.tr());
                         revenue += n * sellFor;
 
-                        double sellFor2 = FACTIONS.player().trade.pricesBuy.get(i.resource);
+                        double sellFor2 = FACTIONS.player().trade.pricesBuy.get(i.resource.tr());
                         saved += n * sellFor2;
 
                         consumed = 0;
@@ -97,7 +97,7 @@ public class ProfitCalc {
                         for (int ri = 0; ri < p.industry().ins().size(); ri++) {
                                 IndustryResource i = p.industry().ins().get(ri);
                                 double n = i.dayPrev.get(p);
-                                double sellFor = FACTIONS.player().trade.pricesBuy.get(i.resource);
+                                double sellFor = FACTIONS.player().trade.pricesBuy.get(i.resource.tr());
                                 inputs -= n * sellFor;
                         }
                 }
@@ -111,7 +111,7 @@ public class ProfitCalc {
 
                         for (RoomEquip w : ee.tools()) {
                                 double n = w.degradePerDay * e.tools(w);
-                                double sellFor = FACTIONS.player().trade.pricesBuy.get(w.resource);
+                                double sellFor = FACTIONS.player().trade.pricesBuy.get(w.resource.tr());
                                 tools -= n * sellFor;
                         }
                 }
@@ -129,7 +129,7 @@ public class ProfitCalc {
                                 RESOURCE res = deg.res(i);
 
                                 double n = ROOM_DEGRADER.rateResource(boost, deg.base(), iso, deg.resAmount(i)) * TIME.years().bitConversion(TIME.days()) / 16.0;
-                                double sellFor = FACTIONS.player().trade.pricesBuy.get(res);
+                                double sellFor = FACTIONS.player().trade.pricesBuy.get(res.tr());
                                 maintenance -= n * sellFor;
                         }
                 }
@@ -173,10 +173,10 @@ public class ProfitCalc {
 //                        double n = i.dayPrev.get(p);
                 double n = amountProduced / 16;
 
-                double sellFor = FACTIONS.player().trade.pricesSell.get(i.resource);
+                double sellFor = FACTIONS.player().trade.pricesSell.get(i.resource.tr());
                 revenue += n * sellFor;
 
-                double sellFor2 = FACTIONS.player().trade.pricesBuy.get(i.resource);
+                double sellFor2 = FACTIONS.player().trade.pricesBuy.get(i.resource.tr());
                 saved += n * sellFor2;
 
                 consumed = 0;
@@ -209,7 +209,7 @@ public class ProfitCalc {
 
                         for (RoomEquip w : ee.tools()) {
                                 double m = w.degradePerDay * e.tools(w);
-                                double toolSellFor = FACTIONS.player().trade.pricesBuy.get(w.resource);
+                                double toolSellFor = FACTIONS.player().trade.pricesBuy.get(w.resource.tr());
                                 tools -= m * toolSellFor;
                         }
                 }
@@ -257,10 +257,10 @@ public class ProfitCalc {
 //                        double n = i.dayPrev.get(p);
                 double n = amountProduced / 16;
 
-                double sellFor = FACTIONS.player().trade.pricesSell.get(i.resource);
+                double sellFor = FACTIONS.player().trade.pricesSell.get(i.resource.tr());
                 revenue += n * sellFor;
 
-                double sellFor2 = FACTIONS.player().trade.pricesBuy.get(i.resource);
+                double sellFor2 = FACTIONS.player().trade.pricesBuy.get(i.resource.tr());
                 saved += n * sellFor2;
 
                 consumed = 0;
@@ -293,7 +293,7 @@ public class ProfitCalc {
 
                         for (RoomEquip w : ee.tools()) {
                                 double m = w.degradePerDay * e.tools(w);
-                                double toolSellFor = FACTIONS.player().trade.pricesBuy.get(w.resource);
+                                double toolSellFor = FACTIONS.player().trade.pricesBuy.get(w.resource.tr());
                                 tools -= m * toolSellFor;
                         }
                 }

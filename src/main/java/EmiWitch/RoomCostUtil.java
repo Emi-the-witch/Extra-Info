@@ -14,7 +14,7 @@ import snake2d.util.sets.LIST;
 
 import static settlement.main.SETT.MAINTENANCE;
 
-public class RoomCostUtil {
+public class    RoomCostUtil {
 
     public int employees = 0;
     public double inputs = 0.0;
@@ -51,9 +51,9 @@ public class RoomCostUtil {
             double n = i.dayPrev.get(r);
 
             if (buying) {
-                total -= n * FACTIONS.player().trade.pricesBuy.get(i.resource);
+                total -= n * FACTIONS.player().trade.pricesBuy.get(i.resource.tr());
             } else {
-                total += n * FACTIONS.player().trade.pricesSell.get(i.resource);
+                total += n * FACTIONS.player().trade.pricesSell.get(i.resource.tr());
             }
         }
 
@@ -64,7 +64,7 @@ public class RoomCostUtil {
         double total = 0.0;
 
         for (RoomEquip w : r.blueprint().employment().tools()) {
-            total += w.degradePerDay * r.employees().tools(w) * FACTIONS.player().trade.pricesBuy.get(w.resource);
+            total += w.degradePerDay * r.employees().tools(w) * FACTIONS.player().trade.pricesBuy.get(w.resource.tr());
         }
 
         return total;
@@ -87,7 +87,7 @@ public class RoomCostUtil {
             RESOURCE res = deg.res(i);
 
             double n = ROOM_DEGRADER.rateResource(boost, deg.base(), iso, deg.resAmount(i)) * TIME.years().bitConversion(TIME.days()) / 16.0;
-            total -= n * FACTIONS.player().trade.pricesBuy.get(res);
+            total -= n * FACTIONS.player().trade.pricesBuy.get(res.tr());
         }
         return total;
     }

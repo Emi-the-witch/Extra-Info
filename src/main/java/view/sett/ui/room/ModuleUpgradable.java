@@ -287,8 +287,8 @@ final class ModuleUpgradable implements ModuleMaker {
 						b.add(GFORMAT.f0(b.text(), -ROOM_DEGRADER.rateResource(boost, deg.base(), iso, am)* TIME.years().bitConversion(TIME.days())/16));
 						b.textL(res.name);
 						b.tab(6);
-						b.add(GFORMAT.f0(b.text(), -ROOM_DEGRADER.rateResource(boost, deg.base(), iso, am)* TIME.years().bitConversion(TIME.days())*FACTIONS.player().trade.pricesBuy.get(res)/16));
-						maint_cost += (-ROOM_DEGRADER.rateResource(boost, deg.base(), iso, am)*TIME.years().bitConversion(TIME.days())*FACTIONS.player().trade.pricesBuy.get(res)/16);
+						b.add(GFORMAT.f0(b.text(), -ROOM_DEGRADER.rateResource(boost, deg.base(), iso, am)* TIME.years().bitConversion(TIME.days())*FACTIONS.player().trade.pricesBuy.get(res.tr())/16));
+						maint_cost += (-ROOM_DEGRADER.rateResource(boost, deg.base(), iso, am)*TIME.years().bitConversion(TIME.days())*FACTIONS.player().trade.pricesBuy.get(res.tr())/16);
 						b.textLL(" $");
 						b.NL();
 					}
